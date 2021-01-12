@@ -41,8 +41,8 @@ public class GameClient extends ApplicationAdapter {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         // viewport = new FitViewport(800, 480, camera);
-        camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
-        //camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
+        //camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
+        camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -78,7 +78,7 @@ public class GameClient extends ApplicationAdapter {
         }
         
         //System.out.println("x: " + player.getPos().x + " y: " + player.getPos().y);
-        //System.out.println(Gdx.graphics.getFramesPerSecond());
+        System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Step physics world
         localGame.doPhysicsStep(Gdx.graphics.getDeltaTime());

@@ -51,16 +51,27 @@ public class Game {
       Box2D.init();
       world = new World(new Vector2(0, -20), true);
 
+      // World edge
+      Vector2 a = new Vector2(0, WORLD_HEIGHT);
+      Vector2 b = new Vector2(WORLD_WIDTH, WORLD_HEIGHT);
+      Vector2 c = new Vector2(WORLD_WIDTH, 0);
+      Vector2 d = new Vector2(0, 0);
+
+      makeEdgeShape(a, b);
+      makeEdgeShape(b, c);
+      makeEdgeShape(c, d);
+      makeEdgeShape(d, a);
+
       // Initialize map
       tileMap = new TileMap();
       int[][] mapArr = tileMap.mapArr;
       for (int i = 0; i < TileMap.MAP_COLS - 1; i++) {
          for (int j = 0; j < TileMap.MAP_ROWS - 1; j++) {
             // Marching square edges
-            Vector2 a = new Vector2((float) (i + 0.5), (float) (j));
-            Vector2 b = new Vector2((float) (i + 1), (float) (j + 0.5));
-            Vector2 c = new Vector2((float) (i + 0.5), (float) (j + 1));
-            Vector2 d = new Vector2((float) (i), (float) (j + 0.5));
+            a = new Vector2((float) (i + 0.5), (float) (j));
+            b = new Vector2((float) (i + 1), (float) (j + 0.5));
+            c = new Vector2((float) (i + 0.5), (float) (j + 1));
+            d = new Vector2((float) (i), (float) (j + 0.5));
 
             // Which contour
             int tileCase = getTileMarchCase(mapArr[i][j], mapArr[i+1][j], mapArr[i+1][j+1], mapArr[i][j+1]);
