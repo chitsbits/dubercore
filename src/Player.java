@@ -32,4 +32,10 @@ public class Player extends Entity {
     public void moveRight() {
         body.applyLinearImpulse(0.80f, 0, getPos().x, getPos().y, true);
     }
+
+    public void jump() {
+        Vector2 vel = body.getLinearVelocity();
+        vel.y = 10;
+        body.setLinearVelocity(vel);
+    }
 }

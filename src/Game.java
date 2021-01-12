@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -36,18 +37,82 @@ public class Game {
    private float accumulator = 0;
 
    public World world;
-   
+   public TileMap tileMap;
+
    public Player player1;
 
    public Game() {
       initialize();
    }
-   
+
    public void initialize() {
 
       // Initialize Box2d World
       Box2D.init();
-      world = new World(new Vector2(0, -10), true);
+      world = new World(new Vector2(0, -20), true);
+
+      // Initialize map
+      tileMap = new TileMap();
+      int[][] mapArr = tileMap.mapArr;
+      for (int i = 0; i < TileMap.MAP_COLS - 1; i++) {
+         for (int j = 0; j < TileMap.MAP_ROWS - 1; j++) {
+            // Marching square edges
+            Vector2 a = new Vector2((float) (i + 0.5), (float) (j));
+            Vector2 b = new Vector2((float) (i + 1), (float) (j + 0.5));
+            Vector2 c = new Vector2((float) (i + 0.5), (float) (j + 1));
+            Vector2 d = new Vector2((float) (i), (float) (j + 0.5));
+
+            // Which contour
+            int tileCase = getTileMarchCase(mapArr[i][j], mapArr[i+1][j], mapArr[i+1][j+1], mapArr[i][j+1]);
+
+            switch (tileCase) {
+               case 1:
+                  makeEdgeShape(c, d);
+                  break;
+               case 2:
+                  makeEdgeShape(b, c);
+                  break;
+               case 3:
+                  makeEdgeShape(b, d);
+                  break;
+               case 4:
+                  makeEdgeShape(a, b);
+                  break;
+               case 5:
+                  makeEdgeShape(a, d);
+                  makeEdgeShape(b, c);
+                  break;
+               case 6:
+                  makeEdgeShape(a, c);
+                  break;
+               case 7:
+                  makeEdgeShape(a, d);
+                  break;
+               case 8:
+                  makeEdgeShape(a, d);
+                  break;
+               case 9:
+                  makeEdgeShape(a, c);
+                  break;
+               case 10:
+                  makeEdgeShape(a, b);
+                  makeEdgeShape(c, d);
+                  break;
+               case 11:
+                  makeEdgeShape(a, b);
+                  break;
+               case 12:
+                  makeEdgeShape(b, d);
+                  break;
+               case 13:
+                  makeEdgeShape(b, c);
+                  break;
+               case 14:
+                  makeEdgeShape(c, d);
+                  break;
+            }
+         }
+      }
 
       // First we create a body definition
       BodyDef bodyDef = new BodyDef();
@@ -97,7 +162,6 @@ public class Game {
       // Clean up after ourselves
       groundBox.dispose();
 
-
       player1 = new Player();
       player1.body = world.createBody(player1.bodyDef);
       PolygonShape playerShape = new PolygonShape();
@@ -105,7 +169,6 @@ public class Game {
       player1.body.createFixture(playerShape, 0.0f);
       playerShape.dispose();
 
-      //generateWorld();
    }
 
    public void doPhysicsStep(float deltaTime) {
@@ -119,23 +182,21 @@ public class Game {
       }
    }
 
-   // scuffed not working
-   private void generateWorld() {
-      Vector2[] vertices = new Vector2[100];
-      Random random = new Random();
-      for(int i = 0; i <= 100; i++){
-         vertices[i] = new Vector2(random.nextFloat() * WORLD_WIDTH, random.nextFloat() * WORLD_HEIGHT);
-      }
-      PolygonShape polygon = new PolygonShape();
-      polygon.set(vertices);
+   private int getTileMarchCase(int a, int b, int c, int d) {
+      return a * 8 + b * 4 + c * 2 + d;
+   }
 
-      BodyDef bodyDef = new BodyDef();
-      // Set its world position
-      bodyDef.position.set(new Vector2(0, 10));
+   private void makeEdgeShape(Vector2 v1, Vector2 v2) {
 
-      Body polyBody = world.createBody(bodyDef);
-      polyBody.createFixture(polygon, 0.0f);
-      polygon.dispose();
+      EdgeShape edgeShape = new EdgeShape();
+      edgeShape.set(v1, v2);
 
+      BodyDef edgeDef = new BodyDef();
+      edgeDef.type = BodyType.StaticBody;
+
+      Body edgeBody = world.createBody(edgeDef);
+
+      edgeBody.createFixture(edgeShape, 0.0f);
+      edgeShape.dispose();
    }
 }

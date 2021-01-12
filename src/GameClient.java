@@ -42,6 +42,7 @@ public class GameClient extends ApplicationAdapter {
         camera = new OrthographicCamera();
         // viewport = new FitViewport(800, 480, camera);
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
+        //camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -69,6 +70,11 @@ public class GameClient extends ApplicationAdapter {
         // apply right impulse, but only if max velocity is not reached yet
         if (Gdx.input.isKeyPressed(Keys.D) && player.getVel().x < Player.MAX_VELOCITY) {
             player.moveRight();
+        }
+
+        // apply right impulse, but only if max velocity is not reached yet
+        if (Gdx.input.isKeyPressed(Keys.W)) {
+            player.jump();
         }
         
         //System.out.println("x: " + player.getPos().x + " y: " + player.getPos().y);
