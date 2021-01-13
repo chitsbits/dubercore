@@ -4,7 +4,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public abstract class Entity {
 
+    PolygonShape entityShape;
     Body body;
     BodyDef bodyDef;
+    
     
 }

@@ -41,8 +41,8 @@ public class GameClient extends ApplicationAdapter {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         // viewport = new FitViewport(800, 480, camera);
-        //camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
-        camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
+        camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
+        //camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -54,12 +54,6 @@ public class GameClient extends ApplicationAdapter {
         // of the color to be used to clear the screen.
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // Focus camera on player
-        camera.position.set(player.getPos().x, player.getPos().y, 0);
-
-        // tell the camera to update its matrices.
-        camera.update();
 
         // Player input
         // apply left impulse, but only if max velocity is not reached yet
@@ -73,15 +67,21 @@ public class GameClient extends ApplicationAdapter {
         }
 
         // apply right impulse, but only if max velocity is not reached yet
-        if (Gdx.input.isKeyPressed(Keys.W)) {
+        if (Gdx.input.isKeyPressed(Keys.W) && player.canJump) {
             player.jump();
         }
         
         //System.out.println("x: " + player.getPos().x + " y: " + player.getPos().y);
-        System.out.println(Gdx.graphics.getFramesPerSecond());
+        //System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Step physics world
         localGame.doPhysicsStep(Gdx.graphics.getDeltaTime());
+
+        // Focus camera on player
+        camera.position.set(player.getPos().x, player.getPos().y, 0);
+
+        // tell the camera to update its matrices.
+        camera.update();
 
         // Render Box2D world
         debugRenderer.render(localGame.world, camera.combined);

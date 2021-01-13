@@ -16,7 +16,7 @@ public class TileMap {
      * TODO: use float values from noise.eval to generate minerals
      */
     public void generateNewMap() {
-        noise = new OpenSimplexNoise();
+        noise = new OpenSimplexNoise((long)(Math.random() * Long.MAX_VALUE));
         mapArr = new int[MAP_COLS][MAP_ROWS];
 
         float xoffset = 0f;
@@ -27,13 +27,16 @@ public class TileMap {
                 float value = (float)noise.eval(xoffset, yoffset); // eval returns a double from -1 to 1
                 mapArr[i][j] = (int)(Math.ceil(value));
                 yoffset += increment;
+
+                /*
                 if(mapArr[i][j] == 1){
                     System.out.print("#");
                 }
                 else System.out.print(".");
-                //System.out.print(mapArr[i][j]);
+                */
+                
             }
-            System.out.println();
+            //System.out.println();
         }
     }
 

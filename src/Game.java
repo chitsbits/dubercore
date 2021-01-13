@@ -51,6 +51,9 @@ public class Game {
       Box2D.init();
       world = new World(new Vector2(0, -20), true);
 
+      MyContactListener contactListener = new MyContactListener(this);
+      world.setContactListener(contactListener);
+
       // World edge
       Vector2 a = new Vector2(0, WORLD_HEIGHT);
       Vector2 b = new Vector2(WORLD_WIDTH, WORLD_HEIGHT);
@@ -125,6 +128,60 @@ public class Game {
          }
       }
 
+      makeCircleTest();
+
+      // Create our body definition
+      BodyDef groundBodyDef = new BodyDef();
+      // Set its world position
+      groundBodyDef.position.set(new Vector2(0, 10));
+
+      // Create a body from the definition and add it to the world
+      Body groundBody = world.createBody(groundBodyDef);
+
+      // Create a polygon shape
+      PolygonShape groundBox = new PolygonShape();
+      groundBox.setAsBox(24f, 5.0f);
+      // Create a fixture from our polygon shape and add it to our ground body
+      groundBody.createFixture(groundBox, 0.0f);
+      // Clean up after ourselves
+      groundBox.dispose();
+
+      player1 = new Player(world);
+
+   }
+
+   public void doPhysicsStep(float deltaTime) {
+      // fixed time step
+      // max frame time to avoid spiral of death (on slow devices)
+      float frameTime = Math.min(deltaTime, 0.25f);
+      accumulator += frameTime;
+      while (accumulator >= STEP_TIME) {
+         world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+         accumulator -= STEP_TIME;
+      }
+   }
+
+   private int getTileMarchCase(int a, int b, int c, int d) {
+      return a * 8 + b * 4 + c * 2 + d;
+   }
+
+   private void makeEdgeShape(Vector2 v1, Vector2 v2) {
+
+      EdgeShape edgeShape = new EdgeShape();
+      edgeShape.set(v1, v2);
+
+      BodyDef edgeDef = new BodyDef();
+      edgeDef.type = BodyType.StaticBody;
+
+      Body edgeBody = world.createBody(edgeDef);
+      Fixture edgeFixture = edgeBody.createFixture(edgeShape, 0.0f);
+      edgeFixture.setFriction(0.5f);
+
+      edgeShape.dispose();
+   }
+
+   public void makeCircleTest(){
+      
       // First we create a body definition
       BodyDef bodyDef = new BodyDef();
       // We set our body to dynamic, for something like ground which doesn't move we
@@ -153,61 +210,5 @@ public class Game {
       // Remember to dispose of any shapes after you're done with them!
       // BodyDef and FixtureDef don't need disposing, but shapes do.
       circle.dispose();
-
-      // Create our body definition
-      BodyDef groundBodyDef = new BodyDef();
-      // Set its world position
-      groundBodyDef.position.set(new Vector2(0, 10));
-
-      // Create a body from the definition and add it to the world
-      Body groundBody = world.createBody(groundBodyDef);
-
-      // Create a polygon shape
-      PolygonShape groundBox = new PolygonShape();
-      // Set the polygon shape as a box which is twice the size of our view port and
-      // 20 high
-      // (setAsBox takes half-width and half-height as arguments)
-      groundBox.setAsBox(24f, 5.0f);
-      // Create a fixture from our polygon shape and add it to our ground body
-      groundBody.createFixture(groundBox, 0.0f);
-      // Clean up after ourselves
-      groundBox.dispose();
-
-      player1 = new Player();
-      player1.body = world.createBody(player1.bodyDef);
-      PolygonShape playerShape = new PolygonShape();
-      playerShape.setAsBox(Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT);
-      player1.body.createFixture(playerShape, 0.0f);
-      playerShape.dispose();
-
-   }
-
-   public void doPhysicsStep(float deltaTime) {
-      // fixed time step
-      // max frame time to avoid spiral of death (on slow devices)
-      float frameTime = Math.min(deltaTime, 0.25f);
-      accumulator += frameTime;
-      while (accumulator >= STEP_TIME) {
-         world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-         accumulator -= STEP_TIME;
-      }
-   }
-
-   private int getTileMarchCase(int a, int b, int c, int d) {
-      return a * 8 + b * 4 + c * 2 + d;
-   }
-
-   private void makeEdgeShape(Vector2 v1, Vector2 v2) {
-
-      EdgeShape edgeShape = new EdgeShape();
-      edgeShape.set(v1, v2);
-
-      BodyDef edgeDef = new BodyDef();
-      edgeDef.type = BodyType.StaticBody;
-
-      Body edgeBody = world.createBody(edgeDef);
-
-      edgeBody.createFixture(edgeShape, 0.0f);
-      edgeShape.dispose();
    }
 }
