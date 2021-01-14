@@ -1,6 +1,8 @@
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,7 +22,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class GameClient extends ApplicationAdapter {
+public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     // Camera dimensions in metres. TODO: scale with monitor
     public static final float CAMERA_WIDTH = 32f;
@@ -45,6 +47,7 @@ public class GameClient extends ApplicationAdapter {
         //camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
+        Gdx.input.setInputProcessor(this);
     }
 
     public void render() {
@@ -57,17 +60,17 @@ public class GameClient extends ApplicationAdapter {
 
         // Player input
         // apply left impulse, but only if max velocity is not reached yet
-        if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY) {			
+        if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {			
             player.moveLeft();
         }
 
         // apply right impulse, but only if max velocity is not reached yet
-        if (Gdx.input.isKeyPressed(Keys.D) && player.getVel().x < Player.MAX_VELOCITY) {
+        if (Gdx.input.isKeyPressed(Keys.D) && player.getVel().x < Player.MAX_VELOCITY && player.canMove) {
             player.moveRight();
         }
 
         // apply right impulse, but only if max velocity is not reached yet
-        if (Gdx.input.isKeyPressed(Keys.W) && player.canJump) {
+        if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0) {
             player.jump();
         }
         
@@ -89,6 +92,62 @@ public class GameClient extends ApplicationAdapter {
 
     public void resize(int width, int height) {
 
+    }
+    
+    // TODO: move all actual logic to game class, so that only inputs are sent to server
+
+    @Override
+    public boolean keyDown(int keycode) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(button == Input.Buttons.RIGHT){
+            Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
+            System.out.println("x: " + mousePos.x + " y: " + mousePos.y);
+            player.shootGrapple(localGame.world, mousePos);
+            return true;
+            
+        }
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        player.retractGrapple(localGame.world);
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

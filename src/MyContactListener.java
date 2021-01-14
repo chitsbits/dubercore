@@ -13,24 +13,29 @@ public class MyContactListener implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
-        if(contact.getFixtureA().getUserData() instanceof Player){
-            game.player1.canJump = false;
-        }
-        else if (contact.getFixtureB().getUserData() instanceof Player) {
-            game.player1.canJump = false;
+        // Can jump flag for player 1
+        if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player) {
+            game.player1.collidingCount -= 1;
         }
     }
 
     @Override
     public void beginContact(Contact contact) {
 
-        if(contact.getFixtureA().getUserData() instanceof Player){
-            game.player1.canJump = true;
+        if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player){
+            game.player1.collidingCount += 1;
         }
-        else if (contact.getFixtureB().getUserData() instanceof Player) {
-            game.player1.canJump = true;
+        // Grappling hook
+        else if (contact.getFixtureA().getUserData() instanceof GrapplingHook){
+            contact.getFixtureA().getBody().setLinearVelocity(0,0);
+            GrapplingHook hook = (GrapplingHook)(contact.getFixtureA().getUserData());
+            hook.player.followGrapple();
         }
-
+        else if(contact.getFixtureB().getUserData() instanceof GrapplingHook) {
+            contact.getFixtureB().getBody().setLinearVelocity(0,0);
+            GrapplingHook hook = (GrapplingHook)(contact.getFixtureB().getUserData());
+            hook.player.followGrapple();
+        }
     }
 
     @Override

@@ -34,6 +34,15 @@ public class Game {
    public static final float WORLD_WIDTH = 240f;
    public static final float WORLD_HEIGHT = 135f;
 
+   // Bit flags for collision categories
+   public static final short TERRAIN      = 0x0002;
+   public static final short PLAYER       = 0x0004;
+   public static final short ENEMY        = 0x0008;
+   public static final short GRENADE      = 0x0010;
+   public static final short GRAPPLE      = 0x0020;
+   public static final short PROJECTILE   = 0x0040;
+   public static final short SENSOR       = 0x0080;
+
    private float accumulator = 0;
 
    public World world;
@@ -130,22 +139,7 @@ public class Game {
 
       makeCircleTest();
 
-      // Create our body definition
-      BodyDef groundBodyDef = new BodyDef();
-      // Set its world position
-      groundBodyDef.position.set(new Vector2(0, 10));
-
-      // Create a body from the definition and add it to the world
-      Body groundBody = world.createBody(groundBodyDef);
-
-      // Create a polygon shape
-      PolygonShape groundBox = new PolygonShape();
-      groundBox.setAsBox(24f, 5.0f);
-      // Create a fixture from our polygon shape and add it to our ground body
-      groundBody.createFixture(groundBox, 0.0f);
-      // Clean up after ourselves
-      groundBox.dispose();
-
+      // Create player
       player1 = new Player(world);
 
    }
@@ -174,8 +168,13 @@ public class Game {
       edgeDef.type = BodyType.StaticBody;
 
       Body edgeBody = world.createBody(edgeDef);
-      Fixture edgeFixture = edgeBody.createFixture(edgeShape, 0.0f);
-      edgeFixture.setFriction(0.5f);
+
+      FixtureDef edgeFixtureDef = new FixtureDef();
+      edgeFixtureDef.shape = edgeShape;
+      edgeFixtureDef.filter.categoryBits = Game.TERRAIN;
+      edgeFixtureDef.filter.maskBits = Game.PLAYER | Game.ENEMY | Game.PROJECTILE | Game.GRAPPLE | Game.SENSOR;
+      edgeFixtureDef.friction = 0.5f;
+      edgeBody.createFixture(edgeFixtureDef);
 
       edgeShape.dispose();
    }
@@ -202,6 +201,8 @@ public class Game {
       fixtureDef.shape = circle;
       fixtureDef.density = 0.5f;
       fixtureDef.friction = 0.4f;
+      fixtureDef.filter.categoryBits = Game.PLAYER;
+      fixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE;
       fixtureDef.restitution = 0.6f; // Make it bounce a little bit
 
       // Create our fixture and attach it to the body
