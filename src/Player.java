@@ -1,3 +1,5 @@
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -19,6 +21,8 @@ public class Player extends Entity {
     public static final float X_SPEED = 5;
     public static final float JUMP_SPEED = 10;
     public static final float MAX_VELOCITY = 10f;
+
+    Sprite playerSprite;
 
     public int collidingCount;
     public boolean canJump;
@@ -70,6 +74,12 @@ public class Player extends Entity {
         body.createFixture(bodyFixtureDef);
         body.setFixedRotation(true);
 
+        
+        playerSprite = new Sprite(new Texture("assets\\playerspriteplaceholder.png"));
+        playerSprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
+        playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
+        body.setUserData(playerSprite);
+
         // Feet shape definition
         PolygonShape feetShape = new PolygonShape();
         Vector2 feetCenter = new Vector2();
@@ -90,6 +100,7 @@ public class Player extends Entity {
 
         entityShape.dispose();
         feetShape.dispose();
+        //playerSprite.getTexture().dispose();
         
     }
 
