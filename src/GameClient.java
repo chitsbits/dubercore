@@ -1,4 +1,3 @@
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -6,7 +5,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -33,6 +35,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     SpriteBatch batch;
     Viewport viewport;
     Player player;
+    Array<Body> tempBodies = new Array<Body>();
 
     Box2DDebugRenderer debugRenderer;
 
@@ -40,6 +43,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         localGame = new Game();
         player = localGame.player1;
+        batch = new SpriteBatch();
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         // viewport = new FitViewport(800, 480, camera);
@@ -85,6 +89,21 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         // tell the camera to update its matrices.
         camera.update();
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        localGame.world.getBodies(tempBodies);
+        for(Body body : tempBodies){
+            if (body.getUserData() != null&& body.getUserData() instanceof Sprite) {
+                Sprite sprite = (Sprite) body.getUserData();
+                sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
+                sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+                sprite.draw(batch);
+            }
+        }
+        // player.playerSprite.setPosition(player.body.getPosition().x, player.body.getPosition().y);
+        // player.playerSprite.draw(batch);
+        batch.end();
 
         // Render Box2D world
         debugRenderer.render(localGame.world, camera.combined);
