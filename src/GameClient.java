@@ -48,6 +48,8 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         debugRenderer = new Box2DDebugRenderer();
         Gdx.input.setInputProcessor(this);
+
+        System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
     }
 
     public void render() {
@@ -128,7 +130,10 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        player.retractGrapple(localGame.world);
+        if(button == Input.Buttons.RIGHT){
+            player.retractGrapple(localGame.world);
+            return true;
+        }
         return false;
     }
 

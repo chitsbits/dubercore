@@ -76,17 +76,17 @@ public class Game {
 
       // Initialize map
       tileMap = new TileMap();
-      int[][] mapArr = tileMap.mapArr;
-      for (int i = 0; i < TileMap.MAP_COLS - 1; i++) {
-         for (int j = 0; j < TileMap.MAP_ROWS - 1; j++) {
+      int[][] cornerArr = tileMap.cornerArr;
+      for (int i = 0; i < TileMap.MAP_COLS; i++) {
+         for (int j = 0; j < TileMap.MAP_ROWS; j++) {
             // Marching square edges
             a = new Vector2((float) (i + 0.5), (float) (j));
             b = new Vector2((float) (i + 1), (float) (j + 0.5));
             c = new Vector2((float) (i + 0.5), (float) (j + 1));
             d = new Vector2((float) (i), (float) (j + 0.5));
 
-            // Which contour
-            int tileCase = getTileMarchCase(mapArr[i][j], mapArr[i+1][j], mapArr[i+1][j+1], mapArr[i][j+1]);
+            // Which contour - determined by the 4 corners of the tile
+            int tileCase = getTileMarchCase(cornerArr[i][j], cornerArr[i+1][j], cornerArr[i+1][j+1], cornerArr[i][j+1]);
 
             switch (tileCase) {
                case 1:
@@ -134,6 +134,8 @@ public class Game {
                   makeEdgeShape(c, d);
                   break;
             }
+
+            // do sprite stuff on tile
          }
       }
 
