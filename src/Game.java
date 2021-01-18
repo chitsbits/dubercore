@@ -52,6 +52,7 @@ public class Game {
    public ArrayList<Body> bodyDeletionList;
 
    public Player player1;
+   public GruntEnemy testDummy;
 
    public Game() {
       initialize();
@@ -147,6 +148,7 @@ public class Game {
 
       // Create player
       player1 = new Player(this);
+      testDummy = new GruntEnemy(this);
 
    }
 

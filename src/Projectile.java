@@ -11,10 +11,14 @@ public abstract class Projectile extends Entity {
 
     Vector2 velocity;
     World world;
-    private double damage;
+    private float damage;
 
-    public double getDamage(){
+    public float getDamage(){
         return damage;
+    }
+
+    public void setDamage(float damage){
+        this.damage = damage;
     }
 
 }

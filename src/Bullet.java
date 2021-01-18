@@ -12,6 +12,7 @@ public class Bullet extends Projectile {
     Bullet(World world, float damage, Player player){
         this.player = player;
         this.world = world;
+        this.setDamage(damage);
 
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
@@ -26,7 +27,7 @@ public class Bullet extends Projectile {
         FixtureDef bulletFixtureDef = new FixtureDef();
         bulletFixtureDef.shape = entityShape;
         bulletFixtureDef.filter.categoryBits = Game.PROJECTILE;
-        bulletFixtureDef.filter.maskBits = Game.TERRAIN;
+        bulletFixtureDef.filter.maskBits = Game.TERRAIN | Game.ENEMY;
         bulletFixtureDef.friction = 1f;
 
         Fixture bulletFixture = body.createFixture(bulletFixtureDef);
@@ -35,5 +36,5 @@ public class Bullet extends Projectile {
 
 
     }
-    
+
 }

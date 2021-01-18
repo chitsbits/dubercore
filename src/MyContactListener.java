@@ -40,6 +40,46 @@ public class MyContactListener implements ContactListener {
             System.out.println("grappled");
         }
         // Bullets
+
+        else if (contact.getFixtureA().getUserData() instanceof Bullet && contact.getFixtureB().getUserData() instanceof Enemy){
+            Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
+            System.out.println("enemy hit");
+            if (!game.bodyDeletionList.contains(bullet.body)){
+                game.bodyDeletionList.add(bullet.body);
+            }
+
+            Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
+            enemy.setHp(enemy.getHp() - bullet.getDamage());
+
+            if (enemy.getHp() <= 0){
+                System.out.println("enemy killed");
+                if (!game.bodyDeletionList.contains(enemy.body)){
+                    game.bodyDeletionList.add(enemy.body);
+                }
+            }
+
+        }
+
+        
+        else if (contact.getFixtureB().getUserData() instanceof Bullet && contact.getFixtureA().getUserData() instanceof Enemy){
+            Bullet bullet = (Bullet)(contact.getFixtureB().getUserData());
+            System.out.println("enemy hit");
+            if (!game.bodyDeletionList.contains(bullet.body)){
+                game.bodyDeletionList.add(bullet.body);
+            }
+
+            Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
+            enemy.setHp(enemy.getHp() - bullet.getDamage());
+
+            if (enemy.getHp() <= 0){
+                System.out.println("enemy killed");
+                if (!game.bodyDeletionList.contains(enemy.body)){
+                    game.bodyDeletionList.add(enemy.body);
+                }
+            }
+
+        }
+
         else if (contact.getFixtureA().getUserData() instanceof Bullet){
             Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
             System.out.println("hit");
