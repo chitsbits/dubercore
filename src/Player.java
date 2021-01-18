@@ -28,13 +28,17 @@ public class Player extends Entity {
     public boolean canJump;
     public boolean canMove;
     private GrapplingHook grapple;
-    Vector2 grappleDirection;
+    private Weapon weapon;
+    private Vector2 grappleDirection;
+
     
-    public Player(World world){
+    public Player(Game game){
 
         collidingCount = 0;
         canJump = false;
         canMove = true;
+        //adding a default weapon
+        weapon = new Pistol(this);
 
         // Body definition
         bodyDef = new BodyDef();
@@ -63,7 +67,7 @@ public class Player extends Entity {
         //((PolygonShape)entityShape).setAsBox(PLAYER_WIDTH, PLAYER_HEIGHT);
         ((PolygonShape)entityShape).set(vertices);
         // Create body
-        body = world.createBody(bodyDef);
+        body = game.world.createBody(bodyDef);
 
         // Add main body fixture
         FixtureDef bodyFixtureDef = new FixtureDef();
@@ -74,7 +78,7 @@ public class Player extends Entity {
         body.createFixture(bodyFixtureDef);
         body.setFixedRotation(true);
 
-        
+        //adding a sprite to the box2d player object
         playerSprite = new Sprite(new Texture("assets\\playerspriteplaceholder.png"));
         playerSprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
         playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
@@ -104,19 +108,21 @@ public class Player extends Entity {
         
     }
 
-    public void shootGrapple(World world, Vector3 mousePos) {
+    public void shootGrapple(Game game, Vector3 mousePos) {
 
-        grapple = new GrapplingHook(world, this);
+        grapple = new GrapplingHook(game.world, this);
         
         grappleDirection = new Vector2();
         grappleDirection.x = mousePos.x - getPos().x;
         grappleDirection.y = mousePos.y - getPos().y;
         grappleDirection.clamp(40f, 40f);
         grapple.body.setLinearVelocity(grappleDirection);
+        System.out.println("grappling");
+        
     }   
 
-    public void retractGrapple(World world) {
-        world.destroyBody(grapple.body);
+    public void retractGrapple(Game game) {
+        game.bodyDeletionList.add(grapple.body);
         body.setGravityScale(1);
         canMove = true;
     }
@@ -143,5 +149,9 @@ public class Player extends Entity {
 
     public void jump() {
         body.setLinearVelocity(getVel().x, 10);
+    }
+
+    public Weapon getWeapon(){
+        return this.weapon;
     }
 }

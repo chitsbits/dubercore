@@ -63,7 +63,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // of the color to be used to clear the screen.
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        
         // Player input
         // apply left impulse, but only if max velocity is not reached yet
         if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {			
@@ -85,6 +85,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         // Step physics world
         localGame.doPhysicsStep(Gdx.graphics.getDeltaTime());
+
 
         // Focus camera on player
         camera.position.set(player.getPos().x, player.getPos().y, 0);
@@ -109,6 +110,18 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         // Render Box2D world
         debugRenderer.render(localGame.world, camera.combined);
+
+        
+        if(!localGame.bodyDeletionList.isEmpty()){
+
+            for (Body body : localGame.bodyDeletionList) {
+            body.setActive(false);
+            localGame.world.destroyBody(body);
+            System.out.println("removed");
+            }
+        localGame.bodyDeletionList.clear();
+
+        }
     }
 
     public void resize(int width, int height) {
@@ -139,10 +152,17 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if(button == Input.Buttons.RIGHT){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
-            System.out.println("x: " + mousePos.x + " y: " + mousePos.y);
-            player.shootGrapple(localGame.world, mousePos);
+            //System.out.println("x: " + mousePos.x + " y: " + mousePos.y);
+            player.shootGrapple(localGame, mousePos);
             return true;
             
+        }
+
+        else if(button == Input.Buttons.LEFT){
+            Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
+            player.getWeapon().fire(localGame, mousePos);
+            //System.out.println("and i fired");
+            return true;
         }
         return false;
     }
@@ -150,7 +170,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if(button == Input.Buttons.RIGHT){
-            player.retractGrapple(localGame.world);
+            player.retractGrapple(localGame);
             return true;
         }
         return false;

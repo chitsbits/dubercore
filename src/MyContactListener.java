@@ -1,3 +1,4 @@
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -30,11 +31,28 @@ public class MyContactListener implements ContactListener {
             contact.getFixtureA().getBody().setLinearVelocity(0,0);
             GrapplingHook hook = (GrapplingHook)(contact.getFixtureA().getUserData());
             hook.player.followGrapple();
+            System.out.println("grappled");
         }
         else if(contact.getFixtureB().getUserData() instanceof GrapplingHook) {
             contact.getFixtureB().getBody().setLinearVelocity(0,0);
             GrapplingHook hook = (GrapplingHook)(contact.getFixtureB().getUserData());
             hook.player.followGrapple();
+            System.out.println("grappled");
+        }
+        // Bullets
+        else if (contact.getFixtureA().getUserData() instanceof Bullet){
+            Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
+            System.out.println("hit");
+            //System.out.println(contact.getFixtureB().getUserData());
+            game.bodyDeletionList.add(bullet.body);
+
+        }
+        
+        else if (contact.getFixtureB().getUserData() instanceof Bullet){
+            Bullet bullet = (Bullet)(contact.getFixtureB().getUserData());
+            System.out.println("hit");
+            //System.out.println(contact.getFixtureA().getUserData());
+            game.bodyDeletionList.add(bullet.body);
         }
     }
 

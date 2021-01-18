@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -47,6 +48,8 @@ public class Game {
 
    public World world;
    public TileMap tileMap;
+   //public ArrayList<Entity> entityList;
+   public ArrayList<Body> bodyDeletionList;
 
    public Player player1;
 
@@ -59,6 +62,7 @@ public class Game {
       // Initialize Box2d World
       Box2D.init();
       world = new World(new Vector2(0, -20), true);
+      bodyDeletionList = new ArrayList<Body>();
 
       MyContactListener contactListener = new MyContactListener(this);
       world.setContactListener(contactListener);
@@ -142,7 +146,7 @@ public class Game {
       makeCircleTest();
 
       // Create player
-      player1 = new Player(world);
+      player1 = new Player(this);
 
    }
 
