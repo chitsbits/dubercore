@@ -111,17 +111,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // Render Box2D world
         debugRenderer.render(localGame.world, camera.combined);
 
-        
-        if(!localGame.bodyDeletionList.isEmpty()){
-
-            for (Body body : localGame.bodyDeletionList) {
-            body.setActive(false);
-            localGame.world.destroyBody(body);
-            System.out.println("removed");
-            }
-        localGame.bodyDeletionList.clear();
-
-        }
     }
 
     public void resize(int width, int height) {

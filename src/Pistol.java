@@ -15,7 +15,7 @@ public class Pistol extends Weapon {
     Pistol(Player player) {
         super(player);
         weaponType = "Pistol";
-        damage = 1.0;
+        damage = 1f;
         c = 0;
         
 

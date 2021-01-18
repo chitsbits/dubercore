@@ -9,7 +9,7 @@ public class Bullet extends Projectile {
 
     Player player;
 
-    Bullet(World world, double damage, Player player){
+    Bullet(World world, float damage, Player player){
         this.player = player;
         this.world = world;
 

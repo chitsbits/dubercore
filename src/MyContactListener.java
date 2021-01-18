@@ -44,7 +44,10 @@ public class MyContactListener implements ContactListener {
             Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
             System.out.println("hit");
             //System.out.println(contact.getFixtureB().getUserData());
-            game.bodyDeletionList.add(bullet.body);
+            if (!game.bodyDeletionList.contains(bullet.body)){
+                game.bodyDeletionList.add(bullet.body);
+            }
+            
 
         }
         
@@ -52,7 +55,9 @@ public class MyContactListener implements ContactListener {
             Bullet bullet = (Bullet)(contact.getFixtureB().getUserData());
             System.out.println("hit");
             //System.out.println(contact.getFixtureA().getUserData());
-            game.bodyDeletionList.add(bullet.body);
+            if (!game.bodyDeletionList.contains(bullet.body)){
+                game.bodyDeletionList.add(bullet.body);
+            }
         }
     }
 

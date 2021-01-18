@@ -157,6 +157,17 @@ public class Game {
       accumulator += frameTime;
       while (accumulator >= STEP_TIME) {
          world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+
+         if(!this.bodyDeletionList.isEmpty()){
+
+            for (Body body : this.bodyDeletionList) {
+            body.setActive(false);
+            this.world.destroyBody(body);
+            System.out.println("removed");
+            }
+        this.bodyDeletionList.clear();
+        }
+
          accumulator -= STEP_TIME;
       }
    }

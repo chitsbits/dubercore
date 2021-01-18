@@ -13,7 +13,7 @@ public abstract class Weapon {
     Sprite sprite;
     String weaponType;
     Player player;
-    double damage;
+    float damage;
     Vector2 bulletDirection;
 
     Weapon(Player player){
