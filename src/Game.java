@@ -42,6 +42,7 @@ public class Game {
    public static final short GRAPPLE      = 0x0020;
    public static final short PROJECTILE   = 0x0040;
    public static final short SENSOR       = 0x0080;
+   public static final short DESTRUCTION  = 0x0100;
 
    private float accumulator = 0;
 
@@ -63,86 +64,27 @@ public class Game {
       MyContactListener contactListener = new MyContactListener(this);
       world.setContactListener(contactListener);
 
-      // World edge
-      Vector2 a = new Vector2(0, WORLD_HEIGHT);
-      Vector2 b = new Vector2(WORLD_WIDTH, WORLD_HEIGHT);
-      Vector2 c = new Vector2(WORLD_WIDTH, 0);
-      Vector2 d = new Vector2(0, 0);
-
-      makeEdgeShape(a, b);
-      makeEdgeShape(b, c);
-      makeEdgeShape(c, d);
-      makeEdgeShape(d, a);
-
-      // Initialize map
-      tileMap = new TileMap();
-      int[][] cornerArr = tileMap.cornerArr;
-      for (int i = 0; i < TileMap.MAP_COLS; i++) {
-         for (int j = 0; j < TileMap.MAP_ROWS; j++) {
-            // Marching square edges
-            a = new Vector2((float) (i + 0.5), (float) (j));
-            b = new Vector2((float) (i + 1), (float) (j + 0.5));
-            c = new Vector2((float) (i + 0.5), (float) (j + 1));
-            d = new Vector2((float) (i), (float) (j + 0.5));
-
-            // Which contour - determined by the 4 corners of the tile
-            int tileCase = getTileMarchCase(cornerArr[i][j], cornerArr[i+1][j], cornerArr[i+1][j+1], cornerArr[i][j+1]);
-
-            switch (tileCase) {
-               case 1:
-                  makeEdgeShape(c, d);
-                  break;
-               case 2:
-                  makeEdgeShape(b, c);
-                  break;
-               case 3:
-                  makeEdgeShape(b, d);
-                  break;
-               case 4:
-                  makeEdgeShape(a, b);
-                  break;
-               case 5:
-                  makeEdgeShape(a, d);
-                  makeEdgeShape(b, c);
-                  break;
-               case 6:
-                  makeEdgeShape(a, c);
-                  break;
-               case 7:
-                  makeEdgeShape(a, d);
-                  break;
-               case 8:
-                  makeEdgeShape(a, d);
-                  break;
-               case 9:
-                  makeEdgeShape(a, c);
-                  break;
-               case 10:
-                  makeEdgeShape(a, b);
-                  makeEdgeShape(c, d);
-                  break;
-               case 11:
-                  makeEdgeShape(a, b);
-                  break;
-               case 12:
-                  makeEdgeShape(b, d);
-                  break;
-               case 13:
-                  makeEdgeShape(b, c);
-                  break;
-               case 14:
-                  makeEdgeShape(c, d);
-                  break;
-            }
-
-            // do sprite stuff on tile
-         }
-      }
+      tileMap = new TileMap(world);
 
       makeCircleTest();
 
       // Create player
-      player1 = new Player(world);
+      BodyDef player1BodyDef = new BodyDef();
+      /* boolean validSpawn = false;
+      do {
+         int x = (int)(Math.random() * (WORLD_WIDTH - 1));
+         int y = (int)(Math.random() * (WORLD_HEIGHT - 1));
+
+         int i = x / 2;
+         int j = TileMap.MAP_ROWS - y / 2;
+         if(tileMap.terrainArr[i][j] instanceof Air) {
+            player1BodyDef.position.set(x, y);
+            validSpawn = true;
+         }
+      }
+      while(!validSpawn); */
+      player1BodyDef.position.set(2, 2);
+      player1 = new Player(world, player1BodyDef);
 
    }
 
@@ -157,28 +99,10 @@ public class Game {
       }
    }
 
-   private int getTileMarchCase(int a, int b, int c, int d) {
-      return a * 8 + b * 4 + c * 2 + d;
-   }
-
-   private void makeEdgeShape(Vector2 v1, Vector2 v2) {
-
-      EdgeShape edgeShape = new EdgeShape();
-      edgeShape.set(v1, v2);
-
-      BodyDef edgeDef = new BodyDef();
-      edgeDef.type = BodyType.StaticBody;
-
-      Body edgeBody = world.createBody(edgeDef);
-
-      FixtureDef edgeFixtureDef = new FixtureDef();
-      edgeFixtureDef.shape = edgeShape;
-      edgeFixtureDef.filter.categoryBits = Game.TERRAIN;
-      edgeFixtureDef.filter.maskBits = Game.PLAYER | Game.ENEMY | Game.PROJECTILE | Game.GRAPPLE | Game.SENSOR;
-      edgeFixtureDef.friction = 0.5f;
-      edgeBody.createFixture(edgeFixtureDef);
-
-      edgeShape.dispose();
+   public void destroyTerrain(Vector2 breakPoint){
+      // Convert breakpoint to tilemap coords
+      Vector2 tileMapBreakPoint = new Vector2(breakPoint.x / 2f, TileMap.MAP_ROWS - breakPoint.y / 2f);
+      tileMap.clearTile(tileMapBreakPoint);
    }
 
    public void makeCircleTest(){

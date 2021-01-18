@@ -3,10 +3,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -38,7 +42,15 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     Array<Body> tempBodies = new Array<Body>();
 
     Box2DDebugRenderer debugRenderer;
+    ShapeRenderer sr;
+    Vector2 tempMouseVector = new Vector2(0, 0);
 
+    boolean mapNeedsRerender;
+
+    private Texture textureStone;
+    private Texture textureAir;
+
+    @Override
     public void create() {
 
         localGame = new Game();
@@ -51,11 +63,17 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         //camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
+        sr = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
+
+        mapNeedsRerender = true;
+        textureStone = new Texture("assets\\stone.png");
+        textureAir = new Texture("assets\\air.png");
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
     }
 
+    @Override
     public void render() {
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
@@ -96,7 +114,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         batch.begin();
         localGame.world.getBodies(tempBodies);
         for(Body body : tempBodies){
-            if (body.getUserData() != null&& body.getUserData() instanceof Sprite) {
+            if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
                 Sprite sprite = (Sprite) body.getUserData();
                 sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
                 sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
@@ -105,51 +123,90 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         }
         // player.playerSprite.setPosition(player.body.getPosition().x, player.body.getPosition().y);
         // player.playerSprite.draw(batch);
+        if(mapNeedsRerender){
+            Terrain[][] terrainArr = localGame.tileMap.terrainArr;
+            for(int i = 0; i < TileMap.MAP_COLS; i++){
+                for(int j = 0; j < TileMap.MAP_ROWS; j++){
+                    Terrain tile = terrainArr[i][j];
+                    if(tile instanceof Stone && tile.body != null) {
+                        batch.draw(textureStone, tile.worldX, tile.worldY, 0.5f, 0.5f);
+                    }
+                }
+            }
+        }
         batch.end();
 
         // Render Box2D world
         debugRenderer.render(localGame.world, camera.combined);
+        // Render test mouse line
+        sr.setProjectionMatrix(camera.combined);
+        sr.begin(ShapeType.Line);
+        sr.line(player.getPos(), tempMouseVector);
+        sr.end();
+
+        sr.begin(ShapeType.Filled);
+        sr.circle(player.getPos().x, player.getPos().y, 0.2f);
+        sr.end();
+        
     }
 
+    @Override
     public void resize(int width, int height) {
 
+    }
+
+    @Override
+    public void dispose(){
+        localGame.world.dispose();
+        debugRenderer.dispose();
+        sr.dispose();
     }
     
     // TODO: move all actual logic to game class, so that only inputs are sent to server
 
     @Override
     public boolean keyDown(int keycode) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean keyTyped(char character) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(button == Input.Buttons.RIGHT){
+        // Grapple
+        if (button == Input.Buttons.LEFT){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
-            System.out.println("x: " + mousePos.x + " y: " + mousePos.y);
             player.shootGrapple(localGame.world, mousePos);
+            return true; 
+        }
+        // Pickaxe
+        else if (button == Input.Buttons.RIGHT) {
+            Vector3 mouseWorldPos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
+            Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
+            Vector2 breakPoint = new Vector2(player.getPos().x + pickaxeDirection.x, player.getPos().y + pickaxeDirection.y);
+
+            PickaxeRayCastCallback callback = new PickaxeRayCastCallback();
+            localGame.world.rayCast(callback, player.getPos(), breakPoint);
+            if (callback.collisionPoint != null) {
+                localGame.destroyTerrain(callback.collisionPoint);
+                tempMouseVector = callback.collisionPoint;
+            }
             return true;
-            
         }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if(button == Input.Buttons.RIGHT){
+        if(button == Input.Buttons.LEFT){
             player.retractGrapple(localGame.world);
             return true;
         }
@@ -158,19 +215,16 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        // TODO Auto-generated method stub
         return false;
     }
 

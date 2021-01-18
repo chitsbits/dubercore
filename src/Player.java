@@ -3,6 +3,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -29,17 +30,17 @@ public class Player extends Entity {
     public boolean canMove;
     private GrapplingHook grapple;
     Vector2 grappleDirection;
+    Vector3 pickaxeDirection;
     
-    public Player(World world){
+    public Player(World world, BodyDef bodyDef){
 
         collidingCount = 0;
         canJump = false;
         canMove = true;
 
         // Body definition
-        bodyDef = new BodyDef();
+        this.bodyDef = bodyDef;
         bodyDef.type = BodyType.DynamicBody;
-        bodyDef.position.set(10,24);
 
         // Shape definition
         entityShape = new PolygonShape();
@@ -52,15 +53,6 @@ public class Player extends Entity {
         vertices[4] = new Vector2(PLAYER_WIDTH - 0.2f, -PLAYER_HEIGHT);
         vertices[5] = new Vector2(PLAYER_WIDTH, -PLAYER_HEIGHT + 0.2f);
 
-        /*
-        vertices[0] = new Vector2(0 + 0.05f, 0);
-        vertices[1] = new Vector2(PLAYER_WIDTH*2 - 0.05f, 0);
-        vertices[2] = new Vector2(PLAYER_WIDTH*2, 0.05f);
-        vertices[3] = new Vector2(PLAYER_WIDTH*2, PLAYER_HEIGHT*2);
-        vertices[4] = new Vector2(0, PLAYER_HEIGHT*2);
-        vertices[5] = new Vector2(0, 0.05f);
-        */
-        //((PolygonShape)entityShape).setAsBox(PLAYER_WIDTH, PLAYER_HEIGHT);
         ((PolygonShape)entityShape).set(vertices);
         // Create body
         body = world.createBody(bodyDef);
@@ -113,7 +105,7 @@ public class Player extends Entity {
         grappleDirection.y = mousePos.y - getPos().y;
         grappleDirection.clamp(40f, 40f);
         grapple.body.setLinearVelocity(grappleDirection);
-    }   
+    }
 
     public void retractGrapple(World world) {
         world.destroyBody(grapple.body);
