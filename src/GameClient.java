@@ -46,12 +46,19 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     Vector2 tempMouseVector = new Vector2(0, 0);
 
     boolean mapNeedsRerender;
+    boolean useDebugCamera = false;
 
-    private Texture textureStone;
-    private Texture textureAir;
+    public static Texture[] stoneTextures;
+    public static Texture textureAir;
 
     @Override
     public void create() {
+
+        stoneTextures = new Texture[15];
+        for(int i = 0; i < stoneTextures.length; i++){
+            stoneTextures[i] = new Texture("assets\\stone" + (i+1) + ".png");
+        }
+        textureAir = new Texture("assets\\air.png");
 
         localGame = new Game();
         player = localGame.player1;
@@ -59,16 +66,18 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         // viewport = new FitViewport(800, 480, camera);
+
+        if(useDebugCamera)
+        camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
+        else
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
-        //camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
+        
 
         debugRenderer = new Box2DDebugRenderer();
         sr = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
 
         mapNeedsRerender = true;
-        textureStone = new Texture("assets\\stone.png");
-        textureAir = new Texture("assets\\air.png");
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
     }
@@ -79,7 +88,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // arguments to glClearColor are the red, green
         // blue and alpha component in the range [0,1]
         // of the color to be used to clear the screen.
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Player input
@@ -105,6 +114,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         localGame.doPhysicsStep(Gdx.graphics.getDeltaTime());
 
         // Focus camera on player
+        if(!useDebugCamera)
         camera.position.set(player.getPos().x, player.getPos().y, 0);
 
         // tell the camera to update its matrices.
@@ -117,20 +127,33 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
                 Sprite sprite = (Sprite) body.getUserData();
                 sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
-                sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
                 sprite.draw(batch);
             }
         }
-        // player.playerSprite.setPosition(player.body.getPosition().x, player.body.getPosition().y);
-        // player.playerSprite.draw(batch);
         if(mapNeedsRerender){
             Terrain[][] terrainArr = localGame.tileMap.terrainArr;
-            for(int i = 0; i < TileMap.MAP_COLS; i++){
-                for(int j = 0; j < TileMap.MAP_ROWS; j++){
+
+            // Set bounds of the map to render
+            /* int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
+            int jStart = (int)(Math.max(0f, (camera.position.y + camera.viewportHeight / 2f) * 2));
+
+            int iEnd = (int)(Math.min(TileMap.MAP_COLS-1, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
+            int jEnd = (int)(Math.min(TileMap.MAP_ROWS-1, (camera.position.y + camera.viewportHeight / 2f) * 2)); */
+
+            int iStart = (int)(Math.max(0f, (player.body.getPosition().x - CAMERA_WIDTH / 2f) * 2));
+            int jStart = (int)(Math.max(0f, (player.body.getPosition().y - CAMERA_HEIGHT / 2f) * 2));
+
+            int iEnd = (int)(Math.min(TileMap.MAP_COLS-1, (player.body.getPosition().x + CAMERA_WIDTH / 2f) * 2 + 1));
+            int jEnd = (int)(Math.min(TileMap.MAP_ROWS-1, (player.body.getPosition().y + CAMERA_HEIGHT / 2f) * 2) + 1);
+            System.out.println(jStart + " " + jEnd);
+
+            for(int i = iStart; i < iEnd; i++){
+                for(int j = jStart; j < jEnd; j++){
                     Terrain tile = terrainArr[i][j];
-                    if(tile instanceof Stone && tile.body != null) {
-                        batch.draw(textureStone, tile.worldX, tile.worldY, 0.5f, 0.5f);
-                    }
+                    Sprite sprite = tile.sprite;
+                    sprite.flip(false, !sprite.isFlipY());
+                    sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
+                    sprite.draw(batch);
                 }
             }
         }

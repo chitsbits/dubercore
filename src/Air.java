@@ -5,8 +5,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 
 public class Air extends Terrain {
 
-    public Air(float x, float y){
-        super(x,y);
+    public Air(int tileCase, float x, float y){
+        super(tileCase, x,y);
+        this.sprite = new Sprite(GameClient.textureAir);
     }
     
 }

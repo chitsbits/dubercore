@@ -70,20 +70,19 @@ public class Game {
 
       // Create player
       BodyDef player1BodyDef = new BodyDef();
-      /* boolean validSpawn = false;
+      boolean validSpawn = false;
       do {
          int x = (int)(Math.random() * (WORLD_WIDTH - 1));
          int y = (int)(Math.random() * (WORLD_HEIGHT - 1));
 
          int i = x / 2;
-         int j = TileMap.MAP_ROWS - y / 2;
+         int j = TileMap.MAP_ROWS-1 - y / 2;
          if(tileMap.terrainArr[i][j] instanceof Air) {
             player1BodyDef.position.set(x, y);
             validSpawn = true;
          }
       }
-      while(!validSpawn); */
-      player1BodyDef.position.set(2, 2);
+      while(!validSpawn);
       player1 = new Player(world, player1BodyDef);
 
    }

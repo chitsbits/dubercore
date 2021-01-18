@@ -7,8 +7,10 @@ public abstract class Terrain {
     float worldY;
     Body body;
     Sprite sprite;
+    int marchingSquaresCase;
 
-    public Terrain(float x, float y){
+    public Terrain(int tileCase, float x, float y){
+        this.marchingSquaresCase = tileCase;
         this.worldX = x;
         this.worldY = y;
     }

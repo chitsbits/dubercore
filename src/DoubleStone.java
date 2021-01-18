@@ -1,3 +1,4 @@
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
@@ -8,9 +9,10 @@ public class DoubleStone extends Stone {
 
     Body body2;
     
-    public DoubleStone(float x, float y, Body body1, Body body2){
-        super(x,y);
+    public DoubleStone(int tileCase, float x, float y, Body body1, Body body2){
+        super(tileCase, x,y);
         this.body = body1;
         this.body2 = body2;
+        this.sprite = new Sprite(GameClient.stoneTextures[tileCase-1]);
     }
 }
