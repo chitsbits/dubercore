@@ -36,10 +36,6 @@ public class GruntEnemy extends Enemy {
 
 
         entityShape.dispose();
-
-
-
-        // TODO Auto-generated constructor stub
     }
 
     @Override

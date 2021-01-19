@@ -54,6 +54,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     int screenX;
     int screenY;
+    int activeItem = 1;
 
     @Override
     public void create() {
@@ -206,7 +207,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        // TODO Auto-generated method stub
         if (keycode == Input.Keys.G){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
             if (player.grenadeCount > 0){
@@ -214,6 +214,20 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
                 player.throwGrenade(localGame, mousePos);
                 player.grenadeCount = player.grenadeCount - 1;
             }
+            return true;
+        }
+        
+        else if (keycode == Input.Keys.NUM_1){
+            activeItem = 1;
+            System.out.println("gun go pew");
+            return true;
+
+        }
+
+        else if (keycode == Input.Keys.NUM_2){
+            activeItem = 2;
+            System.out.println("grapple go hook");
+            return true;
         }
         return false;
     }
@@ -230,14 +244,8 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // Grapple
-        if (button == Input.Buttons.MIDDLE){
-            Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
-            player.shootGrapple(localGame.world, mousePos);
-            return true; 
-        }
         // Pickaxe
-        else if (button == Input.Buttons.RIGHT) {
+        if (button == Input.Buttons.RIGHT) {
             Vector3 mouseWorldPos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
             Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
             Vector2 breakPoint = new Vector2(player.getPos().x + pickaxeDirection.x, player.getPos().y + pickaxeDirection.y);
@@ -250,20 +258,34 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             }
             return true;
         }
+        //firing weapon/grapple hook
         else if(button == Input.Buttons.LEFT){
-            Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-            player.getWeapon().fire(localGame, mousePos);
-            return true;
+
+            if (activeItem == 1){
+                Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
+                player.getWeapon().fire(localGame, mousePos);
+                return true;
+            }
+
+            else if (activeItem == 2){
+                Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
+                player.shootGrapple(localGame.world, mousePos);
+                return true; 
+            }
+
         }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if(button == Input.Buttons.MIDDLE){
-            player.retractGrapple();
-            localGame.bodyDeletionList.add(player.grapple.body);
-            return true;
+        if(button == Input.Buttons.LEFT){
+            if (activeItem == 2){
+
+                player.retractGrapple();
+                localGame.bodyDeletionList.add(player.grapple.body);
+                return true;
+            }
         }
         return false;
     }
@@ -284,6 +306,26 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+
+        if (amountY == 1 || amountY == -1){
+            activeItem += amountY;
+            if (activeItem > 2) {
+                activeItem = 1;
+            }
+            if (activeItem < 1) {
+                activeItem = 2;
+            }
+            
+            
+            if (activeItem == 1){
+                System.out.println("gun go pew");
+            }
+            else {
+                System.out.println("grapple go hook");
+            }
+            return true;
+        }
+
         return false;
     }
 
