@@ -4,10 +4,8 @@ public abstract class Enemy extends Entity {
     float width;
     float height;
     float damage;
-    Game game;
 
-    Enemy(Game game, float damage, float hp){
-        this.game = game;
+    Enemy(float damage, float hp){
         this.damage = damage;
         this.hp = hp;
 

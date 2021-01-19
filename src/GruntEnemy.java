@@ -2,12 +2,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class GruntEnemy extends Enemy {
 
-    GruntEnemy(Game game) {
-        super(game, 2f, 5f);
+    GruntEnemy(World world) {
+        super(2f, 5f);
         this.width = 0.4f;
         this.height =  0.7f;
 
@@ -15,12 +16,12 @@ public class GruntEnemy extends Enemy {
         bodyDef.type = BodyType.DynamicBody;
         bodyDef.position.set(10, 24);
         
-        body = this.game.world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
 
         entityShape = new PolygonShape();
         ((PolygonShape) entityShape).setAsBox(width, height);
         
-        body = game.world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
 
         FixtureDef bodyFixtureDef = new FixtureDef();
         bodyFixtureDef.shape = entityShape;

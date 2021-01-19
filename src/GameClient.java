@@ -233,7 +233,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // Grapple
         if (button == Input.Buttons.MIDDLE){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
-            player.shootGrapple(localGame, mousePos);
+            player.shootGrapple(localGame.world, mousePos);
             return true; 
         }
         // Pickaxe
@@ -260,8 +260,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if(button == Input.Buttons.LEFT){
-            player.retractGrapple(localGame);
+        if(button == Input.Buttons.MIDDLE){
+            player.retractGrapple();
+            localGame.bodyDeletionList.add(player.grapple.body);
             return true;
         }
         return false;

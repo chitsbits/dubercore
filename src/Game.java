@@ -62,7 +62,7 @@ public class Game {
       tileMap = new TileMap(world);
 
       spawnPlayer();
-      testDummy = new GruntEnemy(this);
+      testDummy = new GruntEnemy(world);
 
    }
 
@@ -128,6 +128,6 @@ public class Game {
       }
       while(!validSpawn);
       player1BodyDef.position.set(x/2, y/2);
-      player1 = new Player(this, player1BodyDef);
+      player1 = new Player(world, player1BodyDef);
    }
 }

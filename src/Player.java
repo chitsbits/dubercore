@@ -29,13 +29,14 @@ public class Player extends Entity {
     public boolean canJump;
     public boolean canMove;
     public int grenadeCount;
-    private GrapplingHook grapple;
     private Vector2 grappleDirection;
     private Vector2 grenadeDirection;
     private Grenade grenade;
     private Weapon weapon;
+
+    public GrapplingHook grapple;
     
-    public Player(Game game, BodyDef bodyDef){
+    public Player(World world, BodyDef bodyDef){
 
         collidingCount = 0;
         canJump = false;
@@ -61,7 +62,7 @@ public class Player extends Entity {
 
         ((PolygonShape)entityShape).set(vertices);
         // Create body
-        body = game.world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
 
         // Add main body fixture
         FixtureDef bodyFixtureDef = new FixtureDef();
@@ -102,9 +103,9 @@ public class Player extends Entity {
         
     }
 
-    public void shootGrapple(Game game, Vector3 mousePos) {
+    public void shootGrapple(World world, Vector3 mousePos) {
 
-        grapple = new GrapplingHook(game.world, this);
+        grapple = new GrapplingHook(world, this);
         
         grappleDirection = new Vector2();
         grappleDirection.x = mousePos.x - getPos().x;
@@ -113,8 +114,7 @@ public class Player extends Entity {
         grapple.body.setLinearVelocity(grappleDirection);
     }
 
-    public void retractGrapple(Game game) {
-        game.bodyDeletionList.add(grapple.body);
+    public void retractGrapple() {
         body.setGravityScale(1);
         canMove = true;
     }
