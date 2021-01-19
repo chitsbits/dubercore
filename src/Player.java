@@ -138,7 +138,7 @@ public class Player extends Entity {
         grenadeDirection.x = mousePos.x - getPos().x;
         grenadeDirection.y = mousePos.y - getPos().y;
         grenadeDirection.clamp(40f, 40f);
-        grenade.body.setGravityScale(5);
+        grenade.body.setGravityScale(6);
         grenade.body.setLinearVelocity(grenadeDirection);
         //System.out.println("Barmee qunbelah yadaweeyah!");
         
