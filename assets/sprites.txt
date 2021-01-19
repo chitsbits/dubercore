@@ -1,0 +1,124 @@
+sprites.png
+size: 112, 182
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+air
+  rotate: false
+  xy: 0, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+playerspriteplaceholder
+  rotate: false
+  xy: 16, 0
+  size: 80, 150
+  orig: 80, 150
+  offset: 0, 0
+  index: -1
+stone1
+  rotate: false
+  xy: 96, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone2
+  rotate: false
+  xy: 0, 150
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone3
+  rotate: false
+  xy: 16, 150
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone4
+  rotate: false
+  xy: 32, 150
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone5
+  rotate: false
+  xy: 48, 150
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone6
+  rotate: false
+  xy: 64, 150
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone7
+  rotate: false
+  xy: 80, 150
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone8
+  rotate: false
+  xy: 96, 150
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone9
+  rotate: false
+  xy: 0, 166
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone10
+  rotate: false
+  xy: 16, 166
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone11
+  rotate: false
+  xy: 32, 166
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone12
+  rotate: false
+  xy: 48, 166
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone13
+  rotate: false
+  xy: 64, 166
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone14
+  rotate: false
+  xy: 80, 166
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone15
+  rotate: false
+  xy: 96, 166
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1

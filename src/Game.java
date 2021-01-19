@@ -66,24 +66,7 @@ public class Game {
 
       tileMap = new TileMap(world);
 
-      makeCircleTest();
-
-      // Create player
-      BodyDef player1BodyDef = new BodyDef();
-      boolean validSpawn = false;
-      do {
-         int x = (int)(Math.random() * (WORLD_WIDTH - 1));
-         int y = (int)(Math.random() * (WORLD_HEIGHT - 1));
-
-         int i = x / 2;
-         int j = TileMap.MAP_ROWS-1 - y / 2;
-         if(tileMap.terrainArr[i][j] instanceof Air) {
-            player1BodyDef.position.set(x, y);
-            validSpawn = true;
-         }
-      }
-      while(!validSpawn);
-      player1 = new Player(world, player1BodyDef);
+      spawnPlayer();
 
    }
 
@@ -104,37 +87,29 @@ public class Game {
       tileMap.clearTile(tileMapBreakPoint);
    }
 
-   public void makeCircleTest(){
-      
-      // First we create a body definition
-      BodyDef bodyDef = new BodyDef();
-      // We set our body to dynamic, for something like ground which doesn't move we
-      // would set it to StaticBody
-      bodyDef.type = BodyType.DynamicBody;
-      // Set our body's starting position in the world
-      bodyDef.position.set(12, 30);
+   public void spawnPlayer(){
+      // Create player
+      BodyDef player1BodyDef = new BodyDef();
+      boolean validSpawn;
+      int x, y;
+      do {
+         validSpawn = true;
+         x = (int) (Math.random() * (TileMap.MAP_COLS - 14) + 7);
+         y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
 
-      // Create our body in the world using our body definition
-      Body body = world.createBody(bodyDef);
-
-      // Create a circle shape and set its radius to 6
-      CircleShape circle = new CircleShape();
-      circle.setRadius(1f);
-
-      // Create a fixture definition to apply our shape to
-      FixtureDef fixtureDef = new FixtureDef();
-      fixtureDef.shape = circle;
-      fixtureDef.density = 0.5f;
-      fixtureDef.friction = 0.4f;
-      fixtureDef.filter.categoryBits = Game.PLAYER;
-      fixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE;
-      fixtureDef.restitution = 0.6f; // Make it bounce a little bit
-
-      // Create our fixture and attach it to the body
-      Fixture fixture = body.createFixture(fixtureDef);
-
-      // Remember to dispose of any shapes after you're done with them!
-      // BodyDef and FixtureDef don't need disposing, but shapes do.
-      circle.dispose();
+         // Test if the surround 3x3 tiles are air
+         for(int a = -6; a < 6; a++){
+            for(int b = -6; b < 6; b++){
+               if(!(tileMap.terrainArr[x+a][y+b] instanceof Air)){
+                  System.out.println("bad spawn found");
+                  validSpawn = false;
+                  break;
+               }
+            }
+         }
+      }
+      while(!validSpawn);
+      player1BodyDef.position.set(x/2, y/2);
+      player1 = new Player(world, player1BodyDef);
    }
 }

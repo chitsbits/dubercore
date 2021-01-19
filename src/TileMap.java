@@ -86,46 +86,46 @@ public class TileMap {
                     terrainArr[i][j] = new Air(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO);
                     break;
                 case 1:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, d));
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, d));
                     break;
                 case 2:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(b, c));
-                    break;
-                case 3:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(b, d));
-                    break;
-                case 4:
                     terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, b));
                     break;
+                case 3:
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(d, b));
+                    break;
+                case 4:
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, b));
+                    break;
                 case 5:
-                    terrainArr[i][j] = new DoubleStone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, d), makeEdgeShape(b, c));
+                    terrainArr[i][j] = new DoubleStone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(d, c), makeEdgeShape(b, a));
                     break;
                 case 6:
                     terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, c));
                     break;
                 case 7:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, d));
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, d));
                     break;
                 case 8:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, d));
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, d));
                     break;
                 case 9:
                     terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, c));
                     break;
                 case 10:
-                    terrainArr[i][j] = new DoubleStone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, b), makeEdgeShape(c, d));
+                    terrainArr[i][j] = new DoubleStone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, d), makeEdgeShape(b, c));
                     break;
                 case 11:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, b));
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, b));
                     break;
                 case 12:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(b, d));
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(d, b));
                     break;
                 case 13:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(b, c));
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, b));
                     break;
                 case 14:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, d));
+                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(d, a));
                     break;
                 case 15:
                     terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO);
@@ -135,8 +135,8 @@ public class TileMap {
         }
     }
 
-    private int getTileMarchCase(int topLeft, int topRight, int bottmRight, int bottomLeft) {
-        return topLeft * 8 + topRight * 4 + bottmRight * 2 + bottomLeft;
+    private int getTileMarchCase(int bottomLeft, int bottomRight, int topRight, int topLeft) {
+        return topLeft * 8 + topRight * 4 + bottomRight * 2 + bottomLeft;
      }
 
     private Body makeEdgeShape(Vector2 v1, Vector2 v2) {

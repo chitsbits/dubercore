@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -45,20 +46,16 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     ShapeRenderer sr;
     Vector2 tempMouseVector = new Vector2(0, 0);
 
-    boolean mapNeedsRerender;
     boolean useDebugCamera = false;
 
     public static Texture[] stoneTextures;
     public static Texture textureAir;
+    public static TextureAtlas textureAtlas;
 
     @Override
     public void create() {
 
-        stoneTextures = new Texture[15];
-        for(int i = 0; i < stoneTextures.length; i++){
-            stoneTextures[i] = new Texture("assets\\stone" + (i+1) + ".png");
-        }
-        textureAir = new Texture("assets\\air.png");
+        textureAtlas = new TextureAtlas("assets\\sprites.txt");
 
         localGame = new Game();
         player = localGame.player1;
@@ -77,8 +74,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         sr = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
 
-        mapNeedsRerender = true;
-
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
     }
 
@@ -88,7 +83,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // arguments to glClearColor are the red, green
         // blue and alpha component in the range [0,1]
         // of the color to be used to clear the screen.
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(0.57f, 0.77f, 0.85f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Player input
@@ -120,8 +115,37 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // tell the camera to update its matrices.
         camera.update();
 
-        batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        batch.setProjectionMatrix(camera.combined);
+
+        // Render map sprites
+        Terrain[][] terrainArr = localGame.tileMap.terrainArr;
+
+        // Set bounds of the map to render
+        /* int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
+        int jStart = (int)(Math.max(0f, (camera.position.y + camera.viewportHeight / 2f) * 2));
+
+        int iEnd = (int)(Math.min(TileMap.MAP_COLS-1, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
+        int jEnd = (int)(Math.min(TileMap.MAP_ROWS-1, (camera.position.y + camera.viewportHeight / 2f) * 2)); */
+
+        int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
+        int jStart = (int)(Math.max(0f, (camera.position.y - camera.viewportHeight / 2f) * 2));
+
+        int iEnd = (int)(Math.min(TileMap.MAP_COLS, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
+        int jEnd = (int)(Math.min(TileMap.MAP_ROWS-1, (camera.position.y + camera.viewportHeight / 2f) * 2) + 1);
+
+        for(int i = iStart; i < iEnd; i++){
+            for(int j = jStart; j < jEnd; j++){
+                Terrain tile = terrainArr[i][j];
+                if(tile instanceof Air || tile instanceof Stone){
+                    Sprite sprite = tile.sprite;
+                    sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
+                    sprite.draw(batch);
+                }
+                
+            }
+        }
+        // Render entity sprites
         localGame.world.getBodies(tempBodies);
         for(Body body : tempBodies){
             if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
@@ -130,33 +154,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
                 sprite.draw(batch);
             }
         }
-        if(mapNeedsRerender){
-            Terrain[][] terrainArr = localGame.tileMap.terrainArr;
 
-            // Set bounds of the map to render
-            /* int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
-            int jStart = (int)(Math.max(0f, (camera.position.y + camera.viewportHeight / 2f) * 2));
-
-            int iEnd = (int)(Math.min(TileMap.MAP_COLS-1, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
-            int jEnd = (int)(Math.min(TileMap.MAP_ROWS-1, (camera.position.y + camera.viewportHeight / 2f) * 2)); */
-
-            int iStart = (int)(Math.max(0f, (player.body.getPosition().x - CAMERA_WIDTH / 2f) * 2));
-            int jStart = (int)(Math.max(0f, (player.body.getPosition().y - CAMERA_HEIGHT / 2f) * 2));
-
-            int iEnd = (int)(Math.min(TileMap.MAP_COLS-1, (player.body.getPosition().x + CAMERA_WIDTH / 2f) * 2 + 1));
-            int jEnd = (int)(Math.min(TileMap.MAP_ROWS-1, (player.body.getPosition().y + CAMERA_HEIGHT / 2f) * 2) + 1);
-            System.out.println(jStart + " " + jEnd);
-
-            for(int i = iStart; i < iEnd; i++){
-                for(int j = jStart; j < jEnd; j++){
-                    Terrain tile = terrainArr[i][j];
-                    Sprite sprite = tile.sprite;
-                    sprite.flip(false, !sprite.isFlipY());
-                    sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
-                    sprite.draw(batch);
-                }
-            }
-        }
         batch.end();
 
         // Render Box2D world
@@ -181,6 +179,12 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     @Override
     public void dispose(){
         localGame.world.dispose();
+        batch.dispose();
+        for(Texture tex : stoneTextures){
+            tex.dispose();
+        }
+        textureAtlas.dispose();
+        textureAir.dispose();
         debugRenderer.dispose();
         sr.dispose();
     }
