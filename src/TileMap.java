@@ -152,7 +152,7 @@ public class TileMap {
                  * This allows for many pockets of small veins, rather than
                  * few pockets of large veins.
                  */
-                for(int k = 0; k < 30; k++){
+                for(int k = 0; k < 40; k++){
                     zoffset += zIncrement;
 
                     float value = (float) oreGenNoise.eval(xoffset, yoffset, zoffset); // eval returns a double from -1 to 1
@@ -165,11 +165,11 @@ public class TileMap {
                         // Embedded ore (not exposed to air)
                         if(currentTile.marchingSquaresCase == 15){
                             // Generate gold
-                            if(value < -0.8f){
+                            if(value < -0.75f){
                                 terrainArr[i][j] = new Gold(currentTile.marchingSquaresCase, currentTile.worldX, currentTile.worldY);
                             }
                             // Generate health crystal
-                            else if (value > 0.5f){
+                            else if (value > 0.75f){
 
                             }
                         }

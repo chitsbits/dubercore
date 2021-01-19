@@ -161,7 +161,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         // Draw hud
         hudBatch.begin();
-        font.draw(hudBatch, Integer.toString(localGame.score), 20, 20);
+        font.draw(hudBatch, "Score: " + Integer.toString(localGame.score), 20, 20);
         hudBatch.end();
 
         // Render Box2D world

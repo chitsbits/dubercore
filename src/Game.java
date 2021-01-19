@@ -120,7 +120,6 @@ public class Game {
          for(int a = -6; a < 6; a++){
             for(int b = -6; b < 6; b++){
                if(!(tileMap.terrainArr[x+a][y+b] instanceof Air)){
-                  System.out.println("bad spawn found");
                   validSpawn = false;
                   break;
                }
