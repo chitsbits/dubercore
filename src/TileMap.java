@@ -25,13 +25,13 @@ public class TileMap {
     public static final float MAP_WORLD_RATIO = 2f;
 
     private float increment = 0.05f;
+    private float zIncrement = 0.2f;
 
     public World world; // Reference to Box2D world
 
     public int[][] cornerArr;
     public Terrain[][] terrainArr;
 
-    OpenSimplexNoise noise;
     public TileMap(World world){
         this.world = world;
         generateNewMap(world);
@@ -41,7 +41,7 @@ public class TileMap {
      * TODO: use float values from noise.eval to generate minerals
      */
     public void generateNewMap(World world) {
-        noise = new OpenSimplexNoise((long)(Math.random() * Long.MAX_VALUE));
+        OpenSimplexNoise worldGenNoise = new OpenSimplexNoise((long)(Math.random() * Long.MAX_VALUE));
 
         terrainArr = new Terrain[MAP_COLS][MAP_ROWS];
         cornerArr = new int[MAP_COLS+1][MAP_ROWS+1];
@@ -52,7 +52,7 @@ public class TileMap {
             xoffset += increment;
             float yoffset = 0f;
             for(int j = 0; j < MAP_ROWS+1; j++){
-                float value = (float)noise.eval(xoffset, yoffset); // eval returns a double from -1 to 1
+                float value = (float) (worldGenNoise.eval(xoffset, yoffset)); // eval returns a double from -1 to 1
                 cornerArr[i][j] = (int)(Math.ceil(value)); // 0 or 1
                 yoffset += increment;
             }
@@ -84,56 +84,113 @@ public class TileMap {
 
                 switch (tileCase) {
                 case 0:
-                    terrainArr[i][j] = new Air(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO);
+                    terrainArr[i][j] = new Air(tileCase, i/2f, j/2f);
                     break;
                 case 1:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, d));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(a, d));
                     break;
                 case 2:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, b));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(a, b));
                     break;
                 case 3:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(d, b));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(d, b));
                     break;
                 case 4:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, b));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(c, b));
                     break;
                 case 5:
-                    terrainArr[i][j] = new DoubleStone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(d, c), makeEdgeShape(b, a));
+                    terrainArr[i][j] = new DoubleStone(tileCase, i/2f, j/2f, makeEdgeShape(d, c), makeEdgeShape(b, a));
                     break;
                 case 6:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, c));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(a, c));
                     break;
                 case 7:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, d));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(c, d));
                     break;
                 case 8:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, d));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(c, d));
                     break;
                 case 9:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, c));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(a, c));
                     break;
                 case 10:
-                    terrainArr[i][j] = new DoubleStone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, d), makeEdgeShape(b, c));
+                    terrainArr[i][j] = new DoubleStone(tileCase, i/2f, j/2f, makeEdgeShape(a, d), makeEdgeShape(b, c));
                     break;
                 case 11:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(c, b));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(c, b));
                     break;
                 case 12:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(d, b));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(d, b));
                     break;
                 case 13:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(a, b));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(a, b));
                     break;
                 case 14:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO, makeEdgeShape(d, a));
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f, makeEdgeShape(d, a));
                     break;
                 case 15:
-                    terrainArr[i][j] = new Stone(tileCase, i/MAP_WORLD_RATIO,j/MAP_WORLD_RATIO);
+                    terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f);
                 }
-                //System.out.println(terrainArr[i][j]);
             }
         }
+
+        // Generate ores
+        OpenSimplexNoise oreGenNoise = new OpenSimplexNoise((long)(Math.random() * Long.MAX_VALUE));
+        
+        // Generate tilemap from noise
+        xoffset = 0f;
+        for(int i = 0; i < MAP_COLS; i++){
+            xoffset += increment;
+            float yoffset = 0f;
+
+            for(int j = 0; j < MAP_ROWS; j++){
+                yoffset += increment;
+                float zoffset = 0f;
+                
+                /* 
+                 * Have Z increment to generate ores multiple times.
+                 * This allows for many pockets of small veins, rather than
+                 * few pockets of large veins.
+                 */
+                for(int k = 0; k < 40; k++){
+                    zoffset += zIncrement;
+
+                    float value = (float) oreGenNoise.eval(xoffset, yoffset, zoffset); // eval returns a double from -1 to 1
+
+                    Terrain currentTile = terrainArr[i][j];
+
+                    // Make sure ore doesn't generate in air or as a double body case
+                    if(currentTile instanceof Stone && currentTile.marchingSquaresCase != 5 && currentTile.marchingSquaresCase != 10){
+
+                        // Embedded ore (not exposed to air)
+                        if(currentTile.marchingSquaresCase == 15){
+                            // Generate gold
+                            if(value < -0.75f){
+                                terrainArr[i][j] = new Gold(currentTile.marchingSquaresCase, currentTile.worldX, currentTile.worldY);
+                            }
+                            // Generate health crystal
+                            else if (value > 0.75f){
+
+                            }
+                        }
+                        // Surface ore (exposed to air)
+                        else{
+                            // Generate gold
+                            if(value < -0.8f){
+                                terrainArr[i][j] = new Gold(currentTile.marchingSquaresCase, currentTile.worldX, currentTile.worldY, currentTile.body1);
+                            }
+                            // Generate health crystal
+                            else if (value > 0.5f){
+
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+
     }
 
     private int getTileMarchCase(int bottomLeft, int bottomRight, int topRight, int topLeft) {
@@ -165,9 +222,14 @@ public class TileMap {
     /**
      * @param tileMapBreakPoint vector with tilemap coords
      */
-    public void clearTile(Vector2 tileMapBreakPoint){
+    public int clearTile(Vector2 tileMapBreakPoint){
+        int scoreGained = 0;
         int x = (int)(tileMapBreakPoint.x);
         int y = (int)(tileMapBreakPoint.y);
+
+        if (terrainArr[x][y] instanceof Gold){
+            scoreGained = 5;
+        }
 
         // Set tile's corner points to 0
         if(x >= 0 && x+1 <= MAP_COLS && y >= 0 && y+1 <= MAP_ROWS){
@@ -207,62 +269,113 @@ public class TileMap {
                                                     cornerArr[currentX+1][currentY+1],
                                                     cornerArr[currentX][currentY+1]);
 
-                    switch (tileCase) {
-                        case 0:
-                            terrainArr[currentX][currentY] = new Air(tileCase, currentX/2f, currentY/2f);
-                            break;
-                        case 1:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d));
-                            break;
-                        case 2:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
-                            break;
-                        case 3:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
-                            break;
-                        case 4:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
-                            break;
-                        case 5:
-                            terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, c), makeEdgeShape(b, a));
-                            break;
-                        case 6:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
-                            break;
-                        case 7:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
-                            break;
-                        case 8:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
-                            break;
-                        case 9:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
-                            break;
-                        case 10:
-                            terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d), makeEdgeShape(b, c));
-                            break;
-                        case 11:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
-                            break;
-                        case 12:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
-                            break;
-                        case 13:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
-                            break;
-                        case 14:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, a));
-                            break;
-                        case 15:
-                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f);
+                    // Replace the tile
+                    if(terrainArr[currentX][currentY] instanceof Stone){
+
+                        switch (tileCase) {
+                            case 0:
+                                terrainArr[currentX][currentY] = new Air(tileCase, currentX/2f, currentY/2f);
+                                break;
+                            case 1:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d));
+                                break;
+                            case 2:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
+                                break;
+                            case 3:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
+                                break;
+                            case 4:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
+                                break;
+                            case 5:
+                                terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, c), makeEdgeShape(b, a));
+                                break;
+                            case 6:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
+                                break;
+                            case 7:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
+                                break;
+                            case 8:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
+                                break;
+                            case 9:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
+                                break;
+                            case 10:
+                                terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d), makeEdgeShape(b, c));
+                                break;
+                            case 11:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
+                                break;
+                            case 12:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
+                                break;
+                            case 13:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
+                                break;
+                            case 14:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, a));
+                                break;
+                            case 15:
+                                terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f);
+                        }
+                    }
+                    else if (terrainArr[currentX][currentY] instanceof Gold){
+                        switch (tileCase) {
+                            case 0:
+                                terrainArr[currentX][currentY] = new Air(tileCase, currentX/2f, currentY/2f);
+                                break;
+                            case 1:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d));
+                                break;
+                            case 2:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
+                                break;
+                            case 3:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
+                                break;
+                            case 4:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
+                                break;
+                            case 5:
+                                terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, c), makeEdgeShape(b, a));
+                                break;
+                            case 6:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
+                                break;
+                            case 7:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
+                                break;
+                            case 8:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
+                                break;
+                            case 9:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
+                                break;
+                            case 10:
+                                terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d), makeEdgeShape(b, c));
+                                break;
+                            case 11:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
+                                break;
+                            case 12:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
+                                break;
+                            case 13:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
+                                break;
+                            case 14:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, a));
+                                break;
+                            case 15:
+                                terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f);
+                        }
                     }
                 }
             }
         }
+        return scoreGained;
     }
-
-    public void recalculateTile(){
-
-    }
-
 }

@@ -1,3 +1,4 @@
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -8,7 +9,7 @@ public abstract class Entity {
     Shape entityShape;
     Body body;
     BodyDef bodyDef;
-    //FixtureDef fixtureDef;
+    Sprite sprite;
 
     public Vector2 getPos() {
         return body.getPosition();

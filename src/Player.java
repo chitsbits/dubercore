@@ -21,9 +21,7 @@ public class Player extends Entity {
 
     public static final float X_SPEED = 5;
     public static final float JUMP_SPEED = 10;
-    public static final float MAX_VELOCITY = 10f;
-
-    Sprite playerSprite;
+    public static final float MAX_VELOCITY = 5f;
 
     public int collidingCount;
     public boolean canJump;
@@ -74,10 +72,11 @@ public class Player extends Entity {
         body.setFixedRotation(true);
 
         //adding a sprite to the box2d player object
-        playerSprite = new Sprite(new Texture("assets\\playerspriteplaceholder.png"));
-        playerSprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
-        playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
-        body.setUserData(playerSprite);
+        sprite = GameClient.textureAtlas.createSprite("playerspriteplaceholder");
+        sprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
+        sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+
+        body.setUserData(this);
 
         // Feet shape definition
         PolygonShape feetShape = new PolygonShape();
@@ -85,6 +84,7 @@ public class Player extends Entity {
         feetCenter.x = getPos().x;
         feetCenter.y = getPos().y;
         feetShape.setAsBox(PLAYER_WIDTH - 0.05f, 0.1f, new Vector2(0, -0.75f), 0);
+        
 
         // Add feet fixture
         FixtureDef feetFixtureDef = new FixtureDef();
@@ -123,7 +123,7 @@ public class Player extends Entity {
         grappleDirection = new Vector2();
         grappleDirection.x = grapple.getPos().x - getPos().x;
         grappleDirection.y = grapple.getPos().y - getPos().y;
-        grappleDirection.clamp(20f, 20f);
+        grappleDirection.clamp(15f, 15f);
         
         body.setLinearVelocity(grappleDirection);
         body.setGravityScale(0);
@@ -146,12 +146,12 @@ public class Player extends Entity {
     }
 
     public void moveLeft() {
-        body.applyLinearImpulse(-0.80f, 0, getPos().x, getPos().y, true);
+        body.applyLinearImpulse(-0.50f, 0, getPos().x, getPos().y, true);
         //body.setLinearVelocity(-X_SPEED, getVel().y);
     }
 
     public void moveRight() {
-        body.applyLinearImpulse(0.80f, 0, getPos().x, getPos().y, true);
+        body.applyLinearImpulse(0.50f, 0, getPos().x, getPos().y, true);
     }
 
     public void jump() {

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -7,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -37,16 +40,18 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     Game localGame; // Local instance of the game
     OrthographicCamera camera;
-    SpriteBatch batch;
+    SpriteBatch worldBatch;
+    SpriteBatch hudBatch;
     Viewport viewport;
     Player player;
-    Array<Body> tempBodies = new Array<Body>();
 
     Box2DDebugRenderer debugRenderer;
     ShapeRenderer sr;
     Vector2 tempMouseVector = new Vector2(0, 0);
 
     boolean useDebugCamera = false;
+
+    BitmapFont font;
 
     public static Texture[] stoneTextures;
     public static Texture textureAir;
@@ -60,10 +65,14 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     public void create() {
 
         textureAtlas = new TextureAtlas("assets\\sprites.txt");
+        font = new BitmapFont();
 
         localGame = new Game();
         player = localGame.player1;
-        batch = new SpriteBatch();
+
+        worldBatch = new SpriteBatch();
+        hudBatch = new SpriteBatch();
+
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         // viewport = new FitViewport(800, 480, camera);
@@ -120,19 +129,13 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // tell the camera to update its matrices.
         camera.update();
 
-        batch.begin();
-        batch.setProjectionMatrix(camera.combined);
+        worldBatch.begin();
+        worldBatch.setProjectionMatrix(camera.combined);
 
-        // Render map sprites
+        // Draw map sprites
         Terrain[][] terrainArr = localGame.tileMap.terrainArr;
 
         // Set bounds of the map to render
-        /* int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
-        int jStart = (int)(Math.max(0f, (camera.position.y + camera.viewportHeight / 2f) * 2));
-
-        int iEnd = (int)(Math.min(TileMap.MAP_COLS-1, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
-        int jEnd = (int)(Math.min(TileMap.MAP_ROWS-1, (camera.position.y + camera.viewportHeight / 2f) * 2)); */
-
         int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
         int jStart = (int)(Math.max(0f, (camera.position.y - camera.viewportHeight / 2f) * 2));
 
@@ -142,25 +145,24 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         for(int i = iStart; i < iEnd; i++){
             for(int j = jStart; j < jEnd; j++){
                 Terrain tile = terrainArr[i][j];
-                if(tile instanceof Air || tile instanceof Stone){
-                    Sprite sprite = tile.sprite;
-                    sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
-                    sprite.draw(batch);
-                }
-                
-            }
-        }
-        // Render entity sprites
-        localGame.world.getBodies(tempBodies);
-        for(Body body : tempBodies){
-            if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
-                Sprite sprite = (Sprite) body.getUserData();
-                sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
-                sprite.draw(batch);
+                Sprite sprite = tile.sprite;
+                sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
+                sprite.draw(worldBatch);
             }
         }
 
-        batch.end();
+        // Draw entities
+        for(Entity ent : localGame.entityList){
+            Sprite sprite = ((Entity)(ent.body.getUserData())).sprite;
+            sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2, ent.body.getPosition().y - sprite.getHeight() / 2);
+            sprite.draw(worldBatch);
+        }
+        worldBatch.end();
+
+        // Draw hud
+        hudBatch.begin();
+        font.draw(hudBatch, "Score: " + Integer.toString(localGame.score), 20, 20);
+        hudBatch.end();
 
         // Render Box2D world
         debugRenderer.render(localGame.world, camera.combined);
@@ -193,12 +195,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     @Override
     public void dispose(){
         localGame.world.dispose();
-        batch.dispose();
-        for(Texture tex : stoneTextures){
-            tex.dispose();
-        }
+        worldBatch.dispose();
+        hudBatch.dispose();
         textureAtlas.dispose();
-        textureAir.dispose();
         debugRenderer.dispose();
         sr.dispose();
     }
