@@ -212,7 +212,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             if (player.grenadeCount > 0){
 
                 player.throwGrenade(localGame, mousePos);
-                player.grenadeCount = player.grenadeCount - 1;
+                //player.grenadeCount = player.grenadeCount - 1;
             }
             return true;
         }
