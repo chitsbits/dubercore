@@ -28,15 +28,21 @@ public class Player extends Entity {
     public int collidingCount;
     public boolean canJump;
     public boolean canMove;
+    public int grenadeCount;
     private GrapplingHook grapple;
-    Vector2 grappleDirection;
-    Vector3 pickaxeDirection;
+    private Vector2 grappleDirection;
+    private Vector2 grenadeDirection;
+    private Grenade grenade;
+    private Weapon weapon;
     
-    public Player(World world, BodyDef bodyDef){
+    public Player(Game game, BodyDef bodyDef){
 
         collidingCount = 0;
         canJump = false;
         canMove = true;
+        grenadeCount = 5;
+        //adding a default weapon
+        weapon = new Pistol(this);
 
         // Body definition
         this.bodyDef = bodyDef;
@@ -55,7 +61,7 @@ public class Player extends Entity {
 
         ((PolygonShape)entityShape).set(vertices);
         // Create body
-        body = world.createBody(bodyDef);
+        body = game.world.createBody(bodyDef);
 
         // Add main body fixture
         FixtureDef bodyFixtureDef = new FixtureDef();
@@ -66,7 +72,7 @@ public class Player extends Entity {
         body.createFixture(bodyFixtureDef);
         body.setFixedRotation(true);
 
-        
+        //adding a sprite to the box2d player object
         playerSprite = new Sprite(new Texture("assets\\playerspriteplaceholder.png"));
         playerSprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
         playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
@@ -96,9 +102,9 @@ public class Player extends Entity {
         
     }
 
-    public void shootGrapple(World world, Vector3 mousePos) {
+    public void shootGrapple(Game game, Vector3 mousePos) {
 
-        grapple = new GrapplingHook(world, this);
+        grapple = new GrapplingHook(game.world, this);
         
         grappleDirection = new Vector2();
         grappleDirection.x = mousePos.x - getPos().x;
@@ -107,8 +113,8 @@ public class Player extends Entity {
         grapple.body.setLinearVelocity(grappleDirection);
     }
 
-    public void retractGrapple(World world) {
-        world.destroyBody(grapple.body);
+    public void retractGrapple(Game game) {
+        game.bodyDeletionList.add(grapple.body);
         body.setGravityScale(1);
         canMove = true;
     }
@@ -124,6 +130,21 @@ public class Player extends Entity {
         canMove = false;
     }
 
+    public void throwGrenade(Game game, Vector3 mousePos){
+
+        grenade = new Grenade(game.world, this);
+
+        grenadeDirection = new Vector2();
+        grenadeDirection.x = mousePos.x - getPos().x;
+        grenadeDirection.y = mousePos.y - getPos().y;
+        grenadeDirection.clamp(40f, 40f);
+        grenade.body.setGravityScale(5);
+        grenade.body.setLinearVelocity(grenadeDirection);
+        //System.out.println("Barmee qunbelah yadaweeyah!");
+        
+
+    }
+
     public void moveLeft() {
         body.applyLinearImpulse(-0.80f, 0, getPos().x, getPos().y, true);
         //body.setLinearVelocity(-X_SPEED, getVel().y);
@@ -135,5 +156,9 @@ public class Player extends Entity {
 
     public void jump() {
         body.setLinearVelocity(getVel().x, 10);
+    }
+
+    public Weapon getWeapon(){
+        return this.weapon;
     }
 }

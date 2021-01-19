@@ -52,6 +52,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     public static Texture textureAir;
     public static TextureAtlas textureAtlas;
 
+    int screenX;
+    int screenY;
+
     @Override
     public void create() {
 
@@ -85,7 +88,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // of the color to be used to clear the screen.
         Gdx.gl.glClearColor(0.57f, 0.77f, 0.85f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        
         // Player input
         // apply left impulse, but only if max velocity is not reached yet
         if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {			
@@ -101,12 +104,13 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0) {
             player.jump();
         }
-        
+
         //System.out.println("x: " + player.getPos().x + " y: " + player.getPos().y);
         //System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Step physics world
         localGame.doPhysicsStep(Gdx.graphics.getDeltaTime());
+
 
         // Focus camera on player
         if(!useDebugCamera)
@@ -202,6 +206,15 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        // TODO Auto-generated method stub
+        if (keycode == Input.Keys.G){
+            Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
+            if (player.grenadeCount > 0){
+
+                player.throwGrenade(localGame, mousePos);
+                player.grenadeCount = player.grenadeCount - 1;
+            }
+        }
         return false;
     }
 
@@ -218,9 +231,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Grapple
-        if (button == Input.Buttons.LEFT){
+        if (button == Input.Buttons.MIDDLE){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
-            player.shootGrapple(localGame.world, mousePos);
+            player.shootGrapple(localGame, mousePos);
             return true; 
         }
         // Pickaxe
@@ -237,13 +250,18 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             }
             return true;
         }
+        else if(button == Input.Buttons.LEFT){
+            Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
+            player.getWeapon().fire(localGame, mousePos);
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if(button == Input.Buttons.LEFT){
-            player.retractGrapple(localGame.world);
+            player.retractGrapple(localGame);
             return true;
         }
         return false;
@@ -256,6 +274,10 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+
+        this.screenX = screenX;
+        this.screenY = screenY;
+
         return false;
     }
 
