@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -42,7 +44,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     SpriteBatch hudBatch;
     Viewport viewport;
     Player player;
-    Array<Body> tempBodies = new Array<Body>();
 
     Box2DDebugRenderer debugRenderer;
     ShapeRenderer sr;
@@ -130,7 +131,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         worldBatch.begin();
         worldBatch.setProjectionMatrix(camera.combined);
 
-        // Render map sprites
+        // Draw map sprites
         Terrain[][] terrainArr = localGame.tileMap.terrainArr;
 
         // Set bounds of the map to render
@@ -148,14 +149,12 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
                 sprite.draw(worldBatch);
             }
         }
-        // Render entity sprites
-        localGame.world.getBodies(tempBodies);
-        for(Body body : tempBodies){
-            if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
-                Sprite sprite = (Sprite) body.getUserData();
-                sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
-                sprite.draw(worldBatch);
-            }
+
+        // Draw entities
+        for(Entity ent : localGame.entityList){
+            Sprite sprite = ((Entity)(ent.body.getUserData())).sprite;
+            sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2, ent.body.getPosition().y - sprite.getHeight() / 2);
+            sprite.draw(worldBatch);
         }
         worldBatch.end();
 

@@ -39,6 +39,7 @@ public class Game {
    public TileMap tileMap;
    public ArrayList<Body> bodyDeletionList;
    public ArrayList<Explosion> explosionBodyList;
+   public ArrayList<Entity> entityList;
 
    public Player player1;
    public GruntEnemy testDummy;
@@ -56,6 +57,7 @@ public class Game {
       world = new World(new Vector2(0, -20), true);
       bodyDeletionList = new ArrayList<Body>();
       explosionBodyList = new ArrayList<Explosion>();
+      entityList = new ArrayList<Entity>();
 
       MyContactListener contactListener = new MyContactListener(this);
       world.setContactListener(contactListener);
@@ -129,5 +131,6 @@ public class Game {
       while(!validSpawn);
       player1BodyDef.position.set(x/2, y/2);
       player1 = new Player(world, player1BodyDef);
+      entityList.add(player1);
    }
 }
