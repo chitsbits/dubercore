@@ -1,3 +1,4 @@
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -165,20 +166,102 @@ public class TileMap {
      * @param tileMapBreakPoint vector with tilemap coords
      */
     public void clearTile(Vector2 tileMapBreakPoint){
-        int i = (int)(tileMapBreakPoint.x);
-        int j = (int)(tileMapBreakPoint.y);
-        Terrain tile = terrainArr[i][j];
-        System.out.println(tile);
-        /*
-        if(!(tile instanceof Air)){
-            System.out.println(tile);
-            world.destroyBody(tile.body);
+        int x = (int)(tileMapBreakPoint.x);
+        int y = (int)(tileMapBreakPoint.y);
+
+        // Set tile's corner points to 0
+        if(x >= 0 && x+1 <= MAP_COLS && y >= 0 && y+1 <= MAP_ROWS){
+            cornerArr[x][y] = 0;
+            cornerArr[x+1][y] = 0;
+            cornerArr[x][y+1] = 0;
+            cornerArr[x+1][y+1] = 0;
         }
-        */
-               
+
+        // Recalculate cases for encompassing tiles
+        for(int i = -1; i <= 1; i++){
+            for(int j = -1; j <= 1; j++){
+
+                int currentX = x+i;
+                int currentY = y+j;
+
+                if(currentX >= 0 && currentX < MAP_COLS && currentY >= 0 && currentY < MAP_ROWS){
+                    
+                    Terrain currentTile = terrainArr[currentX][currentY];
+
+                    if(currentTile.numEdges == 1) {
+                        world.destroyBody(currentTile.body1);
+                    } else if(currentTile.numEdges == 2){
+                        world.destroyBody(currentTile.body1);
+                        world.destroyBody(currentTile.body2);
+                    }
+
+                    // Marching square edges
+                    Vector2 a = new Vector2((float) (currentX + 0.5)/2, (float) (currentY)/2);
+                    Vector2 b = new Vector2((float) (currentX + 1)/2, (float) (currentY + 0.5)/2);
+                    Vector2 c = new Vector2((float) (currentX + 0.5)/2, (float) (currentY + 1)/2);
+                    Vector2 d = new Vector2((float) (currentX)/2, (float) (currentY + 0.5)/2);
+
+                    // Which contour - determined by the 4 corners of the tile
+                    int tileCase = getTileMarchCase(cornerArr[currentX][currentY],
+                                                    cornerArr[currentX+1][currentY],
+                                                    cornerArr[currentX+1][currentY+1],
+                                                    cornerArr[currentX][currentY+1]);
+
+                    switch (tileCase) {
+                        case 0:
+                            terrainArr[currentX][currentY] = new Air(tileCase, currentX/2f, currentY/2f);
+                            break;
+                        case 1:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d));
+                            break;
+                        case 2:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
+                            break;
+                        case 3:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
+                            break;
+                        case 4:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
+                            break;
+                        case 5:
+                            terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, c), makeEdgeShape(b, a));
+                            break;
+                        case 6:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
+                            break;
+                        case 7:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
+                            break;
+                        case 8:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
+                            break;
+                        case 9:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
+                            break;
+                        case 10:
+                            terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d), makeEdgeShape(b, c));
+                            break;
+                        case 11:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
+                            break;
+                        case 12:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
+                            break;
+                        case 13:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
+                            break;
+                        case 14:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, a));
+                            break;
+                        case 15:
+                            terrainArr[currentX][currentY] = new Stone(tileCase, currentX/2f, currentY/2f);
+                    }
+                }
+            }
+        }
     }
 
-    public void regenerateMap(){
+    public void recalculateTile(){
 
     }
 

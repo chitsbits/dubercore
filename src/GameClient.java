@@ -165,9 +165,18 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         sr.line(player.getPos(), tempMouseVector);
         sr.end();
 
-        sr.begin(ShapeType.Filled);
-        sr.circle(player.getPos().x, player.getPos().y, 0.2f);
-        sr.end();
+        /* sr.begin(ShapeType.Filled);
+        for(int i = 0; i < TileMap.MAP_COLS+1; i++){
+            for(int j = 0; j < TileMap.MAP_ROWS+1; j++){
+                if(localGame.tileMap.cornerArr[i][j] == 1){
+                    sr.setColor(Color.RED);
+                } else{
+                    sr.setColor(Color.BLACK);
+                }
+                sr.rect(i / 2f - 0.05f, j / 2f - 0.05f, 0.1f, 0.1f);
+            }
+        }
+        sr.end(); */
         
     }
 

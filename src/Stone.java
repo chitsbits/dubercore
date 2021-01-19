@@ -10,9 +10,9 @@ public class Stone extends Terrain {
         this.sprite = GameClient.textureAtlas.createSprite("stone" + (tileCase));
     }
 
-    public Stone(int tileCase, float x, float y, Body body){
+    public Stone(int tileCase, float x, float y, Body body1){
         super(tileCase, x,y);
-        this.body = body;
+        this.body1 = body1;
         //this.sprite = new Sprite(GameClient.stoneTextures[tileCase-1]);
         this.sprite = GameClient.textureAtlas.createSprite("stone" + (tileCase));
     }

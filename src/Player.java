@@ -16,8 +16,8 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 public class Player extends Entity {
 
-    public static final float PLAYER_WIDTH = 0.5f;
-    public static final float PLAYER_HEIGHT = 0.8f;
+    public static final float PLAYER_WIDTH = 0.4f;
+    public static final float PLAYER_HEIGHT = 0.7f;
 
     public static final float X_SPEED = 5;
     public static final float JUMP_SPEED = 10;
@@ -77,7 +77,7 @@ public class Player extends Entity {
         Vector2 feetCenter = new Vector2();
         feetCenter.x = getPos().x;
         feetCenter.y = getPos().y;
-        feetShape.setAsBox(PLAYER_WIDTH - 0.05f, 0.1f, new Vector2(0, -0.85f), 0);
+        feetShape.setAsBox(PLAYER_WIDTH - 0.05f, 0.1f, new Vector2(0, -0.75f), 0);
 
         // Add feet fixture
         FixtureDef feetFixtureDef = new FixtureDef();

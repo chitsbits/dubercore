@@ -83,7 +83,7 @@ public class Game {
 
    public void destroyTerrain(Vector2 breakPoint){
       // Convert breakpoint to tilemap coords
-      Vector2 tileMapBreakPoint = new Vector2(breakPoint.x / 2f, TileMap.MAP_ROWS - breakPoint.y / 2f);
+      Vector2 tileMapBreakPoint = new Vector2(breakPoint.x * 2f, breakPoint.y * 2f);
       tileMap.clearTile(tileMapBreakPoint);
    }
 
