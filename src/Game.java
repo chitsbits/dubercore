@@ -1,27 +1,15 @@
 
 import java.util.ArrayList;
-import java.util.Random;
-
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Holds all game logic
@@ -50,6 +38,7 @@ public class Game {
    public TileMap tileMap;
    //public ArrayList<Entity> entityList;
    public ArrayList<Body> bodyDeletionList;
+   public ArrayList<Explosion> explosionBodyList;
 
    public Player player1;
    public GruntEnemy testDummy;
@@ -64,6 +53,7 @@ public class Game {
       Box2D.init();
       world = new World(new Vector2(0, -20), true);
       bodyDeletionList = new ArrayList<Body>();
+      explosionBodyList = new ArrayList<Explosion>();
 
       MyContactListener contactListener = new MyContactListener(this);
       world.setContactListener(contactListener);
@@ -160,15 +150,26 @@ public class Game {
       while (accumulator >= STEP_TIME) {
          world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
-         if(!this.bodyDeletionList.isEmpty()){
+         if (!this.bodyDeletionList.isEmpty()){
 
             for (Body body : this.bodyDeletionList) {
-            body.setActive(false);
-            this.world.destroyBody(body);
-            System.out.println("removed");
-            }
+            
+               body.setActive(false);
+               this.world.destroyBody(body);
+               System.out.println("removed");
+         }
         this.bodyDeletionList.clear();
         }
+
+        if (!this.explosionBodyList.isEmpty()){
+
+            for (Explosion explosion : this.explosionBodyList) {
+               System.out.println("explosion :o");
+               explosion.explode();
+               
+            }
+        }
+        explosionBodyList.clear();
 
          accumulator -= STEP_TIME;
       }

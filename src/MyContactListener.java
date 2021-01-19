@@ -80,7 +80,7 @@ public class MyContactListener implements ContactListener {
 
         }
 
-        else if (contact.getFixtureA().getUserData() instanceof Bullet){
+        else if (contact.getFixtureA().getUserData() instanceof Bullet) {
             Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
             System.out.println("hit");
             //System.out.println(contact.getFixtureB().getUserData());
@@ -99,6 +99,91 @@ public class MyContactListener implements ContactListener {
                 game.bodyDeletionList.add(bullet.body);
             }
         }
+
+        //Grenades
+
+        else if (contact.getFixtureA().getUserData() instanceof Grenade){
+            Grenade grenade = (Grenade)(contact.getFixtureA().getUserData());
+            System.out.println("boom");
+            grenade.body.setLinearVelocity(0,0);
+
+            Explosion explosion = new Explosion(grenade.body.getWorld(), grenade.body.getPosition());
+            if(!game.explosionBodyList.contains(explosion)){
+                game.explosionBodyList.add(explosion);
+            }
+
+            if (!game.bodyDeletionList.contains(grenade.body)){
+                game.bodyDeletionList.add(grenade.body);
+            }
+
+        }
+
+        else if (contact.getFixtureB().getUserData() instanceof Grenade){
+            Grenade grenade = (Grenade)(contact.getFixtureB().getUserData());
+            System.out.println("boom");
+            grenade.body.setLinearVelocity(0,0);
+
+            Explosion explosion = new Explosion(grenade.body.getWorld(), grenade.body.getPosition());
+            if(!game.explosionBodyList.contains(explosion)){
+                game.explosionBodyList.add(explosion);
+            }
+
+            if (!game.bodyDeletionList.contains(grenade.body)){
+                game.bodyDeletionList.add(grenade.body);
+            }
+
+        }
+
+        //Explosions
+
+        else if (contact.getFixtureA().getUserData() instanceof Explosion){
+            Explosion explosion = (Explosion)(contact.getFixtureA().getUserData());
+            System.out.println("kerblamo");
+
+            if (!game.bodyDeletionList.contains(explosion.body)){
+                game.bodyDeletionList.add(explosion.body);
+            }
+
+            if (contact.getFixtureB().getUserData() instanceof Enemy){
+
+                Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
+                enemy.setHp(enemy.getHp() - explosion.getDamage());
+    
+                if (enemy.getHp() <= 0){
+                    System.out.println("enemy killed");
+                    if (!game.bodyDeletionList.contains(enemy.body)){
+                        game.bodyDeletionList.add(enemy.body);
+                    }
+                }
+
+            }
+            
+        }
+
+        else if (contact.getFixtureB().getUserData() instanceof Explosion){
+            Explosion explosion = (Explosion)(contact.getFixtureB().getUserData());
+            System.out.println("kerblamo");
+
+            if (!game.bodyDeletionList.contains(explosion.body)){
+                game.bodyDeletionList.add(explosion.body);
+            }
+
+            if (contact.getFixtureA().getUserData() instanceof Enemy){
+
+                Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
+                enemy.setHp(enemy.getHp() - explosion.getDamage());
+    
+                if (enemy.getHp() <= 0){
+                    System.out.println("enemy killed");
+                    if (!game.bodyDeletionList.contains(enemy.body)){
+                        game.bodyDeletionList.add(enemy.body);
+                    }
+                }
+
+            }
+    
+        }
+
     }
 
     @Override

@@ -39,6 +39,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     Box2DDebugRenderer debugRenderer;
 
+    int screenX;
+    int screenY;
+
     public void create() {
 
         localGame = new Game();
@@ -79,7 +82,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0) {
             player.jump();
         }
-        
+
         //System.out.println("x: " + player.getPos().x + " y: " + player.getPos().y);
         //System.out.println(Gdx.graphics.getFramesPerSecond());
 
@@ -122,6 +125,14 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         // TODO Auto-generated method stub
+        if (keycode == Input.Keys.G){
+            Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
+            if (player.grenadeCount > 0){
+
+                player.throwGrenade(localGame, mousePos);
+                player.grenadeCount = player.grenadeCount - 1;
+            }
+        }
         return false;
     }
 
@@ -174,6 +185,10 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         // TODO Auto-generated method stub
+
+        this.screenX = screenX;
+        this.screenY = screenY;
+
         return false;
     }
 

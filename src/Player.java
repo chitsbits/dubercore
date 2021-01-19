@@ -27,9 +27,13 @@ public class Player extends Entity {
     public int collidingCount;
     public boolean canJump;
     public boolean canMove;
+    public int grenadeCount;
     private GrapplingHook grapple;
+    private Grenade grenade;
     private Weapon weapon;
     private Vector2 grappleDirection;
+    private Vector2 grenadeDirection;
+    
 
     
     public Player(Game game){
@@ -37,6 +41,7 @@ public class Player extends Entity {
         collidingCount = 0;
         canJump = false;
         canMove = true;
+        grenadeCount = 5;
         //adding a default weapon
         weapon = new Pistol(this);
 
@@ -136,6 +141,21 @@ public class Player extends Entity {
         body.setLinearVelocity(grappleDirection);
         body.setGravityScale(0);
         canMove = false;
+    }
+
+    public void throwGrenade(Game game, Vector3 mousePos){
+
+        grenade = new Grenade(game.world, this);
+
+        grenadeDirection = new Vector2();
+        grenadeDirection.x = mousePos.x - getPos().x;
+        grenadeDirection.y = mousePos.y - getPos().y;
+        grenadeDirection.clamp(40f, 40f);
+        grenade.body.setGravityScale(5);
+        grenade.body.setLinearVelocity(grenadeDirection);
+        System.out.println("Barmee qunbelah yadaweeyah!");
+        
+
     }
 
     public void moveLeft() {
