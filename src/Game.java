@@ -156,7 +156,7 @@ public class Game {
             
                body.setActive(false);
                this.world.destroyBody(body);
-               System.out.println("removed");
+               //System.out.println("removed");
          }
         this.bodyDeletionList.clear();
         }
@@ -164,7 +164,7 @@ public class Game {
         if (!this.explosionBodyList.isEmpty()){
 
             for (Explosion explosion : this.explosionBodyList) {
-               System.out.println("explosion :o");
+               //System.out.println("explosion :o");
                explosion.explode();
                
             }

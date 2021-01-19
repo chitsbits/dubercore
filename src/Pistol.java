@@ -10,13 +10,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Pistol extends Weapon {
 
-    int c;
-
     Pistol(Player player) {
         super(player);
         weaponType = "Pistol";
         damage = 1f;
-        c = 0;
         
 
         // TODO Auto-generated constructor stub
@@ -32,8 +29,6 @@ public class Pistol extends Weapon {
         bulletDirection.clamp(40f, 40f);
         Bullet bullet = new Bullet(game.world, damage, player);
         bullet.body.setLinearVelocity(bulletDirection);
-        c = c+1;
-        System.out.println("fired" + c);
         
 
 

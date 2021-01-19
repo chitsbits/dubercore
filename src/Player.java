@@ -122,7 +122,7 @@ public class Player extends Entity {
         grappleDirection.y = mousePos.y - getPos().y;
         grappleDirection.clamp(40f, 40f);
         grapple.body.setLinearVelocity(grappleDirection);
-        System.out.println("grappling");
+        //System.out.println("grappling");
         
     }   
 
@@ -153,7 +153,7 @@ public class Player extends Entity {
         grenadeDirection.clamp(40f, 40f);
         grenade.body.setGravityScale(5);
         grenade.body.setLinearVelocity(grenadeDirection);
-        System.out.println("Barmee qunbelah yadaweeyah!");
+        //System.out.println("Barmee qunbelah yadaweeyah!");
         
 
     }

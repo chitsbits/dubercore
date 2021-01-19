@@ -31,19 +31,19 @@ public class MyContactListener implements ContactListener {
             contact.getFixtureA().getBody().setLinearVelocity(0,0);
             GrapplingHook hook = (GrapplingHook)(contact.getFixtureA().getUserData());
             hook.player.followGrapple();
-            System.out.println("grappled");
+            //System.out.println("grappled");
         }
         else if(contact.getFixtureB().getUserData() instanceof GrapplingHook) {
             contact.getFixtureB().getBody().setLinearVelocity(0,0);
             GrapplingHook hook = (GrapplingHook)(contact.getFixtureB().getUserData());
             hook.player.followGrapple();
-            System.out.println("grappled");
+            //System.out.println("grappled");
         }
         // Bullets
 
         else if (contact.getFixtureA().getUserData() instanceof Bullet && contact.getFixtureB().getUserData() instanceof Enemy){
             Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
-            System.out.println("enemy hit");
+            //System.out.println("enemy hit");
             if (!game.bodyDeletionList.contains(bullet.body)){
                 game.bodyDeletionList.add(bullet.body);
             }
@@ -52,7 +52,7 @@ public class MyContactListener implements ContactListener {
             enemy.setHp(enemy.getHp() - bullet.getDamage());
 
             if (enemy.getHp() <= 0){
-                System.out.println("enemy killed");
+                //System.out.println("enemy killed");
                 if (!game.bodyDeletionList.contains(enemy.body)){
                     game.bodyDeletionList.add(enemy.body);
                 }
@@ -63,7 +63,7 @@ public class MyContactListener implements ContactListener {
         
         else if (contact.getFixtureB().getUserData() instanceof Bullet && contact.getFixtureA().getUserData() instanceof Enemy){
             Bullet bullet = (Bullet)(contact.getFixtureB().getUserData());
-            System.out.println("enemy hit");
+            //System.out.println("enemy hit");
             if (!game.bodyDeletionList.contains(bullet.body)){
                 game.bodyDeletionList.add(bullet.body);
             }
@@ -72,7 +72,7 @@ public class MyContactListener implements ContactListener {
             enemy.setHp(enemy.getHp() - bullet.getDamage());
 
             if (enemy.getHp() <= 0){
-                System.out.println("enemy killed");
+                //System.out.println("enemy killed");
                 if (!game.bodyDeletionList.contains(enemy.body)){
                     game.bodyDeletionList.add(enemy.body);
                 }
@@ -82,7 +82,7 @@ public class MyContactListener implements ContactListener {
 
         else if (contact.getFixtureA().getUserData() instanceof Bullet) {
             Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
-            System.out.println("hit");
+            //System.out.println("hit");
             //System.out.println(contact.getFixtureB().getUserData());
             if (!game.bodyDeletionList.contains(bullet.body)){
                 game.bodyDeletionList.add(bullet.body);
@@ -93,7 +93,7 @@ public class MyContactListener implements ContactListener {
         
         else if (contact.getFixtureB().getUserData() instanceof Bullet){
             Bullet bullet = (Bullet)(contact.getFixtureB().getUserData());
-            System.out.println("hit");
+            //System.out.println("hit");
             //System.out.println(contact.getFixtureA().getUserData());
             if (!game.bodyDeletionList.contains(bullet.body)){
                 game.bodyDeletionList.add(bullet.body);
@@ -104,7 +104,7 @@ public class MyContactListener implements ContactListener {
 
         else if (contact.getFixtureA().getUserData() instanceof Grenade){
             Grenade grenade = (Grenade)(contact.getFixtureA().getUserData());
-            System.out.println("boom");
+            //System.out.println("boom");
             grenade.body.setLinearVelocity(0,0);
 
             Explosion explosion = new Explosion(grenade.body.getWorld(), grenade.body.getPosition());
@@ -120,7 +120,7 @@ public class MyContactListener implements ContactListener {
 
         else if (contact.getFixtureB().getUserData() instanceof Grenade){
             Grenade grenade = (Grenade)(contact.getFixtureB().getUserData());
-            System.out.println("boom");
+            //System.out.println("boom");
             grenade.body.setLinearVelocity(0,0);
 
             Explosion explosion = new Explosion(grenade.body.getWorld(), grenade.body.getPosition());
@@ -138,7 +138,7 @@ public class MyContactListener implements ContactListener {
 
         else if (contact.getFixtureA().getUserData() instanceof Explosion){
             Explosion explosion = (Explosion)(contact.getFixtureA().getUserData());
-            System.out.println("kerblamo");
+            //System.out.println("kerblamo");
 
             if (!game.bodyDeletionList.contains(explosion.body)){
                 game.bodyDeletionList.add(explosion.body);
@@ -150,7 +150,7 @@ public class MyContactListener implements ContactListener {
                 enemy.setHp(enemy.getHp() - explosion.getDamage());
     
                 if (enemy.getHp() <= 0){
-                    System.out.println("enemy killed");
+                    //System.out.println("enemy killed");
                     if (!game.bodyDeletionList.contains(enemy.body)){
                         game.bodyDeletionList.add(enemy.body);
                     }
@@ -162,7 +162,7 @@ public class MyContactListener implements ContactListener {
 
         else if (contact.getFixtureB().getUserData() instanceof Explosion){
             Explosion explosion = (Explosion)(contact.getFixtureB().getUserData());
-            System.out.println("kerblamo");
+            //System.out.println("kerblamo");
 
             if (!game.bodyDeletionList.contains(explosion.body)){
                 game.bodyDeletionList.add(explosion.body);
@@ -174,7 +174,7 @@ public class MyContactListener implements ContactListener {
                 enemy.setHp(enemy.getHp() - explosion.getDamage());
     
                 if (enemy.getHp() <= 0){
-                    System.out.println("enemy killed");
+                    //System.out.println("enemy killed");
                     if (!game.bodyDeletionList.contains(enemy.body)){
                         game.bodyDeletionList.add(enemy.body);
                     }
