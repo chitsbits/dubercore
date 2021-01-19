@@ -189,8 +189,6 @@ public class TileMap {
                 }
             }
         }
-
-
     }
 
     private int getTileMarchCase(int bottomLeft, int bottomRight, int topRight, int topLeft) {
