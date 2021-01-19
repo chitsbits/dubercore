@@ -37,12 +37,13 @@ public class Game {
 
    public World world;
    public TileMap tileMap;
-   //public ArrayList<Entity> entityList;
    public ArrayList<Body> bodyDeletionList;
    public ArrayList<Explosion> explosionBodyList;
 
    public Player player1;
    public GruntEnemy testDummy;
+
+   public int score;
 
    public Game() {
       initialize();
@@ -102,7 +103,7 @@ public class Game {
    public void destroyTerrain(Vector2 breakPoint){
       // Convert breakpoint to tilemap coords
       Vector2 tileMapBreakPoint = new Vector2(breakPoint.x * 2f, breakPoint.y * 2f);
-      tileMap.clearTile(tileMapBreakPoint);
+      score += tileMap.clearTile(tileMapBreakPoint);
    }
 
    public void spawnPlayer(){

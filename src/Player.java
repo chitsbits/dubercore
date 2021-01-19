@@ -21,7 +21,7 @@ public class Player extends Entity {
 
     public static final float X_SPEED = 5;
     public static final float JUMP_SPEED = 10;
-    public static final float MAX_VELOCITY = 10f;
+    public static final float MAX_VELOCITY = 5f;
 
     Sprite playerSprite;
 
@@ -123,7 +123,7 @@ public class Player extends Entity {
         grappleDirection = new Vector2();
         grappleDirection.x = grapple.getPos().x - getPos().x;
         grappleDirection.y = grapple.getPos().y - getPos().y;
-        grappleDirection.clamp(20f, 20f);
+        grappleDirection.clamp(15f, 15f);
         
         body.setLinearVelocity(grappleDirection);
         body.setGravityScale(0);
@@ -146,12 +146,12 @@ public class Player extends Entity {
     }
 
     public void moveLeft() {
-        body.applyLinearImpulse(-0.80f, 0, getPos().x, getPos().y, true);
+        body.applyLinearImpulse(-0.50f, 0, getPos().x, getPos().y, true);
         //body.setLinearVelocity(-X_SPEED, getVel().y);
     }
 
     public void moveRight() {
-        body.applyLinearImpulse(0.80f, 0, getPos().x, getPos().y, true);
+        body.applyLinearImpulse(0.50f, 0, getPos().x, getPos().y, true);
     }
 
     public void jump() {
