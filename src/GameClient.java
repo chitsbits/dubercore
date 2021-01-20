@@ -219,8 +219,15 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         else if (keycode == Input.Keys.NUM_1){
             activeItem = 1;
             System.out.println("gun go pew");
-            player.retractGrapple();
-            localGame.bodyDeletionList.add(player.grapple.body);
+
+            if (player.grapple != null){
+
+                player.retractGrapple();
+                if (!localGame.bodyDeletionList.contains(player.grapple.body)){
+                    localGame.bodyDeletionList.add(player.grapple.body);
+                }
+
+            }
             return true;
 
         }
@@ -284,7 +291,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             if (activeItem == 2){
 
                 player.retractGrapple();
-                localGame.bodyDeletionList.add(player.grapple.body);
+                if (!localGame.bodyDeletionList.contains(player.grapple.body)){
+                    localGame.bodyDeletionList.add(player.grapple.body);
+                }
                 return true;
             }
         }
@@ -320,8 +329,15 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             
             if (activeItem == 1){
                 System.out.println("gun go pew");
-                player.retractGrapple();
-                localGame.bodyDeletionList.add(player.grapple.body);
+                if (player.grapple != null){
+
+                    player.retractGrapple();
+                    if (!localGame.bodyDeletionList.contains(player.grapple.body)){
+                        localGame.bodyDeletionList.add(player.grapple.body);
+                    }
+
+                }
+
             }
             else {
                 System.out.println("grapple go hook");
