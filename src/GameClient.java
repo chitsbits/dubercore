@@ -56,6 +56,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     int screenX;
     int screenY;
+    float clock;
 
     @Override
     public void create() {
@@ -159,10 +160,29 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         // Render Box2D world
         debugRenderer.render(localGame.world, camera.combined);
-        // Render test mouse line
-        sr.setProjectionMatrix(camera.combined);
-        sr.begin(ShapeType.Line);
-        sr.end(); 
+        clock += Gdx.graphics.getDeltaTime();
+        
+        if (clock > 10) {
+            System.out.println("spawned");
+            localGame.spawnEnemy();
+            clock = 0;
+        }
+            
+        
+
+        /* sr.begin(ShapeType.Filled);
+        for(int i = 0; i < TileMap.MAP_COLS+1; i++){
+            for(int j = 0; j < TileMap.MAP_ROWS+1; j++){
+                if(localGame.tileMap.cornerArr[i][j] == 1){
+                    sr.setColor(Color.RED);
+                } else{
+                    sr.setColor(Color.BLACK);
+                }
+                sr.rect(i / 2f - 0.05f, j / 2f - 0.05f, 0.1f, 0.1f);
+            }
+        }
+        sr.end(); */
+        
     }
 
     @Override
@@ -185,12 +205,12 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.G){
+        if (keycode == Input.Keys.G && player.checkCooldown(player.lastGrenadeUse, Grenade.COOLDOWN)){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-            if (player.grenadeCount > 0){
 
-                player.throwGrenade(localGame, mousePos);
-            }
+            player.throwGrenade(localGame, mousePos);
+            player.lastGrenadeUse = System.currentTimeMillis();
+            //player.grenadeCount = player.grenadeCount - 1;
             return true;
         }
         
@@ -239,15 +259,18 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         //firing weapon/grapple hook
         else if(button == Input.Buttons.LEFT){
 
-            if (player.activeItem == 1){
+            if (player.activeItem == 1 && player.checkCooldown(player.lastWeaponFire, player.getWeapon().fireRate)){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
                 player.getWeapon().fire(localGame, mousePos);
+                player.lastWeaponFire = System.currentTimeMillis();
                 return true;
             }
 
-            else if (player.activeItem == 2){
+            else if (player.activeItem == 2 && player.checkCooldown(player.lastGrappleUse, GrapplingHook.COOLDOWN)){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
+                //System.out.println("shot grapple");
                 player.shootGrapple(localGame.world, mousePos);
+                player.lastGrappleUse = System.currentTimeMillis();
                 return true; 
             }
         }
@@ -258,6 +281,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if(button == Input.Buttons.LEFT){
             if (player.activeItem == 2 && player.isGrappling){
+                //System.out.println("released grapple");
                 player.retractGrapple();
                 localGame.bodyDeletionList.add(player.grapple.body);
                 return true;

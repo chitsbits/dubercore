@@ -14,6 +14,7 @@ public class Pistol extends Weapon {
         super(player);
         weaponType = "Pistol";
         damage = 1f;
+        fireRate = 500;
         
 
         // TODO Auto-generated constructor stub

@@ -55,7 +55,7 @@ public class MyContactListener implements ContactListener {
                 //System.out.println("enemy killed");
                 if (!game.bodyDeletionList.contains(enemy.body)){
                     game.bodyDeletionList.add(enemy.body);
-                    game.score += 5;
+                    game.score += 10;
                 }
             }
 
@@ -76,7 +76,7 @@ public class MyContactListener implements ContactListener {
                 //System.out.println("enemy killed");
                 if (!game.bodyDeletionList.contains(enemy.body)){
                     game.bodyDeletionList.add(enemy.body);
-                    game.score += 5;
+                    game.score += 10;
                 }
             }
 

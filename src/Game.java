@@ -42,7 +42,6 @@ public class Game {
    public ArrayList<Entity> entityList;
 
    public Player player1;
-   public GruntEnemy testDummy;
 
    public int score;
 
@@ -65,7 +64,6 @@ public class Game {
       tileMap = new TileMap(world);
 
       spawnPlayer();
-      testDummy = new GruntEnemy(world);
 
    }
 
@@ -125,4 +123,30 @@ public class Game {
       player1 = new Player(world, player1BodyDef);
       entityList.add(player1);
    }
+
+   public void spawnEnemy() {
+      BodyDef enemyBodyDef = new BodyDef();
+      boolean validSpawn;
+         int x, y;
+         do {
+            validSpawn = true;
+            x = (int) (Math.random() * (TileMap.MAP_COLS - 14) + 7);
+            y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
+
+            // Test if the surround 3x3 tiles are air
+            for (int a = -6; a < 6; a++) {
+               for (int b = -6; b < 6; b++) {
+                  if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
+                     validSpawn = false;
+                     break;
+                  }
+               }
+            }
+         } while (!validSpawn);
+      enemyBodyDef.position.set(x / 2, y / 2);
+      GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
+      //entityList.add(enemy);
+
+     
+  }
 }
