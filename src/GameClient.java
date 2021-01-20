@@ -47,14 +47,11 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     Box2DDebugRenderer debugRenderer;
     ShapeRenderer sr;
-    Vector2 tempMouseVector = new Vector2(0, 0);
 
     boolean useDebugCamera = false;
 
     BitmapFont font;
 
-    public static Texture[] stoneTextures;
-    public static Texture textureAir;
     public static TextureAtlas textureAtlas;
 
     int screenX;
@@ -113,13 +110,10 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0) {
             player.jump();
         }
-
-        //System.out.println("x: " + player.getPos().x + " y: " + player.getPos().y);
         //System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Step physics world
         localGame.doPhysicsStep(Gdx.graphics.getDeltaTime());
-
 
         // Focus camera on player
         if(!useDebugCamera)
@@ -168,22 +162,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // Render test mouse line
         sr.setProjectionMatrix(camera.combined);
         sr.begin(ShapeType.Line);
-        sr.line(player.getPos(), tempMouseVector);
-        sr.end();
-
-        /* sr.begin(ShapeType.Filled);
-        for(int i = 0; i < TileMap.MAP_COLS+1; i++){
-            for(int j = 0; j < TileMap.MAP_ROWS+1; j++){
-                if(localGame.tileMap.cornerArr[i][j] == 1){
-                    sr.setColor(Color.RED);
-                } else{
-                    sr.setColor(Color.BLACK);
-                }
-                sr.rect(i / 2f - 0.05f, j / 2f - 0.05f, 0.1f, 0.1f);
-            }
-        }
-        sr.end(); */
-        
+        sr.end(); 
     }
 
     @Override
@@ -199,6 +178,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         textureAtlas.dispose();
         debugRenderer.dispose();
         sr.dispose();
+        font.dispose();
     }
     
     // TODO: move all actual logic to game class, so that only inputs are sent to server
@@ -210,7 +190,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             if (player.grenadeCount > 0){
 
                 player.throwGrenade(localGame, mousePos);
-                //player.grenadeCount = player.grenadeCount - 1;
             }
             return true;
         }
@@ -254,7 +233,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             localGame.world.rayCast(callback, player.getPos(), breakPoint);
             if (callback.collisionPoint != null) {
                 localGame.destroyTerrain(callback.collisionPoint);
-                tempMouseVector = callback.collisionPoint;
             }
             return true;
         }
@@ -325,7 +303,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             }
             return true;
         }
-
         return false;
     }
 

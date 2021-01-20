@@ -103,8 +103,6 @@ public class Player extends Entity {
 
         entityShape.dispose();
         feetShape.dispose();
-        //playerSprite.getTexture().dispose();
-        
     }
 
     public void shootGrapple(World world, Vector3 mousePos) {
@@ -150,14 +148,10 @@ public class Player extends Entity {
         grenadeDirection.clamp(40f, 40f);
         grenade.body.setGravityScale(5);
         grenade.body.setLinearVelocity(grenadeDirection);
-        //System.out.println("Barmee qunbelah yadaweeyah!");
-        
-
     }
 
     public void moveLeft() {
         body.applyLinearImpulse(-0.50f, 0, getPos().x, getPos().y, true);
-        //body.setLinearVelocity(-X_SPEED, getVel().y);
     }
 
     public void moveRight() {
