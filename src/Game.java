@@ -77,38 +77,31 @@ public class Game {
       while (accumulator >= STEP_TIME) {
          world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
-         if (!this.bodyDeletionList.isEmpty()){
-
+         if (!this.bodyDeletionList.isEmpty()) {
             for (Body body : this.bodyDeletionList) {
-            
                body.setActive(false);
                this.world.destroyBody(body);
-               //System.out.println("removed");
-         }
-        this.bodyDeletionList.clear();
-        }
-
-        if (!this.explosionBodyList.isEmpty()){
-
-            for (Explosion explosion : this.explosionBodyList) {
-               //System.out.println("explosion :o");
-               explosion.explode();
-               
             }
-        }
-        explosionBodyList.clear();
+            this.bodyDeletionList.clear();
+         }
+         if (!this.explosionBodyList.isEmpty()) {
+            for (Explosion explosion : this.explosionBodyList) {
+               explosion.explode();
+            }
+         }
+         explosionBodyList.clear();
 
          accumulator -= STEP_TIME;
       }
    }
 
-   public void destroyTerrain(Vector2 breakPoint){
+   public void destroyTerrain(Vector2 breakPoint) {
       // Convert breakpoint to tilemap coords
       Vector2 tileMapBreakPoint = new Vector2(breakPoint.x * 2f, breakPoint.y * 2f);
       score += tileMap.clearTile(tileMapBreakPoint);
    }
 
-   public void spawnPlayer(){
+   public void spawnPlayer() {
       // Create player
       BodyDef player1BodyDef = new BodyDef();
       boolean validSpawn;
@@ -119,17 +112,16 @@ public class Game {
          y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
 
          // Test if the surround 3x3 tiles are air
-         for(int a = -6; a < 6; a++){
-            for(int b = -6; b < 6; b++){
-               if(!(tileMap.terrainArr[x+a][y+b] instanceof Air)){
+         for (int a = -6; a < 6; a++) {
+            for (int b = -6; b < 6; b++) {
+               if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
                   validSpawn = false;
                   break;
                }
             }
          }
-      }
-      while(!validSpawn);
-      player1BodyDef.position.set(x/2, y/2);
+      } while (!validSpawn);
+      player1BodyDef.position.set(x / 2, y / 2);
       player1 = new Player(world, player1BodyDef);
       entityList.add(player1);
    }
