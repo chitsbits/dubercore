@@ -128,7 +128,7 @@ public class Player extends Entity {
     }
 
     public void followGrapple(){
-        if(!isGrappling){
+        if(isGrappling){
             grappleDirection = new Vector2();
             grappleDirection.x = grapple.getPos().x - getPos().x;
             grappleDirection.y = grapple.getPos().y - getPos().y;
