@@ -219,6 +219,8 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         else if (keycode == Input.Keys.NUM_1){
             activeItem = 1;
             System.out.println("gun go pew");
+            player.retractGrapple();
+            localGame.bodyDeletionList.add(player.grapple.body);
             return true;
 
         }
@@ -318,6 +320,8 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             
             if (activeItem == 1){
                 System.out.println("gun go pew");
+                player.retractGrapple();
+                localGame.bodyDeletionList.add(player.grapple.body);
             }
             else {
                 System.out.println("grapple go hook");
