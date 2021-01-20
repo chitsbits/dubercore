@@ -1,3 +1,4 @@
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -7,14 +8,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class GruntEnemy extends Enemy {
 
-    GruntEnemy(World world) {
+    GruntEnemy(World world, BodyDef bodyDef) {
         super(2f, 5f);
         this.width = 0.4f;
         this.height =  0.7f;
 
-        bodyDef = new BodyDef();
+        this.bodyDef = bodyDef;
         bodyDef.type = BodyType.DynamicBody;
-        bodyDef.position.set(10, 24);
+        //bodyDef.position.set(10, 24);
         
         body = world.createBody(bodyDef);
 

@@ -42,7 +42,6 @@ public class Game {
    public ArrayList<Entity> entityList;
 
    public Player player1;
-   public GruntEnemy testDummy;
 
    public int score;
 
@@ -65,7 +64,6 @@ public class Game {
       tileMap = new TileMap(world);
 
       spawnPlayer();
-      testDummy = new GruntEnemy(world);
 
    }
 
@@ -125,4 +123,13 @@ public class Game {
       player1 = new Player(world, player1BodyDef);
       entityList.add(player1);
    }
+
+  public void spawnEnemy() {
+     BodyDef enemyBodyDef = new BodyDef();
+     enemyBodyDef.position.set(player1.body.getPosition());
+     GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
+     //entityList.add(enemy);
+
+     
+  }
 }

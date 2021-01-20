@@ -59,6 +59,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     int screenX;
     int screenY;
+    float clock;
 
     @Override
     public void create() {
@@ -170,6 +171,16 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         sr.begin(ShapeType.Line);
         sr.line(player.getPos(), tempMouseVector);
         sr.end();
+
+        clock += Gdx.graphics.getDeltaTime();
+        
+        if (clock > 10) {
+            System.out.println("spawned");
+            localGame.spawnEnemy();
+            clock = 0;
+        }
+            
+        
 
         /* sr.begin(ShapeType.Filled);
         for(int i = 0; i < TileMap.MAP_COLS+1; i++){
