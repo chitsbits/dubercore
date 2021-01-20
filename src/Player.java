@@ -34,6 +34,10 @@ public class Player extends Entity {
     private Weapon weapon;
     public int activeItem;
 
+    public long lastGrenadeUse;
+    public long lastWeaponFire;
+    public long lastGrappleUse;
+
     public GrapplingHook grapple;
     
     public Player(World world, BodyDef bodyDef){
@@ -166,6 +170,14 @@ public class Player extends Entity {
 
     public void jump() {
         body.setLinearVelocity(getVel().x, 10);
+    }
+
+    public boolean checkCooldown(long lastUse, long cooldown){
+        long time = System.currentTimeMillis();
+        if (time > lastUse + cooldown){
+            return true;
+        }
+        return false;
     }
 
     public Weapon getWeapon(){

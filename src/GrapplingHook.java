@@ -12,6 +12,8 @@ public class GrapplingHook extends Entity {
     
     Player player;  // Reference to host player
 
+    public static final long COOLDOWN = 5000;
+
     public GrapplingHook(World world, Player player){
         this.player = player;
 

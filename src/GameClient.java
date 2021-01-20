@@ -205,13 +205,12 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.G){
+        if (keycode == Input.Keys.G && player.checkCooldown(player.lastGrenadeUse, Grenade.COOLDOWN)){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-            if (player.grenadeCount > 0){
 
-                player.throwGrenade(localGame, mousePos);
-                //player.grenadeCount = player.grenadeCount - 1;
-            }
+            player.throwGrenade(localGame, mousePos);
+            player.lastGrenadeUse = System.currentTimeMillis();
+            //player.grenadeCount = player.grenadeCount - 1;
             return true;
         }
         
@@ -261,15 +260,18 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         //firing weapon/grapple hook
         else if(button == Input.Buttons.LEFT){
 
-            if (player.activeItem == 1){
+            if (player.activeItem == 1 && player.checkCooldown(player.lastWeaponFire, player.getWeapon().fireRate)){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
                 player.getWeapon().fire(localGame, mousePos);
+                player.lastWeaponFire = System.currentTimeMillis();
                 return true;
             }
 
-            else if (player.activeItem == 2){
+            else if (player.activeItem == 2 && player.checkCooldown(player.lastGrappleUse, GrapplingHook.COOLDOWN)){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
+                //System.out.println("shot grapple");
                 player.shootGrapple(localGame.world, mousePos);
+                player.lastGrappleUse = System.currentTimeMillis();
                 return true; 
             }
         }
@@ -280,6 +282,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if(button == Input.Buttons.LEFT){
             if (player.activeItem == 2 && player.isGrappling){
+                //System.out.println("released grapple");
                 player.retractGrapple();
                 localGame.bodyDeletionList.add(player.grapple.body);
                 return true;

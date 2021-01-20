@@ -15,6 +15,7 @@ public abstract class Weapon {
     Player player;
     float damage;
     Vector2 bulletDirection;
+    public long fireRate;
 
     Weapon(Player player){
         this.player = player;
