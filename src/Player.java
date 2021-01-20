@@ -26,11 +26,13 @@ public class Player extends Entity {
     public int collidingCount;
     public boolean canJump;
     public boolean canMove;
+    public boolean isGrappling;
     public int grenadeCount;
     private Vector2 grappleDirection;
     private Vector2 grenadeDirection;
     private Grenade grenade;
     private Weapon weapon;
+    public int activeItem;
 
     public GrapplingHook grapple;
     
@@ -40,6 +42,8 @@ public class Player extends Entity {
         canJump = false;
         canMove = true;
         grenadeCount = 5;
+        isGrappling = false;
+        activeItem = 1;
         //adding a default weapon
         weapon = new Pistol(this);
 
@@ -105,6 +109,7 @@ public class Player extends Entity {
 
     public void shootGrapple(World world, Vector3 mousePos) {
 
+        isGrappling = true;
         grapple = new GrapplingHook(world, this);
         
         grappleDirection = new Vector2();
@@ -115,19 +120,24 @@ public class Player extends Entity {
     }
 
     public void retractGrapple() {
-        body.setGravityScale(1);
-        canMove = true;
+        if(isGrappling){
+            body.setGravityScale(1);
+            canMove = true;
+            isGrappling = false;
+        }
     }
 
     public void followGrapple(){
-        grappleDirection = new Vector2();
-        grappleDirection.x = grapple.getPos().x - getPos().x;
-        grappleDirection.y = grapple.getPos().y - getPos().y;
-        grappleDirection.clamp(15f, 15f);
-        
-        body.setLinearVelocity(grappleDirection);
-        body.setGravityScale(0);
-        canMove = false;
+        if(!isGrappling){
+            grappleDirection = new Vector2();
+            grappleDirection.x = grapple.getPos().x - getPos().x;
+            grappleDirection.y = grapple.getPos().y - getPos().y;
+            grappleDirection.clamp(15f, 15f);
+            
+            body.setLinearVelocity(grappleDirection);
+            body.setGravityScale(0);
+            canMove = false;
+        }
     }
 
     public void throwGrenade(Game game, Vector3 mousePos){
@@ -138,7 +148,7 @@ public class Player extends Entity {
         grenadeDirection.x = mousePos.x - getPos().x;
         grenadeDirection.y = mousePos.y - getPos().y;
         grenadeDirection.clamp(40f, 40f);
-        grenade.body.setGravityScale(6);
+        grenade.body.setGravityScale(5);
         grenade.body.setLinearVelocity(grenadeDirection);
         //System.out.println("Barmee qunbelah yadaweeyah!");
         

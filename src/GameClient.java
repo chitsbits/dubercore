@@ -59,7 +59,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     int screenX;
     int screenY;
-    int activeItem = 1;
 
     @Override
     public void create() {
@@ -217,23 +216,16 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         }
         
         else if (keycode == Input.Keys.NUM_1){
-            activeItem = 1;
+            player.activeItem = 1;
             System.out.println("gun go pew");
-
-            if (player.grapple != null){
-
+            if(player.isGrappling){
                 player.retractGrapple();
-                if (!localGame.bodyDeletionList.contains(player.grapple.body)){
-                    localGame.bodyDeletionList.add(player.grapple.body);
-                }
-
+                localGame.bodyDeletionList.add(player.grapple.body);
             }
             return true;
-
         }
-
         else if (keycode == Input.Keys.NUM_2){
-            activeItem = 2;
+            player.activeItem = 2;
             System.out.println("grapple go hook");
             return true;
         }
@@ -269,18 +261,17 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         //firing weapon/grapple hook
         else if(button == Input.Buttons.LEFT){
 
-            if (activeItem == 1){
+            if (player.activeItem == 1){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
                 player.getWeapon().fire(localGame, mousePos);
                 return true;
             }
 
-            else if (activeItem == 2){
+            else if (player.activeItem == 2){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(localGame.world, mousePos);
                 return true; 
             }
-
         }
         return false;
     }
@@ -288,12 +279,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if(button == Input.Buttons.LEFT){
-            if (activeItem == 2){
-
+            if (player.activeItem == 2 && player.isGrappling){
                 player.retractGrapple();
-                if (!localGame.bodyDeletionList.contains(player.grapple.body)){
-                    localGame.bodyDeletionList.add(player.grapple.body);
-                }
+                localGame.bodyDeletionList.add(player.grapple.body);
                 return true;
             }
         }
@@ -318,26 +306,19 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     public boolean scrolled(float amountX, float amountY) {
 
         if (amountY == 1 || amountY == -1){
-            activeItem += amountY;
-            if (activeItem > 2) {
-                activeItem = 1;
+            player.activeItem += amountY;
+            if (player.activeItem > 2) {
+                player.activeItem = 1;
             }
-            if (activeItem < 1) {
-                activeItem = 2;
+            else if (player.activeItem < 1) {
+                player.activeItem = 2;
             }
-            
-            
-            if (activeItem == 1){
+            else if (player.activeItem == 1){
                 System.out.println("gun go pew");
-                if (player.grapple != null){
-
+                if (player.isGrappling){
                     player.retractGrapple();
-                    if (!localGame.bodyDeletionList.contains(player.grapple.body)){
-                        localGame.bodyDeletionList.add(player.grapple.body);
-                    }
-
+                    localGame.bodyDeletionList.add(player.grapple.body);
                 }
-
             }
             else {
                 System.out.println("grapple go hook");
