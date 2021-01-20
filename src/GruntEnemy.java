@@ -14,15 +14,14 @@ public class GruntEnemy extends Enemy {
         this.height =  0.7f;
 
         this.bodyDef = bodyDef;
-        bodyDef.type = BodyType.DynamicBody;
+        this.bodyDef.type = BodyType.DynamicBody;
         //bodyDef.position.set(10, 24);
-        
-        body = world.createBody(bodyDef);
 
         entityShape = new PolygonShape();
         ((PolygonShape) entityShape).setAsBox(width, height);
         
-        body = world.createBody(bodyDef);
+        this.body = world.createBody(this.bodyDef);
+        this.body.setGravityScale(0);
 
         FixtureDef bodyFixtureDef = new FixtureDef();
         bodyFixtureDef.shape = entityShape;
