@@ -120,6 +120,10 @@ public class Game {
          }
       } while (!validSpawn);
       player1BodyDef.position.set(x / 2, y / 2);
+      System.out.println("player spawn sss");
+      System.out.println(x/2);
+      System.out.println(y/2);
+      System.out.println("player spawn eee");
       player1 = new Player(world, player1BodyDef);
       entityList.add(player1);
    }
@@ -144,7 +148,7 @@ public class Game {
             }
          } while (!validSpawn);
       enemyBodyDef.position.set(x / 2, y / 2);
-      GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
+      GruntEnemy enemy = new GruntEnemy(this, enemyBodyDef);
       //entityList.add(enemy);
 
      

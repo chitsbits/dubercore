@@ -131,6 +131,7 @@ public class TileMap {
                 case 15:
                     terrainArr[i][j] = new Stone(tileCase, i/2f, j/2f);
                 }
+
             }
         }
 

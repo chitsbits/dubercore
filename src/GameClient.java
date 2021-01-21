@@ -61,6 +61,8 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     int screenY;
     float clock;
 
+    GruntEnemy enemy;
+
     @Override
     public void create() {
 
@@ -88,6 +90,8 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         Gdx.input.setInputProcessor(this);
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
+
+        enemy = new GruntEnemy(localGame, player.bodyDef);
     }
 
     @Override
@@ -172,13 +176,23 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         sr.line(player.getPos(), tempMouseVector);
         sr.end();
 
+        //periodic spawning of enemies
         clock += Gdx.graphics.getDeltaTime();
         
         if (clock > 10) {
-            System.out.println("spawned");
-            localGame.spawnEnemy();
-            clock = 0;
+            // System.out.println("spawned");
+            // localGame.spawnEnemy();
+            // clock = 0;
+            enemy.pathfind(player.getPos());
+            for(Terrain tile: enemy.path){
+                System.out.println("enemy.pathfind sss");
+                System.out.println(tile.worldX);
+                System.out.println(tile.worldY);
+                System.out.println("enemy.pathfind eee");
+    
+            }
         }
+
             
         
 
