@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -31,12 +32,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.esotericsoftware.kryonet.Client;
 
 public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     // Camera dimensions in metres. TODO: scale with monitor
     public static final float CAMERA_WIDTH = 32f;
     public static final float CAMERA_HEIGHT = 18f;
+
+    Client client;
 
     Game localGame; // Local instance of the game
     OrthographicCamera camera;
@@ -63,10 +67,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         textureAtlas = new TextureAtlas("assets\\sprites.txt");
         font = new BitmapFont();
-
-        localGame = new Game();
-        player = localGame.player1;
-
         worldBatch = new SpriteBatch();
         hudBatch = new SpriteBatch();
 
@@ -74,15 +74,16 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         camera = new OrthographicCamera();
         // viewport = new FitViewport(800, 480, camera);
 
-        if(useDebugCamera)
-        camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
+        if (useDebugCamera)
+            camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
         else
-        camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
-        
+            camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
         sr = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
+
+        connectToServer();
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
     }
@@ -95,10 +96,10 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // of the color to be used to clear the screen.
         Gdx.gl.glClearColor(0.57f, 0.77f, 0.85f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+
         // Player input
         // apply left impulse, but only if max velocity is not reached yet
-        if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {			
+        if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {
             player.moveLeft();
         }
 
@@ -111,14 +112,11 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0) {
             player.jump();
         }
-        //System.out.println(Gdx.graphics.getFramesPerSecond());
-
-        // Step physics world
-        localGame.doPhysicsStep(Gdx.graphics.getDeltaTime());
+        // System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Focus camera on player
-        if(!useDebugCamera)
-        camera.position.set(player.getPos().x, player.getPos().y, 0);
+        if (!useDebugCamera)
+            camera.position.set(player.getPos().x, player.getPos().y, 0);
 
         // tell the camera to update its matrices.
         camera.update();
@@ -130,14 +128,14 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         Terrain[][] terrainArr = localGame.tileMap.terrainArr;
 
         // Set bounds of the map to render
-        int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
-        int jStart = (int)(Math.max(0f, (camera.position.y - camera.viewportHeight / 2f) * 2));
+        int iStart = (int) (Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
+        int jStart = (int) (Math.max(0f, (camera.position.y - camera.viewportHeight / 2f) * 2));
 
-        int iEnd = (int)(Math.min(TileMap.MAP_COLS, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
-        int jEnd = (int)(Math.min(TileMap.MAP_ROWS-1, (camera.position.y + camera.viewportHeight / 2f) * 2) + 1);
+        int iEnd = (int) (Math.min(TileMap.MAP_COLS, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
+        int jEnd = (int) (Math.min(TileMap.MAP_ROWS - 1, (camera.position.y + camera.viewportHeight / 2f) * 2) + 1);
 
-        for(int i = iStart; i < iEnd; i++){
-            for(int j = jStart; j < jEnd; j++){
+        for (int i = iStart; i < iEnd; i++) {
+            for (int j = jStart; j < jEnd; j++) {
                 Terrain tile = terrainArr[i][j];
                 Sprite sprite = tile.sprite;
                 sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
@@ -146,9 +144,10 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         }
 
         // Draw entities
-        for(Entity ent : localGame.entityList){
-            Sprite sprite = ((Entity)(ent.body.getUserData())).sprite;
-            sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2, ent.body.getPosition().y - sprite.getHeight() / 2);
+        for (Entity ent : localGame.entityList) {
+            Sprite sprite = ((Entity) (ent.body.getUserData())).sprite;
+            sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2,
+                    ent.body.getPosition().y - sprite.getHeight() / 2);
             sprite.draw(worldBatch);
         }
         worldBatch.end();
@@ -161,28 +160,12 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // Render Box2D world
         debugRenderer.render(localGame.world, camera.combined);
         clock += Gdx.graphics.getDeltaTime();
-        
+
         if (clock > 10) {
             System.out.println("spawned");
             localGame.spawnEnemy();
             clock = 0;
         }
-            
-        
-
-        /* sr.begin(ShapeType.Filled);
-        for(int i = 0; i < TileMap.MAP_COLS+1; i++){
-            for(int j = 0; j < TileMap.MAP_ROWS+1; j++){
-                if(localGame.tileMap.cornerArr[i][j] == 1){
-                    sr.setColor(Color.RED);
-                } else{
-                    sr.setColor(Color.BLACK);
-                }
-                sr.rect(i / 2f - 0.05f, j / 2f - 0.05f, 0.1f, 0.1f);
-            }
-        }
-        sr.end(); */
-        
     }
 
     @Override
@@ -191,7 +174,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         localGame.world.dispose();
         worldBatch.dispose();
         hudBatch.dispose();
@@ -199,6 +182,31 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         debugRenderer.dispose();
         sr.dispose();
         font.dispose();
+    }
+
+    public void connectToServer() {
+        client = new Client();
+        client.start();
+        try {
+            client.connect(5000, "127.0.0.1", 54555, 54777);
+            JoinGameRequest joinRequest = new JoinGameRequest("chits");
+            client.sendTCP(joinRequest);
+
+        } catch (IOException e) {
+            System.out.println("Unable to connect to server");
+            e.printStackTrace();
+            quitClient(-1); 
+        }
+    }
+
+    /**
+     * Properly dispose and close the client
+     * @param status System.exit status
+     */
+    public void quitClient(int status){
+        dispose();
+        Gdx.app.exit();
+        System.exit(status);  
     }
     
     // TODO: move all actual logic to game class, so that only inputs are sent to server

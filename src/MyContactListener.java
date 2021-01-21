@@ -15,16 +15,26 @@ public class MyContactListener implements ContactListener {
     @Override
     public void endContact(Contact contact) {
         // Can jump flag for player 1
-        if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player) {
-            game.player1.collidingCount -= 1;
+        if(contact.getFixtureA().getUserData() instanceof Player) {
+            Player player = (Player) contact.getFixtureA().getUserData();
+            player.collidingCount -= 1;
+        }
+        else if (contact.getFixtureB().getUserData() instanceof Player){
+            Player player = (Player) contact.getFixtureB().getUserData();
+            player.collidingCount -= 1;
         }
     }
 
     @Override
     public void beginContact(Contact contact) {
 
-        if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player){
-            game.player1.collidingCount += 1;
+        if(contact.getFixtureA().getUserData() instanceof Player){
+            Player player = (Player) contact.getFixtureA().getUserData();
+            player.collidingCount += 1;
+        }
+        else if (contact.getFixtureB().getUserData() instanceof Player){
+            Player player = (Player) contact.getFixtureB().getUserData();
+            player.collidingCount += 1;
         }
         // Grappling hook
         else if (contact.getFixtureA().getUserData() instanceof GrapplingHook){

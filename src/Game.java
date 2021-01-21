@@ -41,15 +41,22 @@ public class Game {
    public ArrayList<Explosion> explosionBodyList;
    public ArrayList<Entity> entityList;
 
-   public Player player1;
-
+   public float deltaTime;
+   public float previousFrameTime;
+   public float currentFrameTime;
+   public ArrayList<Player> playerList;
    public int score;
+   
+   private boolean running;
 
    public Game() {
       initialize();
+      startGameLoop();
    }
 
    public void initialize() {
+
+      running = true;
 
       // Initialize Box2d World
       Box2D.init();
@@ -62,9 +69,17 @@ public class Game {
       world.setContactListener(contactListener);
 
       tileMap = new TileMap(world);
+   }
 
-      spawnPlayer();
+   private void startGameLoop(){
 
+      previousFrameTime = System.nanoTime();
+      while(running){
+         currentFrameTime = System.nanoTime();
+         deltaTime = currentFrameTime - previousFrameTime;
+         doPhysicsStep(deltaTime);
+         previousFrameTime = currentFrameTime;
+      }
    }
 
    public void doPhysicsStep(float deltaTime) {
@@ -75,6 +90,7 @@ public class Game {
       while (accumulator >= STEP_TIME) {
          world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
+         // Body deletion optimally is called after every world.step()
          if (!this.bodyDeletionList.isEmpty()) {
             for (Body body : this.bodyDeletionList) {
                body.setActive(false);
@@ -99,7 +115,7 @@ public class Game {
       score += tileMap.clearTile(tileMapBreakPoint);
    }
 
-   public void spawnPlayer() {
+   public Player spawnPlayer() {
       // Create player
       BodyDef player1BodyDef = new BodyDef();
       boolean validSpawn;
@@ -120,8 +136,11 @@ public class Game {
          }
       } while (!validSpawn);
       player1BodyDef.position.set(x / 2, y / 2);
-      player1 = new Player(world, player1BodyDef);
-      entityList.add(player1);
+      Player player = new Player(world, player1BodyDef);
+      entityList.add(player);
+      playerList.add(player);
+
+      return player;
    }
 
    public void spawnEnemy() {
