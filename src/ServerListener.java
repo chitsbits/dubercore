@@ -1,7 +1,13 @@
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-public class TestServerListener extends Listener {
+public class ServerListener extends Listener {
+
+    GameServer gameServer;
+
+    public ServerListener(GameServer gameServer){
+        this.gameServer = gameServer;
+    }
 
     @Override
     public void connected(Connection c){
@@ -15,16 +21,24 @@ public class TestServerListener extends Listener {
 
     @Override
     public void received (Connection connection, Object object) {
+
         // Sent by the client upon connecting
         if (object instanceof JoinGameRequest){
             JoinGameRequest joinRequest = (JoinGameRequest) object;
-            System.out.println("[CLIENT] >> " + joinRequest.name);
+            System.out.println("[CLIENT] >> joined: " + joinRequest.name);
+
+            // Add the client to the server's set of clients
+            gameServer.clients.add(connection);
+            
+            // Spawn the new player
+            gameServer.game.spawnPlayer(joinRequest.name);
+            ConnectionConfirm confirm = new ConnectionConfirm();
+            connection.sendTCP(confirm);
         }
         
+        // TCP packets from the user for player movement
         else if (object instanceof PlayerMovementRequest) {
             PlayerMovementRequest request = (PlayerMovementRequest) object;
-        }   
-
+        }
     }
-    
 }

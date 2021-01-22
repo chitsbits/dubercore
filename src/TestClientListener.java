@@ -10,17 +10,24 @@ public class TestClientListener extends Listener {
         this.client = client;
     }
 
+    @Override
     public void connected(Connection c){
         System.out.println("[CLIENT] >> you have connected to the server");
-        JoinGameRequest joinRequest = new JoinGameRequest("chits");
+        System.out.println("here");
+        JoinGameRequest joinRequest = new JoinGameRequest();
+        joinRequest.name = "chits";
+        System.out.println(joinRequest.name);
         client.sendTCP(joinRequest);
         System.out.println("reached");
     }
+
+    @Override
     public void disconnected(Connection c){
         System.out.println("[CLIENT] >> you have disconnected from the server");
     }
     
-    public void recieved(Connection connection, Object object){
+    @Override
+    public void received(Connection connection, Object object){
         if (object instanceof JoinGameRequest){
             JoinGameRequest joinGameRequest = (JoinGameRequest) object;
             System.out.println(joinGameRequest.name);

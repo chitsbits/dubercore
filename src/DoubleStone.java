@@ -1,4 +1,5 @@
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
@@ -11,6 +12,6 @@ public class DoubleStone extends Stone {
         super(tileCase, x,y);
         this.body1 = body1;
         this.body2 = body2;
-        this.sprite = GameClient.textureAtlas.createSprite("stone" + (tileCase));
+        spriteName = "stone" + tileCase;
     }
 }

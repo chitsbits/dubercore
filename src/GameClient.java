@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -33,12 +34,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.minlog.Log;
 
-public class GameClient extends ApplicationAdapter implements InputProcessor {
+public class GameClient extends ApplicationAdapter {
 
     // Camera dimensions in metres. TODO: scale with monitor
     public static final float CAMERA_WIDTH = 32f;
     public static final float CAMERA_HEIGHT = 18f;
+
+    boolean running;
 
     Client client;
 
@@ -47,20 +51,26 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     SpriteBatch worldBatch;
     SpriteBatch hudBatch;
     Viewport viewport;
-    Player player;
+    
+    String playerName;
+    Player myPlayer;
 
     Box2DDebugRenderer debugRenderer;
     ShapeRenderer sr;
 
     boolean useDebugCamera = false;
 
+    TextureAtlas textureAtlas;
     BitmapFont font;
-
-    public static TextureAtlas textureAtlas;
 
     int screenX;
     int screenY;
     float clock;
+
+    public GameClient(Client client){
+        this.client = client;
+        this.running = false;
+    }
 
     @Override
     public void create() {
@@ -81,24 +91,23 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         debugRenderer = new Box2DDebugRenderer();
         sr = new ShapeRenderer();
-        Gdx.input.setInputProcessor(this);
-
-        connectToServer();
+        //Gdx.input.setInputProcessor(this);
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
     }
 
     @Override
     public void render() {
-        // clear the screen with a dark blue color. The
-        // arguments to glClearColor are the red, green
-        // blue and alpha component in the range [0,1]
-        // of the color to be used to clear the screen.
+
+        // Clear background
         Gdx.gl.glClearColor(0.57f, 0.77f, 0.85f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Player input
-        // apply left impulse, but only if max velocity is not reached yet
+        myPlayer = localGame.playerMap.get(playerName);
+
+        PlayerMovementRequest movementRequest = new PlayerMovementRequest();
+
+        /*
         if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {
             player.moveLeft();
         }
@@ -112,11 +121,31 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0) {
             player.jump();
         }
+        */
+
+        // Movement input
+        if (Gdx.input.isKeyPressed(Keys.A)) {
+            movementRequest.moveLeft = true;
+        }
+
+        if (Gdx.input.isKeyPressed(Keys.D)) {
+            movementRequest.moveRight = true;
+        }
+
+        if (Gdx.input.isKeyJustPressed(Keys.W)) {
+            movementRequest.jump = true;
+        }
+
+        // Only send reqeust if a movement was actually inputted
+        if (movementRequest.moveLeft || movementRequest.moveRight || movementRequest.jump){
+            client.sendTCP(movementRequest);
+        }
+
         // System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Focus camera on player
         if (!useDebugCamera)
-            camera.position.set(player.getPos().x, player.getPos().y, 0);
+            camera.position.set(myPlayer.getPos().x, myPlayer.getPos().y, 0);
 
         // tell the camera to update its matrices.
         camera.update();
@@ -137,24 +166,25 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         for (int i = iStart; i < iEnd; i++) {
             for (int j = jStart; j < jEnd; j++) {
                 Terrain tile = terrainArr[i][j];
-                Sprite sprite = tile.sprite;
+                Sprite sprite = textureAtlas.createSprite(tile.spriteName);
                 sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
                 sprite.draw(worldBatch);
             }
         }
 
         // Draw entities
-        for (Entity ent : localGame.entityList) {
-            Sprite sprite = ((Entity) (ent.body.getUserData())).sprite;
-            sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2,
-                    ent.body.getPosition().y - sprite.getHeight() / 2);
-            sprite.draw(worldBatch);
-        }
-        worldBatch.end();
+        // for (Entity ent : localGame.entityList) {
+        //     Sprite sprite = ((Entity) (ent.body.getUserData())).sprite;
+        //     sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2,
+        //             ent.body.getPosition().y - sprite.getHeight() / 2);
+        //     sprite.draw(worldBatch);
+        // }
+        // worldBatch.end();
 
         // Draw hud
         hudBatch.begin();
         font.draw(hudBatch, "Score: " + Integer.toString(localGame.score), 20, 20);
+        font.draw(hudBatch, playerName, 40, 20);
         hudBatch.end();
 
         // Render Box2D world
@@ -178,25 +208,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         localGame.world.dispose();
         worldBatch.dispose();
         hudBatch.dispose();
-        textureAtlas.dispose();
         debugRenderer.dispose();
         sr.dispose();
         font.dispose();
-    }
-
-    public void connectToServer() {
-        client = new Client();
-        client.start();
-        try {
-            client.connect(5000, "127.0.0.1", 54555, 54777);
-            JoinGameRequest joinRequest = new JoinGameRequest("chits");
-            client.sendTCP(joinRequest);
-
-        } catch (IOException e) {
-            System.out.println("Unable to connect to server");
-            e.printStackTrace();
-            quitClient(-1); 
-        }
     }
 
     /**
@@ -205,12 +219,14 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
      */
     public void quitClient(int status){
         dispose();
+        client.close();
         Gdx.app.exit();
         System.exit(status);  
     }
     
     // TODO: move all actual logic to game class, so that only inputs are sent to server
 
+    /*
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.G && player.checkCooldown(player.lastGrenadeUse, Grenade.COOLDOWN)){
@@ -337,5 +353,32 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         }
         return false;
     }
+    */
 
+    public static void main (String[] args) {
+
+        Log.set(Log.LEVEL_DEBUG);
+
+        Client client = new Client();
+        Network.register(client);
+        client.start();
+        GameClient gameClient = new GameClient(client);
+
+        client.addListener(new ClientListener(gameClient));
+
+        try {
+            client.connect(5000, "localhost", 54555, 54777);
+        } catch (IOException e) {
+            System.out.println("Unable to connect to server");
+            e.printStackTrace();
+        }
+        
+        while(true){
+            if(gameClient.running){
+                // Start libGDX window
+                new LwjglApplication(gameClient, "DuberCore", 1280, 720);
+                break;
+            }       
+        } 
+    }
 }

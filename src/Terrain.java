@@ -3,11 +3,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public abstract class Terrain {
 
+    String spriteName;
     float worldX;
     float worldY;
     Body body1;
     Body body2;
-    Sprite sprite;
     int marchingSquaresCase;
     int numEdges;
 

@@ -11,13 +11,11 @@ public class TestServer {
 
     Server server;
 
-    public TestServer() {
-        initializeServer();
-    }
-
-    public void initializeServer() {
+    public TestServer(){
         server = new Server();
         Network2.register(server);
+        server.start();
+        
         server.addListener(new TestServerListener());
 
         try {
@@ -25,11 +23,11 @@ public class TestServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        server.start();
         System.out.println("Server initiated");
     }
 
     public static void main(String[] args){
+        Log.set(Log.LEVEL_DEBUG);
         new TestServer();
     }
     

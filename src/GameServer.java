@@ -1,39 +1,59 @@
 import java.io.IOException;
+import java.util.HashSet;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
 
 public class GameServer {
 
     Server server;
     Game game;
+    HashSet<Connection> clients;
+
+    boolean running;
 
     public GameServer() {
-        initializeServer();
+        System.out.println("bru2h");
         game = new Game();
+        new Thread(game).start();
+        System.out.println("bruh3");
+        initializeServer();
     }
 
     public void initializeServer() {
+        System.out.println("bruh4");
+        clients = new HashSet<Connection>();
         server = new Server();
-        server.start();
+
+        // Register the classes that will be serialized by Kyro and sent over the network
+        Network.register(server);
+
+        server.addListener(new ServerListener(this));
+
+        // Open server on TCP port 54555, UDP port 54777
         try {
             server.bind(54555, 54777);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        server.addListener(new Listener() {
-            public void recieved (Connection connection, Object object) {
-                if (object instanceof PlayerInputRequest) {
-                    PlayerInputRequest request = (PlayerInputRequest) object;
-                    System.out.println("input request");
-                }
-                // Sent by the client upon connecting
-                else if (object instanceof JoinGameRequest){
-                    JoinGameRequest joinRequest = (JoinGameRequest) object;
-                }
+        server.start();
+
+        running = true;
+        while(running){
+            // Send gamestate to all clients
+            for(Connection connection : clients){
+                connection.sendUDP(game);
             }
-        });
+        }
+        server.close();
+    }
+
+    public static void main(String[] args){
+        System.out.println("bruh1");
+        Log.set(Log.LEVEL_DEBUG);
+        new GameServer();
     }
     
 }

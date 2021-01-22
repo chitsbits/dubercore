@@ -1,5 +1,6 @@
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -23,6 +24,7 @@ public class Player extends Entity {
     public static final float JUMP_SPEED = 10;
     public static final float MAX_VELOCITY = 5f;
 
+    public String name;
     public int collidingCount;
     public boolean canJump;
     public boolean canMove;
@@ -40,14 +42,16 @@ public class Player extends Entity {
 
     public GrapplingHook grapple;
     
-    public Player(World world, BodyDef bodyDef){
+    public Player(World world, BodyDef bodyDef, String name){
 
+        this.name = name;
         collidingCount = 0;
         canJump = false;
         canMove = true;
         grenadeCount = 5;
         isGrappling = false;
         activeItem = 1;
+        
         //adding a default weapon
         weapon = new Pistol(this);
 
@@ -80,9 +84,11 @@ public class Player extends Entity {
         body.setFixedRotation(true);
 
         //adding a sprite to the box2d player object
-        sprite = GameClient.textureAtlas.createSprite("playerspriteplaceholder");
-        sprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
-        sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+        // TextureAtlas textureAtlas = new TextureAtlas("assets\\sprites.txt");
+        // sprite = textureAtlas.createSprite("playerspriteplaceholder");
+        // sprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
+        // sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+        spriteName = "playerspriteplaceholder";
 
         body.setUserData(this);
 

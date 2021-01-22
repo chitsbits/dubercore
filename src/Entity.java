@@ -9,7 +9,7 @@ public abstract class Entity {
     Shape entityShape;
     Body body;
     BodyDef bodyDef;
-    Sprite sprite;
+    String spriteName;
 
     public Vector2 getPos() {
         return body.getPosition();

@@ -1,5 +1,8 @@
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,7 +17,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 /**
  * Holds all game logic
  */
-public class Game {
+public class Game implements Runnable {
 
    public static final float STEP_TIME = 1f / 60f;
    public static final int VELOCITY_ITERATIONS = 6;
@@ -44,18 +47,12 @@ public class Game {
    public float deltaTime;
    public float previousFrameTime;
    public float currentFrameTime;
-   public ArrayList<Player> playerList;
+   public HashMap<String, Player> playerMap;
    public int score;
    
    private boolean running;
 
    public Game() {
-      initialize();
-      startGameLoop();
-   }
-
-   public void initialize() {
-
       running = true;
 
       // Initialize Box2d World
@@ -71,8 +68,9 @@ public class Game {
       tileMap = new TileMap(world);
    }
 
-   private void startGameLoop(){
-
+   // Game loop
+   @Override
+   public void run() {
       previousFrameTime = System.nanoTime();
       while(running){
          currentFrameTime = System.nanoTime();
@@ -115,9 +113,10 @@ public class Game {
       score += tileMap.clearTile(tileMapBreakPoint);
    }
 
-   public Player spawnPlayer() {
+   public void spawnPlayer(String name) {
+
       // Create player
-      BodyDef player1BodyDef = new BodyDef();
+      BodyDef playerBodyDef = new BodyDef();
       boolean validSpawn;
       int x, y;
       do {
@@ -135,12 +134,11 @@ public class Game {
             }
          }
       } while (!validSpawn);
-      player1BodyDef.position.set(x / 2, y / 2);
-      Player player = new Player(world, player1BodyDef);
-      entityList.add(player);
-      playerList.add(player);
 
-      return player;
+      playerBodyDef.position.set(x / 2, y / 2);
+      Player player = new Player(world, playerBodyDef, name);
+      entityList.add(player);
+      playerMap.put(name, player);
    }
 
    public void spawnEnemy() {
