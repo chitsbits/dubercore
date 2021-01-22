@@ -25,15 +25,17 @@ public class ServerListener extends Listener {
         // Sent by the client upon connecting
         if (object instanceof JoinGameRequest){
             JoinGameRequest joinRequest = (JoinGameRequest) object;
-            System.out.println("[CLIENT] >> joined: " + joinRequest.name);
+            System.out.println("[SERVER] >> client has joined: " + joinRequest.name);
 
             // Add the client to the server's set of clients
-            gameServer.clients.add(connection);
+            //gameServer.clients.add(connection);
+            gameServer.addClient(connection);
             
             // Spawn the new player
             gameServer.game.spawnPlayer(joinRequest.name);
             ConnectionConfirm confirm = new ConnectionConfirm();
             connection.sendTCP(confirm);
+            System.out.println("[SERVER] >> JoinRequest packet sent");
         }
         
         // TCP packets from the user for player movement

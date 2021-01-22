@@ -22,6 +22,7 @@ public class ClientListener extends Listener {
         gameClient.playerName = name;
         gameClient.client.sendTCP(joinRequest);
         input.close();
+        System.out.println("client listener connection");
     }
 
     @Override
@@ -34,12 +35,14 @@ public class ClientListener extends Listener {
 
         // Get updated gamestate
         if (object instanceof GameUpdate){
+            System.out.println("[CLIENT] >> GameUpdate packet recieved");
             GameUpdate gameUpdate = (GameUpdate) object;
             gameClient.localGame = gameUpdate.game;
             
         }
         if (object instanceof ConnectionConfirm){
             gameClient.running = true;
+            System.out.println("[CLIENT] >> ConnectionConfirm packet recieved");
         }
     }
     

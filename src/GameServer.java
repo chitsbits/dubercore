@@ -11,6 +11,7 @@ public class GameServer {
     Server server;
     Game game;
     HashSet<Connection> clients;
+    boolean mutableReady;
 
     boolean running;
 
@@ -43,11 +44,22 @@ public class GameServer {
         running = true;
         while(running){
             // Send gamestate to all clients
-            for(Connection connection : clients){
-                connection.sendUDP(game);
+            synchronized(clients){
+                for(Connection connection : clients){
+                    System.out.println("in loop");
+                    GameUpdate gameUpdatePacket = new GameUpdate();
+                    gameUpdatePacket.game = game;
+                    connection.sendUDP(gameUpdatePacket);
+                }
             }
         }
         server.close();
+    }
+
+    public void addClient(Connection connection){
+        synchronized(clients){
+            clients.add(connection);
+        }
     }
 
     public static void main(String[] args){

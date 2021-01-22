@@ -61,6 +61,7 @@ public class Game implements Runnable {
       bodyDeletionList = new ArrayList<Body>();
       explosionBodyList = new ArrayList<Explosion>();
       entityList = new ArrayList<Entity>();
+      playerMap = new HashMap<String, Player>();
 
       MyContactListener contactListener = new MyContactListener(this);
       world.setContactListener(contactListener);
@@ -163,7 +164,16 @@ public class Game implements Runnable {
       enemyBodyDef.position.set(x / 2, y / 2);
       GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
       //entityList.add(enemy);
+  }
 
-     
+  /**
+   * Generates a GameUpdate object with all the gamestate information that
+   * a client needs to render the game.
+   * @return
+   */
+  public GameUpdate generateGameState(){
+     GameUpdate gameUpdate = new GameUpdate();
+
+
   }
 }
