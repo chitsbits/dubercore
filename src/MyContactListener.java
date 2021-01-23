@@ -186,6 +186,22 @@ public class MyContactListener implements ContactListener {
     
         }
 
+        else if (contact.getFixtureA().getUserData() instanceof Enemy){
+            Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
+            if (enemy.enemyState.equals("wander")){
+                System.out.println("hit wall");
+                enemy.randRotate();
+            }
+        }
+
+        else if (contact.getFixtureB().getUserData() instanceof Enemy){
+            Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
+            if (enemy.enemyState.equals("wander")){
+                System.out.println("hit wall");
+                enemy.randRotate();
+            }
+        }
+
     }
 
     @Override

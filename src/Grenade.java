@@ -10,7 +10,7 @@ public class Grenade extends Entity {
     Player player;
     World world;
 
-    public static final long COOLDOWN = 10000;
+    public static final long COOLDOWN = 0; //change to 10000
 
     Grenade(World world, Player player){
         this.player = player;

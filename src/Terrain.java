@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -16,6 +18,9 @@ public abstract class Terrain {
     public float distanceSC; //g = distance between starting node and current node
     public float heuristicCost; //h = estimated distance from the current node to the end node;
     public Terrain parent;
+
+    
+    
 
 
     public Terrain(int tileCase, float x, float y){

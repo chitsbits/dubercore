@@ -92,6 +92,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
 
         enemy = new GruntEnemy(localGame, player.bodyDef);
+        //localGame.entityList.add(enemy);
     }
 
     @Override
@@ -176,6 +177,19 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         sr.line(player.getPos(), tempMouseVector);
         sr.end();
 
+        if (enemy.enemyState.equals("wander")){
+            enemy.wander();
+        }
+
+        // for (int e = 0; e < localGame.entityList.size(); e++){
+        //     if (localGame.entityList.get(e) instanceof Enemy){
+        //         if (enemy.enemyState.equals("wander")){
+        //             enemy.wander();
+        //         }
+        //     }
+
+        // }
+
         //periodic spawning of enemies
         clock += Gdx.graphics.getDeltaTime();
         
@@ -183,18 +197,8 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             // System.out.println("spawned");
             // localGame.spawnEnemy();
             // clock = 0;
-            enemy.pathfind(player.getPos());
-            for(Terrain tile: enemy.path){
-                System.out.println("enemy.pathfind sss");
-                System.out.println(tile.worldX);
-                System.out.println(tile.worldY);
-                System.out.println("enemy.pathfind eee");
-    
-            }
-        }
 
-            
-        
+        }
 
         /* sr.begin(ShapeType.Filled);
         for(int i = 0; i < TileMap.MAP_COLS+1; i++){
@@ -236,6 +240,18 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             player.throwGrenade(localGame, mousePos);
             player.lastGrenadeUse = System.currentTimeMillis();
             //player.grenadeCount = player.grenadeCount - 1;
+
+            enemy.randRotate();
+            //enemy.pathfind(player.body.getPosition());
+            // for(Terrain tile: enemy.path){
+            //     System.out.println("enemy.pathfind sss");
+            //     System.out.println(tile.worldX);
+            //     System.out.println(tile.worldY);
+            //     System.out.println("enemy.pathfind eee");
+    
+            // }
+
+
             return true;
         }
         

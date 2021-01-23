@@ -2,22 +2,29 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 
 public class GruntEnemy extends Enemy {
 
     Game game;
+    Vector3 facedAngle;
+    
+    float clock;
 
     GruntEnemy(Game game, BodyDef bodyDef) {
         super(2f, 5f);
         this.width = 0.4f;
         this.height =  0.7f;
         this.game = game;
+        this.enemyState = "wander";
 
         this.bodyDef = bodyDef;
         this.bodyDef.type = BodyType.DynamicBody;
@@ -34,85 +41,76 @@ public class GruntEnemy extends Enemy {
         bodyFixtureDef.filter.categoryBits = Game.ENEMY;
         bodyFixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE;
         bodyFixtureDef.friction = 1.0f;
-
-        Fixture bodyFixture = body.createFixture(bodyFixtureDef);
-        bodyFixture.setUserData(this);
-        body.setFixedRotation(true);
         
-
+        Fixture enemyFixture = body.createFixture(bodyFixtureDef);
+        enemyFixture.setUserData(this);
+        body.setFixedRotation(true);
+    
+        // sprite = GameClient.textureAtlas.createSprite("enemyspriteplaceholder");
+        // sprite.setSize(this.width*2, this.height*2);
+        // sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
         entityShape.dispose();
     }
 
-
     @Override
-    public void pathfind(Vector2 goalPos) {
-        TerrainComparator comparator = new TerrainComparator();
-        PriorityQueue<Terrain> frontier = new PriorityQueue<Terrain>(11, comparator);
-        PriorityQueue<Terrain> searched = new PriorityQueue<Terrain>(11, comparator);
-        Vector2 startPos = new Vector2();
-        Terrain currentTile;
+    public void wander() {
+        float bodyAngle = this.body.getAngle();
+        bodyAngle = (bodyAngle * MathUtils.radiansToDegrees + 270) % 360;
+        if (bodyAngle <= (90)){
+            float opp = (float) Math.sin(bodyAngle);
+            float adj = (float) Math.sin(bodyAngle);
 
-        //adjusting world positions for tilemap scale 
-        //1 tile = 0.5x0.5 game world units
-        startPos.x = this.body.getPosition().x*2;
-        startPos.y = this.body.getPosition().y*2;
-        goalPos.x = goalPos.x*2;
-        goalPos.x = goalPos.x*2;
-        System.out.println(goalPos.x);
-        System.out.println(goalPos.y);
-        System.out.println(this.game.tileMap.terrainArr[(int) goalPos.x][(int) goalPos.y]);
-
-        Terrain startTile = this.game.tileMap.terrainArr[ (int) startPos.x][ (int) startPos.y];
-        
-        startTile.setFGH(0, heuristicCost(startPos.x, startPos.y, goalPos.x, goalPos.y));
-        frontier.add(startTile);
-
-        do {
-            currentTile = frontier.peek();
-            int cTileX = (int) currentTile.worldX*2;
-            int cTileY = (int) currentTile.worldY*2;
-
-            searched.add(currentTile);
-            frontier.remove(currentTile);
-            
-            ArrayList<Terrain> neighbours = new ArrayList<Terrain>();
-            neighbours.add(this.game.tileMap.terrainArr[cTileX][cTileY + 1]);
-            neighbours.add(this.game.tileMap.terrainArr[cTileX + 1][cTileY + 1]);
-            neighbours.add(this.game.tileMap.terrainArr[cTileX + 1][cTileY]);
-            neighbours.add(this.game.tileMap.terrainArr[cTileX + 1][cTileY - 1]);
-            neighbours.add(this.game.tileMap.terrainArr[cTileX][cTileY - 1]);
-            neighbours.add(this.game.tileMap.terrainArr[cTileX - 1][cTileY - 1]);
-            neighbours.add(this.game.tileMap.terrainArr[cTileX - 1][cTileY]);
-            neighbours.add(this.game.tileMap.terrainArr[cTileX - 1][cTileY + 1]);
-
-            for (int i = 0; i < 8; i++){
-
-                boolean walkable = false;
-                if (neighbours.get(i) instanceof Air && !searched.contains(neighbours.get(i))){
-                    walkable = true;
-
-                }
-
-                if (walkable && !frontier.contains(neighbours.get(i))){
-                    neighbours.get(i).setParent(currentTile);
-                    neighbours.get(i).setFGH(neighbours.get(i).parent.distanceSC+1, heuristicCost(neighbours.get(i).worldX*2, neighbours.get(i).worldY*2, goalPos.x, goalPos.y));
-                    frontier.add(neighbours.get(i));
-                    
-                }
-                
+            if (this.getVel().x < Enemy.MAX_VELOCITY){
+                this.body.applyLinearImpulse(opp, 0, this.body.getPosition().x, this.body.getPosition().y, true);
             }
 
+            if (this.getVel().y < Enemy.MAX_VELOCITY){
+                this.body.applyLinearImpulse(0, adj, this.body.getPosition().x, this.body.getPosition().y, true);
+            }
 
-        }while(!currentTile.equals(this.game.tileMap.terrainArr[(int) goalPos.x][(int) goalPos.y]) || frontier.isEmpty());
+        }
+        else if (bodyAngle <= (180)){
 
-        Terrain tempTile = currentTile;
-        do{
-            path.add(0, tempTile);
-            tempTile = tempTile.parent;
-        }while(tempTile.parent != null);
+        }
+        else if (bodyAngle <= (270)){
 
+        }
+        else if (bodyAngle <= (360)){
+            
+        }
 
     }
+
+    @Override
+    public void randRotate() {
+        this.body.setLinearVelocity(0,0);
+        float bodyAngle = this.body.getAngle();
+        float randAngle = (float) (Math.random() * 360 * MathUtils.degreesToRadians);
+        this.body.setTransform(this.body.getPosition(), bodyAngle + randAngle);
+        System.out.println((this.body.getAngle() * MathUtils.radiansToDegrees + 270 )% 360);
+    }
+
+
+    public void developPath(Terrain goalTile){
+        Terrain tempTile = goalTile;
+        do {
+            path.add(tempTile);
+            tempTile = tempTile.parent;
+            
+        }while (tempTile.parent != null);
+
+    }
+
+    public void printTile(float x, float y){
+        System.out.print(x*2);
+        System.out.print(" ");
+        System.out.print(y*2);
+        System.out.print(" "); 
+        System.out.println(this.game.tileMap.terrainArr[(int) x*2][(int) y*2]);
+        
+    }
+
+
     
 }
