@@ -184,6 +184,7 @@ public class Game implements Runnable {
       playerBodyDef.position.set(x / 2, y / 2);
       Player player = new Player(playerBodyDef, name);
       entitySpawnQueue.push(player);
+      needMapUpdate = true;
    }
 
    public void spawnEnemy() {

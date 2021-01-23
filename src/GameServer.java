@@ -2,6 +2,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -14,6 +15,7 @@ public class GameServer {
     Server server;
     Game game;
     HashSet<Connection> clients;
+    HashSet<GameStateUpdateThread> clientThreads;
 
     boolean running;
 
@@ -26,6 +28,7 @@ public class GameServer {
     public void initializeServer() {
         clients = new HashSet<Connection>();
         server = new Server(4194304, 4194304);
+        clientThreads = new HashSet<GameStateUpdateThread>();
 
         // Register the classes that will be serialized by Kyro and sent over the
         // network
@@ -43,17 +46,11 @@ public class GameServer {
 
         running = true;
         while (running) {
-            // Send gamestate to all clients
-            synchronized (clients) {
-                for (Connection connection : clients) {
-                    GameState gameStatePacket = game.generateGameState();
-                    connection.sendUDP(gameStatePacket);
-                    
-                    if (game.needMapUpdate){
-                        connection.sendTCP(game.tileMap.terrainArr);
-                        game.needMapUpdate = false;
-                    }
+            if (game.needMapUpdate){
+                for (GameStateUpdateThread clientThread : clientThreads){
+                    clientThread.sendUpdatedMap(game.tileMap.terrainArr);
                 }
+                game.needMapUpdate = false;
             }
         }
         server.close();
@@ -63,6 +60,9 @@ public class GameServer {
         synchronized (clients) {
             clients.add(connection);
             game.needMapUpdate = true;
+            GameStateUpdateThread clientThread = new GameStateUpdateThread(connection, this);
+            new Thread(clientThread).start();
+            clientThreads.add(clientThread);
         }
     }
 
