@@ -5,6 +5,10 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 
 public class Stone extends Terrain {
 
+    public Stone(){
+        
+    }
+
     public Stone(int tileCase, float x, float y){
         super(tileCase, x,y);
         spriteName = "stone" + tileCase;

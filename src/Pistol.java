@@ -10,25 +10,19 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Pistol extends Weapon {
 
-    Pistol(Player player) {
-        super(player);
+    Pistol() {
         weaponType = "Pistol";
         damage = 1f;
         fireRate = 500;
-        
-
-        // TODO Auto-generated constructor stub
     }
 
     @Override
-    public void fire(Game game, Vector3 mousePos) {
-        // TODO Auto-generated method stub
-
+    public void fire(Game game, Vector3 mousePos, Vector2 startPoint) {
         bulletDirection = new Vector2();
-        bulletDirection.x = mousePos.x - player.getPos().x;
-        bulletDirection.y = mousePos.y - player.getPos().y;
+        bulletDirection.x = mousePos.x - startPoint.x;
+        bulletDirection.y = mousePos.y - startPoint.y;
         bulletDirection.clamp(40f, 40f);
-        Bullet bullet = new Bullet(game.world, damage, player);
+        Bullet bullet = new Bullet(game.world, damage, startPoint);
         bullet.body.setLinearVelocity(bulletDirection);
         
 

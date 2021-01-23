@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -34,15 +35,20 @@ public class ClientListener extends Listener {
     public void received(Connection connection, Object object){
 
         // Get updated gamestate
-        if (object instanceof GameUpdate){
-            System.out.println("[CLIENT] >> GameUpdate packet recieved");
-            GameUpdate gameUpdate = (GameUpdate) object;
-            gameClient.localGame = gameUpdate.game;
+        if (object instanceof GameState){
+            System.out.println("[CLIENT] >> GameState packet recieved");
+            GameState gameUpdate = (GameState) object;
+            if (gameUpdate.terrainArr != null){
+                System.out.println("MAP DATA RECIEVED");
+            }
+            gameClient.updateGameState(gameUpdate);
             
         }
-        if (object instanceof ConnectionConfirm){
+        else if (object instanceof ConnectionConfirm){
             gameClient.running = true;
             System.out.println("[CLIENT] >> ConnectionConfirm packet recieved");
+            new LwjglApplication(gameClient, "DuberCore", 1280, 720);
+            System.out.println("Game launched");
         }
     }
     

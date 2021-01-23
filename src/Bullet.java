@@ -1,3 +1,4 @@
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -7,16 +8,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Bullet extends Projectile {
 
-    Player player;
-
-    Bullet(World world, float damage, Player player){
-        this.player = player;
+    Bullet(World world, float damage, Vector2 startPoint){
         this.world = world;
         this.setDamage(damage);
 
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
-        bodyDef.position.set(player.getPos());
+        bodyDef.position.set(startPoint);
 
         body = this.world.createBody(bodyDef);
         body.setGravityScale(0);

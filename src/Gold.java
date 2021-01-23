@@ -3,6 +3,10 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public class Gold extends Terrain {
 
+    public Gold(){
+        
+    }
+
     public Gold(int tileCase, float x, float y){
         super(tileCase, x,y);
         spriteName = "gold" + tileCase;

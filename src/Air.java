@@ -6,6 +6,10 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 
 public class Air extends Terrain {
 
+    public Air(){
+        
+    }
+
     public Air(int tileCase, float x, float y){
         super(tileCase, x,y);
         spriteName = "air";

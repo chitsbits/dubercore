@@ -7,6 +7,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
  * Subclass to deal with cases 5 & 10 in the marching squares algorithm
  */
 public class DoubleStone extends Stone {
+
+    public DoubleStone(){
+    }
     
     public DoubleStone(int tileCase, float x, float y, Body body1, Body body2){
         super(tileCase, x,y);

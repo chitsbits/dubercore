@@ -6,9 +6,9 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public abstract class Entity {
 
-    Shape entityShape;
-    Body body;
-    BodyDef bodyDef;
+    transient Shape entityShape;
+    transient Body body;
+    transient BodyDef bodyDef;
     String spriteName;
 
     public Vector2 getPos() {

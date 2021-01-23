@@ -1,6 +1,9 @@
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Queue;
+import java.util.Stack;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -43,13 +46,15 @@ public class Game implements Runnable {
    public ArrayList<Body> bodyDeletionList;
    public ArrayList<Explosion> explosionBodyList;
    public ArrayList<Entity> entityList;
+   public ArrayDeque<Entity> entitySpawnQueue;
 
    public float deltaTime;
    public float previousFrameTime;
    public float currentFrameTime;
    public HashMap<String, Player> playerMap;
    public int score;
-   
+   public boolean needMapUpdate; // Flag which becomes true if clients need to recieve an updated map
+
    private boolean running;
 
    public Game() {
@@ -61,19 +66,21 @@ public class Game implements Runnable {
       bodyDeletionList = new ArrayList<Body>();
       explosionBodyList = new ArrayList<Explosion>();
       entityList = new ArrayList<Entity>();
-      playerMap = new HashMap<String, Player>();
+      entitySpawnQueue = new ArrayDeque<Entity>();
+      //playerMap = new HashMap<String, Player>();
 
       MyContactListener contactListener = new MyContactListener(this);
       world.setContactListener(contactListener);
 
       tileMap = new TileMap(world);
+      needMapUpdate = true;
    }
 
    // Game loop
    @Override
    public void run() {
       previousFrameTime = System.nanoTime();
-      while(running){
+      while (running) {
          currentFrameTime = System.nanoTime();
          deltaTime = currentFrameTime - previousFrameTime;
          doPhysicsStep(deltaTime);
@@ -102,6 +109,22 @@ public class Game implements Runnable {
                explosion.explode();
             }
          }
+         // Add player
+         while(!entitySpawnQueue.isEmpty()){
+            Entity e = entitySpawnQueue.pop();
+            if (e instanceof Player){
+               Player p = (Player) e;
+               p.body = world.createBody(p.bodyDef);
+               p.body.createFixture(p.bodyFixtureDef);
+               p.body.setFixedRotation(true);
+               p.body.setUserData(p);
+               p.feetFixture = p.body.createFixture(p.feetFixtureDef);
+               p.feetFixture.setUserData(p.feetFixture);
+               entityList.add(p);
+               p.entityShape.dispose();
+               p.feetShape.dispose();
+            }
+         }
          explosionBodyList.clear();
 
          accumulator -= STEP_TIME;
@@ -112,9 +135,10 @@ public class Game implements Runnable {
       // Convert breakpoint to tilemap coords
       Vector2 tileMapBreakPoint = new Vector2(breakPoint.x * 2f, breakPoint.y * 2f);
       score += tileMap.clearTile(tileMapBreakPoint);
+      needMapUpdate = true;
    }
 
-   public void spawnPlayer(String name) {
+   public synchronized void spawnPlayer(String name) {
 
       // Create player
       BodyDef playerBodyDef = new BodyDef();
@@ -137,43 +161,55 @@ public class Game implements Runnable {
       } while (!validSpawn);
 
       playerBodyDef.position.set(x / 2, y / 2);
-      Player player = new Player(world, playerBodyDef, name);
-      entityList.add(player);
-      playerMap.put(name, player);
+      Player player = new Player(playerBodyDef, name);
+      entitySpawnQueue.push(player);
    }
 
    public void spawnEnemy() {
       BodyDef enemyBodyDef = new BodyDef();
       boolean validSpawn;
-         int x, y;
-         do {
-            validSpawn = true;
-            x = (int) (Math.random() * (TileMap.MAP_COLS - 14) + 7);
-            y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
+      int x, y;
+      do {
+         validSpawn = true;
+         x = (int) (Math.random() * (TileMap.MAP_COLS - 14) + 7);
+         y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
 
-            // Test if the surround 3x3 tiles are air
-            for (int a = -6; a < 6; a++) {
-               for (int b = -6; b < 6; b++) {
-                  if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
-                     validSpawn = false;
-                     break;
-                  }
+         // Test if the surround 3x3 tiles are air
+         for (int a = -6; a < 6; a++) {
+            for (int b = -6; b < 6; b++) {
+               if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
+                  validSpawn = false;
+                  break;
                }
             }
-         } while (!validSpawn);
+         }
+      } while (!validSpawn);
       enemyBodyDef.position.set(x / 2, y / 2);
       GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
-      //entityList.add(enemy);
-  }
+      // entityList.add(enemy);
+   }
 
-  /**
-   * Generates a GameUpdate object with all the gamestate information that
-   * a client needs to render the game.
-   * @return
-   */
-  public GameUpdate generateGameState(){
-     GameUpdate gameUpdate = new GameUpdate();
+   /**
+    * Generates a GameUpdate object with all the gamestate information that a
+    * client needs to render the game.
+    * 
+    * @return
+    */
+   public GameState generateGameState() {
+      GameState gameState = new GameState();
+      gameState.entityList = entityList;
+      gameState.playerMap = playerMap;
+      gameState.score = score;
 
+      if (needMapUpdate){
+         gameState.terrainArr = tileMap.terrainArr;
+         needMapUpdate = false;
+         System.out.println("MAP DATA SENT");
+      }
+      else{
+         gameState.terrainArr = null;
+      }
+      return gameState;
 
-  }
+   }
 }

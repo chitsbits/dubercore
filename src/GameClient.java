@@ -46,7 +46,9 @@ public class GameClient extends ApplicationAdapter {
 
     Client client;
 
-    Game localGame; // Local instance of the game
+    GameState gameState;
+    Terrain[][] terrainArr;
+
     OrthographicCamera camera;
     SpriteBatch worldBatch;
     SpriteBatch hudBatch;
@@ -70,6 +72,10 @@ public class GameClient extends ApplicationAdapter {
     public GameClient(Client client){
         this.client = client;
         this.running = false;
+    }
+
+    public void updateGameState(GameState gameState){
+        this.gameState = gameState;
     }
 
     @Override
@@ -103,7 +109,11 @@ public class GameClient extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.57f, 0.77f, 0.85f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        myPlayer = localGame.playerMap.get(playerName);
+        System.out.println(gameState);
+        System.out.println(gameState.playerMap);
+        System.out.println(playerName);
+        
+        //myPlayer = gameState.playerMap.get(playerName);
 
         PlayerMovementRequest movementRequest = new PlayerMovementRequest();
 
@@ -144,33 +154,35 @@ public class GameClient extends ApplicationAdapter {
         // System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Focus camera on player
-        if (!useDebugCamera)
-            camera.position.set(myPlayer.getPos().x, myPlayer.getPos().y, 0);
+        // if (!useDebugCamera)
+        //     camera.position.set(myPlayer.getPos().x, myPlayer.getPos().y, 0);
 
         // tell the camera to update its matrices.
         camera.update();
 
-        worldBatch.begin();
-        worldBatch.setProjectionMatrix(camera.combined);
+        //worldBatch.begin();
+        //worldBatch.setProjectionMatrix(camera.combined);
 
         // Draw map sprites
-        Terrain[][] terrainArr = localGame.tileMap.terrainArr;
-
+        // if(gameState.terrainArr != null){
+        //     terrainArr = gameState.terrainArr;
+        // }
+        
         // Set bounds of the map to render
-        int iStart = (int) (Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
-        int jStart = (int) (Math.max(0f, (camera.position.y - camera.viewportHeight / 2f) * 2));
+        // int iStart = (int) (Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
+        // int jStart = (int) (Math.max(0f, (camera.position.y - camera.viewportHeight / 2f) * 2));
 
-        int iEnd = (int) (Math.min(TileMap.MAP_COLS, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
-        int jEnd = (int) (Math.min(TileMap.MAP_ROWS - 1, (camera.position.y + camera.viewportHeight / 2f) * 2) + 1);
+        // int iEnd = (int) (Math.min(TileMap.MAP_COLS, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
+        // int jEnd = (int) (Math.min(TileMap.MAP_ROWS - 1, (camera.position.y + camera.viewportHeight / 2f) * 2) + 1);
 
-        for (int i = iStart; i < iEnd; i++) {
-            for (int j = jStart; j < jEnd; j++) {
-                Terrain tile = terrainArr[i][j];
-                Sprite sprite = textureAtlas.createSprite(tile.spriteName);
-                sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
-                sprite.draw(worldBatch);
-            }
-        }
+        // for (int i = iStart; i < iEnd; i++) {
+        //     for (int j = jStart; j < jEnd; j++) {
+        //         Terrain tile = terrainArr[i][j];
+        //         Sprite sprite = textureAtlas.createSprite(tile.spriteName);
+        //         sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
+        //         sprite.draw(worldBatch);
+        //     }
+        // }
 
         // Draw entities
         // for (Entity ent : localGame.entityList) {
@@ -183,19 +195,19 @@ public class GameClient extends ApplicationAdapter {
 
         // Draw hud
         hudBatch.begin();
-        font.draw(hudBatch, "Score: " + Integer.toString(localGame.score), 20, 20);
+        font.draw(hudBatch, "Score: " + Integer.toString(gameState.score), 20, 20);
         font.draw(hudBatch, playerName, 40, 20);
         hudBatch.end();
 
         // Render Box2D world
-        debugRenderer.render(localGame.world, camera.combined);
+        //debugRenderer.render(localGame.world, camera.combined);
         clock += Gdx.graphics.getDeltaTime();
 
-        if (clock > 10) {
-            System.out.println("spawned");
-            localGame.spawnEnemy();
-            clock = 0;
-        }
+        // if (clock > 10) {
+        //     System.out.println("spawned");
+        //     localGame.spawnEnemy();
+        //     clock = 0;
+        // }
     }
 
     @Override
@@ -205,7 +217,6 @@ public class GameClient extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        localGame.world.dispose();
         worldBatch.dispose();
         hudBatch.dispose();
         debugRenderer.dispose();
@@ -359,9 +370,11 @@ public class GameClient extends ApplicationAdapter {
 
         Log.set(Log.LEVEL_DEBUG);
 
-        Client client = new Client();
+        Client client = new Client(4194304, 4194304);
         Network.register(client);
-        client.start();
+        // We must manaually create a new Thread object since by default, Client.start()
+        // creates a daemon thread.
+        new Thread(client).start();
         GameClient gameClient = new GameClient(client);
 
         client.addListener(new ClientListener(gameClient));
@@ -372,13 +385,5 @@ public class GameClient extends ApplicationAdapter {
             System.out.println("Unable to connect to server");
             e.printStackTrace();
         }
-        
-        while(true){
-            if(gameClient.running){
-                // Start libGDX window
-                new LwjglApplication(gameClient, "DuberCore", 1280, 720);
-                break;
-            }       
-        } 
     }
 }

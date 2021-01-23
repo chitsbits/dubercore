@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class GrapplingHook extends Entity {
     
-    Player player;  // Reference to host player
+    transient Player player;  // Reference to host player
 
     public static final long COOLDOWN = 5000;
 

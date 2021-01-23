@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -36,13 +37,24 @@ public class Player extends Entity {
     private Weapon weapon;
     public int activeItem;
 
+    public transient Shape entityShape;
+    public transient PolygonShape feetShape;
+    public transient FixtureDef bodyFixtureDef;
+    public transient FixtureDef feetFixtureDef;
+    public transient Fixture feetFixture;
+
     public long lastGrenadeUse;
     public long lastWeaponFire;
     public long lastGrappleUse;
 
     public GrapplingHook grapple;
+
+    // No-arg constructor for serialization
+    public Player(){
+
+    }
     
-    public Player(World world, BodyDef bodyDef, String name){
+    public Player(BodyDef bodyDef, String name){
 
         this.name = name;
         collidingCount = 0;
@@ -53,7 +65,7 @@ public class Player extends Entity {
         activeItem = 1;
         
         //adding a default weapon
-        weapon = new Pistol(this);
+        weapon = new Pistol();
 
         // Body definition
         this.bodyDef = bodyDef;
@@ -72,16 +84,12 @@ public class Player extends Entity {
 
         ((PolygonShape)entityShape).set(vertices);
         // Create body
-        body = world.createBody(bodyDef);
-
         // Add main body fixture
-        FixtureDef bodyFixtureDef = new FixtureDef();
+        bodyFixtureDef = new FixtureDef();
         bodyFixtureDef.shape = entityShape;
         bodyFixtureDef.filter.categoryBits = Game.PLAYER;
         bodyFixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE;
         bodyFixtureDef.friction = 1.0f;
-        body.createFixture(bodyFixtureDef);
-        body.setFixedRotation(true);
 
         //adding a sprite to the box2d player object
         // TextureAtlas textureAtlas = new TextureAtlas("assets\\sprites.txt");
@@ -90,29 +98,16 @@ public class Player extends Entity {
         // sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
         spriteName = "playerspriteplaceholder";
 
-        body.setUserData(this);
-
         // Feet shape definition
-        PolygonShape feetShape = new PolygonShape();
-        Vector2 feetCenter = new Vector2();
-        feetCenter.x = getPos().x;
-        feetCenter.y = getPos().y;
+        feetShape = new PolygonShape();
         feetShape.setAsBox(PLAYER_WIDTH - 0.05f, 0.1f, new Vector2(0, -0.75f), 0);
         
-
         // Add feet fixture
-        FixtureDef feetFixtureDef = new FixtureDef();
+        feetFixtureDef = new FixtureDef();
         feetFixtureDef.shape = feetShape;
         feetFixtureDef.filter.categoryBits = Game.SENSOR;
         feetFixtureDef.filter.maskBits = Game.TERRAIN;
         feetFixtureDef.isSensor = true;
-        Fixture feetFixture = body.createFixture(feetFixtureDef);
-
-        // Add player's user data to the fixture
-        feetFixture.setUserData(this);
-
-        entityShape.dispose();
-        feetShape.dispose();
     }
 
     public void shootGrapple(World world, Vector3 mousePos) {
@@ -148,17 +143,17 @@ public class Player extends Entity {
         }
     }
 
-    public void throwGrenade(Game game, Vector3 mousePos){
+    // public void throwGrenade(Game game, Vector3 mousePos){
 
-        grenade = new Grenade(game.world, this);
+    //     grenade = new Grenade(game.world, this);
 
-        grenadeDirection = new Vector2();
-        grenadeDirection.x = mousePos.x - getPos().x;
-        grenadeDirection.y = mousePos.y - getPos().y;
-        grenadeDirection.clamp(40f, 40f);
-        grenade.body.setGravityScale(5);
-        grenade.body.setLinearVelocity(grenadeDirection);
-    }
+    //     grenadeDirection = new Vector2();
+    //     grenadeDirection.x = mousePos.x - getPos().x;
+    //     grenadeDirection.y = mousePos.y - getPos().y;
+    //     grenadeDirection.clamp(40f, 40f);
+    //     grenade.body.setGravityScale(5);
+    //     grenade.body.setLinearVelocity(grenadeDirection);
+    // }
 
     public void moveLeft() {
         body.applyLinearImpulse(-0.50f, 0, getPos().x, getPos().y, true);

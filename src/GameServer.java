@@ -1,4 +1,7 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashSet;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -16,19 +19,17 @@ public class GameServer {
     boolean running;
 
     public GameServer() {
-        System.out.println("bru2h");
         game = new Game();
         new Thread(game).start();
-        System.out.println("bruh3");
         initializeServer();
     }
 
     public void initializeServer() {
-        System.out.println("bruh4");
         clients = new HashSet<Connection>();
-        server = new Server();
+        server = new Server(4194304, 4194304);
 
-        // Register the classes that will be serialized by Kyro and sent over the network
+        // Register the classes that will be serialized by Kyro and sent over the
+        // network
         Network.register(server);
 
         server.addListener(new ServerListener(this));
@@ -39,33 +40,36 @@ public class GameServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        server.start();
+        server.start(); // Creates a new thread and starts the listener
 
         running = true;
-        while(running){
+        while (running) {
             // Send gamestate to all clients
-            synchronized(clients){
-                for(Connection connection : clients){
-                    System.out.println("in loop");
-                    GameUpdate gameUpdatePacket = new GameUpdate();
-                    gameUpdatePacket.game = game;
-                    connection.sendUDP(gameUpdatePacket);
+            synchronized (clients) {
+                for (Connection connection : clients) {
+                    GameState gameStatePacket = game.generateGameState();
+                    connection.sendUDP(gameStatePacket);
                 }
             }
         }
         server.close();
     }
 
-    public void addClient(Connection connection){
-        synchronized(clients){
+    public void addClient(Connection connection) {
+        synchronized (clients) {
             clients.add(connection);
         }
     }
 
-    public static void main(String[] args){
-        System.out.println("bruh1");
+    public void removeClient(Connection connection) {
+        synchronized (clients){
+            clients.remove(connection);
+        }
+    }
+
+    public static void main(String[] args) {
         Log.set(Log.LEVEL_DEBUG);
         new GameServer();
     }
-    
+
 }

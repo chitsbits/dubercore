@@ -1,15 +1,20 @@
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
+import java.io.Serializable;
 
-public abstract class Terrain {
-
+public abstract class Terrain implements Serializable {
     String spriteName;
     float worldX;
     float worldY;
-    Body body1;
-    Body body2;
+    transient Body body1;
+    transient Body body2;
+    transient int numEdges;
     int marchingSquaresCase;
-    int numEdges;
+
+    public Terrain(){
+
+    }
 
     public Terrain(int tileCase, float x, float y){
         this.marchingSquaresCase = tileCase;
