@@ -48,6 +48,7 @@ public class Network {
         kryo.register(Object[].class, new DeflateSerializer(new ObjectArraySerializer()));
         kryo.register(Fixture.class);
         kryo.register(BodyDef.class);
+        kryo.register(Body.class);
         kryo.register(Terrain.class);
         kryo.register(Terrain[].class);
         kryo.register(Terrain[][].class);

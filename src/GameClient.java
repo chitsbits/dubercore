@@ -74,8 +74,12 @@ public class GameClient extends ApplicationAdapter {
         this.running = false;
     }
 
-    public void updateGameState(GameState gameState){
+    public synchronized void updateGameState(GameState gameState){
         this.gameState = gameState;
+    }
+
+    public synchronized void updateTerrain(Terrain[][] terrainArr){
+        this.terrainArr = terrainArr;
     }
 
     @Override
@@ -103,19 +107,13 @@ public class GameClient extends ApplicationAdapter {
     }
 
     @Override
-    public void render() {
+    public synchronized void render() {
 
         // Clear background
         Gdx.gl.glClearColor(0.57f, 0.77f, 0.85f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        System.out.println(gameState);
-        System.out.println(gameState.playerMap);
-        System.out.println(playerName);
         
-        //myPlayer = gameState.playerMap.get(playerName);
-
-        PlayerMovementRequest movementRequest = new PlayerMovementRequest();
+        myPlayer = gameState.playerMap.get(playerName);
 
         /*
         if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {
@@ -134,6 +132,9 @@ public class GameClient extends ApplicationAdapter {
         */
 
         // Movement input
+        PlayerMovementRequest movementRequest = new PlayerMovementRequest();
+        movementRequest.playerName = playerName;
+
         if (Gdx.input.isKeyPressed(Keys.A)) {
             movementRequest.moveLeft = true;
         }
@@ -151,52 +152,52 @@ public class GameClient extends ApplicationAdapter {
             client.sendTCP(movementRequest);
         }
 
-        // System.out.println(Gdx.graphics.getFramesPerSecond());
+        //System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Focus camera on player
-        // if (!useDebugCamera)
-        //     camera.position.set(myPlayer.getPos().x, myPlayer.getPos().y, 0);
+        if (!useDebugCamera)
+             camera.position.set(myPlayer.getPos().x, myPlayer.getPos().y, 0);
 
         // tell the camera to update its matrices.
         camera.update();
 
-        //worldBatch.begin();
-        //worldBatch.setProjectionMatrix(camera.combined);
-
-        // Draw map sprites
-        // if(gameState.terrainArr != null){
-        //     terrainArr = gameState.terrainArr;
-        // }
+        worldBatch.begin();
+        worldBatch.setProjectionMatrix(camera.combined);
         
         // Set bounds of the map to render
-        // int iStart = (int) (Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
-        // int jStart = (int) (Math.max(0f, (camera.position.y - camera.viewportHeight / 2f) * 2));
+        int iStart = (int) (Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
+        int jStart = (int) (Math.max(0f, (camera.position.y - camera.viewportHeight / 2f) * 2));
 
-        // int iEnd = (int) (Math.min(TileMap.MAP_COLS, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
-        // int jEnd = (int) (Math.min(TileMap.MAP_ROWS - 1, (camera.position.y + camera.viewportHeight / 2f) * 2) + 1);
+        int iEnd = (int) (Math.min(TileMap.MAP_COLS, (camera.position.x + camera.viewportWidth / 2f) * 2 + 1));
+        int jEnd = (int) (Math.min(TileMap.MAP_ROWS - 1, (camera.position.y + camera.viewportHeight / 2f) * 2) + 1);
 
-        // for (int i = iStart; i < iEnd; i++) {
-        //     for (int j = jStart; j < jEnd; j++) {
-        //         Terrain tile = terrainArr[i][j];
-        //         Sprite sprite = textureAtlas.createSprite(tile.spriteName);
-        //         sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
-        //         sprite.draw(worldBatch);
-        //     }
-        // }
+        for (int i = iStart; i < iEnd; i++) {
+            for (int j = jStart; j < jEnd; j++) {
+                Terrain tile = terrainArr[i][j];
+                Sprite sprite = textureAtlas.createSprite(tile.spriteName);
+                sprite.setBounds(tile.worldX, tile.worldY, 0.5f, 0.5f);
+                sprite.draw(worldBatch);
+            }
+        }
 
         // Draw entities
-        // for (Entity ent : localGame.entityList) {
-        //     Sprite sprite = ((Entity) (ent.body.getUserData())).sprite;
-        //     sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2,
-        //             ent.body.getPosition().y - sprite.getHeight() / 2);
+        // for (Entity ent : gameState.entityList) {
+        //     Sprite sprite = textureAtlas.createSprite(ent.spriteName);
+        //     if(ent instanceof Player){
+        //         sprite.setBounds(ent.getPos().x - Player.PLAYER_WIDTH / 2, ent.getPos().y - Player.PLAYER_HEIGHT / 2,
+        //                             Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT);
+        //     }
+        //     else{
+        //         sprite.setPosition(ent.getPos().x - sprite.getWidth() / 2, ent.getPos().y - sprite.getHeight() / 2);
+        //     }
         //     sprite.draw(worldBatch);
         // }
-        // worldBatch.end();
+        worldBatch.end();
 
         // Draw hud
         hudBatch.begin();
         font.draw(hudBatch, "Score: " + Integer.toString(gameState.score), 20, 20);
-        font.draw(hudBatch, playerName, 40, 20);
+        font.draw(hudBatch, playerName, 100, 20);
         hudBatch.end();
 
         // Render Box2D world
@@ -368,7 +369,7 @@ public class GameClient extends ApplicationAdapter {
 
     public static void main (String[] args) {
 
-        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_NONE);
 
         Client client = new Client(4194304, 4194304);
         Network.register(client);

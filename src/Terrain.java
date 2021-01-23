@@ -3,7 +3,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import java.io.Serializable;
 
-public abstract class Terrain implements Serializable {
+public abstract class Terrain {
     String spriteName;
     float worldX;
     float worldY;

@@ -1,5 +1,5 @@
 sprites.png
-size: 112, 214
+size: 16, 489
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -12,203 +12,203 @@ air
   index: -1
 gold1
   rotate: false
-  xy: 16, 0
+  xy: 0, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold2
   rotate: false
-  xy: 32, 0
+  xy: 0, 32
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold3
   rotate: false
-  xy: 48, 0
+  xy: 0, 48
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold4
   rotate: false
-  xy: 64, 0
+  xy: 0, 64
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold6
   rotate: false
-  xy: 80, 0
+  xy: 0, 80
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold7
   rotate: false
-  xy: 96, 0
+  xy: 0, 96
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold8
   rotate: false
-  xy: 0, 16
+  xy: 0, 112
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold9
   rotate: false
-  xy: 16, 16
+  xy: 0, 128
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold11
   rotate: false
-  xy: 32, 16
+  xy: 0, 144
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold12
   rotate: false
-  xy: 48, 16
+  xy: 0, 160
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold13
   rotate: false
-  xy: 64, 16
+  xy: 0, 176
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold14
   rotate: false
-  xy: 80, 16
+  xy: 0, 192
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold15
   rotate: false
-  xy: 96, 16
+  xy: 0, 208
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 playerspriteplaceholder
   rotate: false
-  xy: 0, 32
-  size: 80, 150
-  orig: 80, 150
+  xy: 0, 224
+  size: 13, 25
+  orig: 13, 25
   offset: 0, 0
   index: -1
 stone1
   rotate: false
-  xy: 80, 32
+  xy: 0, 249
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone2
   rotate: false
-  xy: 96, 32
+  xy: 0, 265
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone3
   rotate: false
-  xy: 0, 182
+  xy: 0, 281
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone4
   rotate: false
-  xy: 16, 182
+  xy: 0, 297
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone5
   rotate: false
-  xy: 32, 182
+  xy: 0, 313
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone6
   rotate: false
-  xy: 48, 182
+  xy: 0, 329
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone7
   rotate: false
-  xy: 64, 182
+  xy: 0, 345
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone8
   rotate: false
-  xy: 80, 182
+  xy: 0, 361
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone9
   rotate: false
-  xy: 96, 182
+  xy: 0, 377
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone10
   rotate: false
-  xy: 0, 198
+  xy: 0, 393
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone11
   rotate: false
-  xy: 16, 198
+  xy: 0, 409
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone12
   rotate: false
-  xy: 32, 198
+  xy: 0, 425
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone13
   rotate: false
-  xy: 48, 198
+  xy: 0, 441
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone14
   rotate: false
-  xy: 64, 198
+  xy: 0, 457
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone15
   rotate: false
-  xy: 80, 198
+  xy: 0, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

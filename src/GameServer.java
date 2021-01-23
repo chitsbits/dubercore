@@ -14,7 +14,6 @@ public class GameServer {
     Server server;
     Game game;
     HashSet<Connection> clients;
-    boolean mutableReady;
 
     boolean running;
 
@@ -49,6 +48,11 @@ public class GameServer {
                 for (Connection connection : clients) {
                     GameState gameStatePacket = game.generateGameState();
                     connection.sendUDP(gameStatePacket);
+                    
+                    if (game.needMapUpdate){
+                        connection.sendTCP(game.tileMap.terrainArr);
+                        game.needMapUpdate = false;
+                    }
                 }
             }
         }
@@ -58,6 +62,7 @@ public class GameServer {
     public void addClient(Connection connection) {
         synchronized (clients) {
             clients.add(connection);
+            game.needMapUpdate = true;
         }
     }
 
@@ -68,7 +73,7 @@ public class GameServer {
     }
 
     public static void main(String[] args) {
-        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_NONE);
         new GameServer();
     }
 

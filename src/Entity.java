@@ -6,16 +6,24 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public abstract class Entity {
 
+    Vector2 position;
+    Vector2 velocity;
     transient Shape entityShape;
-    transient Body body;
     transient BodyDef bodyDef;
+    transient Body body;
     String spriteName;
 
     public Vector2 getPos() {
-        return body.getPosition();
+        return this.position;
     }
 
     public Vector2 getVel() {
-        return body.getLinearVelocity();
+        return this.velocity;
+    }
+
+    public void update(){
+        this.position = body.getPosition();
+        this.velocity = body.getLinearVelocity();
+
     }
 }

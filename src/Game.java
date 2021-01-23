@@ -30,14 +30,14 @@ public class Game implements Runnable {
    public static final float WORLD_HEIGHT = 135f;
 
    // Bit flags for collision categories
-   public static final short TERRAIN      = 0x0002;
-   public static final short PLAYER       = 0x0004;
-   public static final short ENEMY        = 0x0008;
-   public static final short GRENADE      = 0x0010;
-   public static final short GRAPPLE      = 0x0020;
-   public static final short PROJECTILE   = 0x0040;
-   public static final short SENSOR       = 0x0080;
-   public static final short DESTRUCTION  = 0x0100;
+   public static final short TERRAIN = 0x0002;
+   public static final short PLAYER = 0x0004;
+   public static final short ENEMY = 0x0008;
+   public static final short GRENADE = 0x0010;
+   public static final short GRAPPLE = 0x0020;
+   public static final short PROJECTILE = 0x0040;
+   public static final short SENSOR = 0x0080;
+   public static final short DESTRUCTION = 0x0100;
 
    private float accumulator = 0;
 
@@ -67,7 +67,7 @@ public class Game implements Runnable {
       explosionBodyList = new ArrayList<Explosion>();
       entityList = new ArrayList<Entity>();
       entitySpawnQueue = new ArrayDeque<Entity>();
-      //playerMap = new HashMap<String, Player>();
+      playerMap = new HashMap<String, Player>();
 
       MyContactListener contactListener = new MyContactListener(this);
       world.setContactListener(contactListener);
@@ -84,6 +84,10 @@ public class Game implements Runnable {
          currentFrameTime = System.nanoTime();
          deltaTime = currentFrameTime - previousFrameTime;
          doPhysicsStep(deltaTime);
+
+         for (Entity entity : entityList) {
+            entity.update();
+         }
          previousFrameTime = currentFrameTime;
       }
    }
@@ -110,9 +114,9 @@ public class Game implements Runnable {
             }
          }
          // Add player
-         while(!entitySpawnQueue.isEmpty()){
+         while (!entitySpawnQueue.isEmpty()) {
             Entity e = entitySpawnQueue.pop();
-            if (e instanceof Player){
+            if (e instanceof Player) {
                Player p = (Player) e;
                p.body = world.createBody(p.bodyDef);
                p.body.createFixture(p.bodyFixtureDef);
@@ -123,11 +127,28 @@ public class Game implements Runnable {
                entityList.add(p);
                p.entityShape.dispose();
                p.feetShape.dispose();
+               playerMap.put(p.name, p);
             }
          }
          explosionBodyList.clear();
-
          accumulator -= STEP_TIME;
+      }
+   }
+
+   public void processPlayerMovement(PlayerMovementRequest movement) {
+      Player player = playerMap.get(movement.playerName);
+      if (movement.moveLeft && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {
+         player.moveLeft();
+      }
+
+      // apply right impulse, but only if max velocity is not reached yet
+      if (movement.moveRight && player.getVel().x < Player.MAX_VELOCITY && player.canMove) {
+         player.moveRight();
+      }
+
+      // apply right impulse, but only if max velocity is not reached yet
+      if (movement.jump && player.collidingCount > 0) {
+         player.jump();
       }
    }
 
@@ -201,14 +222,6 @@ public class Game implements Runnable {
       gameState.playerMap = playerMap;
       gameState.score = score;
 
-      if (needMapUpdate){
-         gameState.terrainArr = tileMap.terrainArr;
-         needMapUpdate = false;
-         System.out.println("MAP DATA SENT");
-      }
-      else{
-         gameState.terrainArr = null;
-      }
       return gameState;
 
    }

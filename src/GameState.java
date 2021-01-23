@@ -9,5 +9,4 @@ public class GameState implements Serializable {
     ArrayList<Entity> entityList;
     HashMap<String, Player> playerMap;
     int score;
-    Terrain[][] terrainArr;
 }
