@@ -57,28 +57,12 @@ public class GruntEnemy extends Enemy {
     public void wander() {
         float bodyAngle = this.body.getAngle();
         bodyAngle = (bodyAngle * MathUtils.radiansToDegrees + 270) % 360;
-        if (bodyAngle <= (90)){
-            float opp = (float) Math.sin(bodyAngle);
-            float adj = (float) Math.sin(bodyAngle);
 
-            if (this.getVel().x < Enemy.MAX_VELOCITY){
-                this.body.applyLinearImpulse(opp, 0, this.body.getPosition().x, this.body.getPosition().y, true);
-            }
+        bodyAngle = bodyAngle * MathUtils.degreesToRadians;
+        float opp = (float) Math.sin(bodyAngle);
+        float adj = (float) Math.cos(bodyAngle);
 
-            if (this.getVel().y < Enemy.MAX_VELOCITY){
-                this.body.applyLinearImpulse(0, adj, this.body.getPosition().x, this.body.getPosition().y, true);
-            }
-
-        }
-        else if (bodyAngle <= (180)){
-
-        }
-        else if (bodyAngle <= (270)){
-
-        }
-        else if (bodyAngle <= (360)){
-            
-        }
+        this.body.setLinearVelocity(adj * 5, opp * 5);
 
     }
 
@@ -87,8 +71,11 @@ public class GruntEnemy extends Enemy {
         this.body.setLinearVelocity(0,0);
         float bodyAngle = this.body.getAngle();
         float randAngle = (float) (Math.random() * 360 * MathUtils.degreesToRadians);
+        while (bodyAngle * MathUtils.radiansToDegrees % 90 == randAngle * MathUtils.radiansToDegrees % 90){
+            randAngle = (float) (Math.random() * 360 * MathUtils.degreesToRadians);
+        }
         this.body.setTransform(this.body.getPosition(), bodyAngle + randAngle);
-        System.out.println((this.body.getAngle() * MathUtils.radiansToDegrees + 270 )% 360);
+        //System.out.println((this.body.getAngle() * MathUtils.radiansToDegrees + 270 )% 360);
     }
 
 

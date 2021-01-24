@@ -193,10 +193,10 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         //periodic spawning of enemies
         clock += Gdx.graphics.getDeltaTime();
         
-        if (clock > 10) {
-            // System.out.println("spawned");
-            // localGame.spawnEnemy();
-            // clock = 0;
+        if (clock > (int)(Math.random() * ((10 - 5)+1)) + 5) {
+            //System.out.println("spawned");
+            localGame.spawnEnemy();
+            clock = 0;
 
         }
 

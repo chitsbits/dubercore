@@ -39,6 +39,7 @@ public class Game {
    public TileMap tileMap;
    public ArrayList<Body> bodyDeletionList;
    public ArrayList<Explosion> explosionBodyList;
+   public ArrayList<Enemy> enemyRotateList;
    public ArrayList<Entity> entityList;
 
    public Player player1;
@@ -56,6 +57,7 @@ public class Game {
       world = new World(new Vector2(0, -20), true);
       bodyDeletionList = new ArrayList<Body>();
       explosionBodyList = new ArrayList<Explosion>();
+      enemyRotateList = new ArrayList<Enemy>();
       entityList = new ArrayList<Entity>();
 
       MyContactListener contactListener = new MyContactListener(this);
@@ -89,6 +91,13 @@ public class Game {
          }
          explosionBodyList.clear();
 
+         if (!this.enemyRotateList.isEmpty()) {
+            for (Enemy enemy : this.enemyRotateList) {
+               enemy.randRotate();
+            }
+         }
+         enemyRotateList.clear();
+
          accumulator -= STEP_TIME;
       }
    }
@@ -120,9 +129,6 @@ public class Game {
          }
       } while (!validSpawn);
       player1BodyDef.position.set(x / 2, y / 2);
-      System.out.println("player spawn sss");
-      System.out.println(x + " " + y);
-      System.out.println("player spawn eee");
       player1 = new Player(world, player1BodyDef);
       entityList.add(player1);
    }

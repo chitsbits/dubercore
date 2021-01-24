@@ -190,15 +190,15 @@ public class MyContactListener implements ContactListener {
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("wander")){
                 System.out.println("hit wall");
-                enemy.randRotate();
+                game.enemyRotateList.add(enemy);
             }
         }
 
         else if (contact.getFixtureB().getUserData() instanceof Enemy){
             Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
             if (enemy.enemyState.equals("wander")){
-                System.out.println("hit wall");
-                enemy.randRotate();
+                //System.out.println("hit wall");
+                game.enemyRotateList.add(enemy);
             }
         }
 
