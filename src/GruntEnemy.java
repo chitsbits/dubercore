@@ -17,16 +17,16 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class GruntEnemy extends Enemy {
 
-    Game game;
+    World world;
     Vector3 facedAngle;
     
     float clock;
 
-    GruntEnemy(Game game, BodyDef bodyDef) {
+    GruntEnemy(World world, BodyDef bodyDef) {
         super(2f, 5f);
         this.width = 0.4f;
         this.height =  0.7f;
-        this.game = game;
+        this.world = world;
         this.enemyState = "wander";
 
         this.bodyDef = bodyDef;
@@ -36,7 +36,7 @@ public class GruntEnemy extends Enemy {
         entityShape = new PolygonShape();
         ((PolygonShape) entityShape).setAsBox(width, height);
         
-        this.body = game.world.createBody(this.bodyDef);
+        this.body = world.createBody(this.bodyDef);
         this.body.setGravityScale(0);
 
         FixtureDef bodyFixtureDef = new FixtureDef();
@@ -45,7 +45,7 @@ public class GruntEnemy extends Enemy {
         bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE;
         bodyFixtureDef.friction = 1.0f;
         
-        sprite = GameClient.textureAtlas.createSprite("enemyspriteplaceholder");
+        sprite = GameScreen.textureAtlas.createSprite("enemyspriteplaceholder");
         sprite.setSize(this.width*2, this.height*2);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
@@ -97,27 +97,4 @@ public class GruntEnemy extends Enemy {
         //float yInt  = (playerPos.y/(slope * playerPos.x));
 
     }
-
-
-    public void developPath(Terrain goalTile){
-        Terrain tempTile = goalTile;
-        do {
-            path.add(tempTile);
-            tempTile = tempTile.parent;
-            
-        }while (tempTile.parent != null);
-
-    }
-
-    public void printTile(float x, float y){
-        System.out.print(x*2);
-        System.out.print(" ");
-        System.out.print(y*2);
-        System.out.print(" "); 
-        System.out.println(this.game.tileMap.terrainArr[(int) x*2][(int) y*2]);
-        
-    }
-
-
-    
 }
