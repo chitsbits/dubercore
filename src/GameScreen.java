@@ -48,18 +48,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     DuberCore dubercore; // Local instance of the game
     OrthographicCamera camera;
-    SpriteBatch worldBatch;
-    SpriteBatch hudBatch;
-    Viewport viewport;
     Player player;
 
     Box2DDebugRenderer debugRenderer;
-    ShapeRenderer sr;
-    Vector2 tempMouseVector = new Vector2(0, 0);
+    //Vector2 tempMouseVector = new Vector2(0, 0);
 
     boolean useDebugCamera = false;
 
     BitmapFont font;
+    SpriteBatch worldBatch;
+    SpriteBatch hudBatch;
 
     public static Texture[] stoneTextures;
     public static Texture textureAir;
@@ -77,6 +75,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public void show() {
         
         textureAtlas = new TextureAtlas("assets\\sprites.txt");
+        dubercore.initialize();
         font = new BitmapFont();
 
         player = dubercore.player;
@@ -95,11 +94,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         
 
         debugRenderer = new Box2DDebugRenderer();
-        sr = new ShapeRenderer();
+        // sr = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
-
     }
 
     @Override
@@ -179,10 +177,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Render Box2D world
         debugRenderer.render(dubercore.world, camera.combined);
         // Render test mouse line
-        sr.setProjectionMatrix(camera.combined);
-        sr.begin(ShapeType.Line);
-        sr.line(player.getPos(), tempMouseVector);
-        sr.end();
+        // sr.setProjectionMatrix(camera.combined);
+        // sr.begin(ShapeType.Line);
+        // sr.line(player.getPos(), tempMouseVector);
+        // sr.end();
 
         clock += delta;
         
@@ -221,7 +219,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudBatch.dispose();
         textureAtlas.dispose();
         debugRenderer.dispose();
-        sr.dispose();
+        // sr.dispose();
     }
     
     @Override
@@ -274,7 +272,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             dubercore.world.rayCast(callback, player.getPos(), breakPoint);
             if (callback.collisionPoint != null) {
                 dubercore.destroyTerrain(callback.collisionPoint);
-                tempMouseVector = callback.collisionPoint;
+                // tempMouseVector = callback.collisionPoint;
             }
             return true;
         }

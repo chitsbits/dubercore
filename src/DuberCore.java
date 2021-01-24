@@ -18,6 +18,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
  */
 public class DuberCore extends Game {
 
+   public final static int START = 0;
+   public final static int MENU = 1;
+   public final static int LEADERBOARD = 2;
+   public final static int PREFERENCES = 3;
+
    public static final float STEP_TIME = 1f / 60f;
    public static final int VELOCITY_ITERATIONS = 6;
    public static final int POSITION_ITERATIONS = 2;
@@ -26,14 +31,14 @@ public class DuberCore extends Game {
    public static final float WORLD_HEIGHT = 135f;
 
    // Bit flags for collision categories
-   public static final short TERRAIN      = 0x0002;
-   public static final short PLAYER       = 0x0004;
-   public static final short ENEMY        = 0x0008;
-   public static final short GRENADE      = 0x0010;
-   public static final short GRAPPLE      = 0x0020;
-   public static final short PROJECTILE   = 0x0040;
-   public static final short SENSOR       = 0x0080;
-   public static final short DESTRUCTION  = 0x0100;
+   public static final short TERRAIN = 0x0002;
+   public static final short PLAYER = 0x0004;
+   public static final short ENEMY = 0x0008;
+   public static final short GRENADE = 0x0010;
+   public static final short GRAPPLE = 0x0020;
+   public static final short PROJECTILE = 0x0040;
+   public static final short SENSOR = 0x0080;
+   public static final short DESTRUCTION = 0x0100;
 
    private float accumulator = 0;
 
@@ -44,12 +49,45 @@ public class DuberCore extends Game {
    public ArrayList<Entity> entityList;
 
    public Player player;
-
    public int score;
+
+   private GameScreen gameScreen;
+   private MenuScreen menuScreen;
+   private LeaderboardScreen leaderboardScreen;
+   private PreferencesScreen preferencesScreen;
 
    @Override
    public void create() {
-      
+      this.changeScreen(MENU);
+   }
+
+   public void changeScreen(int screen) {
+      switch (screen) {
+         case START :
+            if (gameScreen == null) {
+               gameScreen = new GameScreen(this);
+            }
+            this.setScreen(gameScreen);
+            break;
+         case MENU :
+            if (menuScreen == null) {
+               menuScreen = new MenuScreen(this);
+            }
+            this.setScreen(menuScreen);
+            break;
+         case PREFERENCES :
+            if (preferencesScreen == null) {
+               preferencesScreen = new PreferencesScreen(this);
+            }
+            this.setScreen(preferencesScreen);
+            break;
+         case LEADERBOARD :
+            if (leaderboardScreen == null) {
+               leaderboardScreen = new LeaderboardScreen(this);
+            }
+            this.setScreen(leaderboardScreen);
+            break;
+      }
    }
 
    public void initialize() {
@@ -65,7 +103,6 @@ public class DuberCore extends Game {
       world.setContactListener(contactListener);
 
       tileMap = new TileMap(world);
-
       spawnPlayer();
 
    }
@@ -130,26 +167,25 @@ public class DuberCore extends Game {
    public void spawnEnemy() {
       BodyDef enemyBodyDef = new BodyDef();
       boolean validSpawn;
-         int x, y;
-         do {
-            validSpawn = true;
-            x = (int) (Math.random() * (TileMap.MAP_COLS - 14) + 7);
-            y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
+      int x, y;
+      do {
+         validSpawn = true;
+         x = (int) (Math.random() * (TileMap.MAP_COLS - 14) + 7);
+         y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
 
-            // Test if the surround 3x3 tiles are air
-            for (int a = -6; a < 6; a++) {
-               for (int b = -6; b < 6; b++) {
-                  if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
-                     validSpawn = false;
-                     break;
-                  }
+         // Test if the surround 3x3 tiles are air
+         for (int a = -6; a < 6; a++) {
+            for (int b = -6; b < 6; b++) {
+               if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
+                  validSpawn = false;
+                  break;
                }
             }
-         } while (!validSpawn);
+         }
+      } while (!validSpawn);
       enemyBodyDef.position.set(x / 2, y / 2);
       GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
-      //entityList.add(enemy);
+      // entityList.add(enemy);
 
-     
    }
 }
