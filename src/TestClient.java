@@ -32,6 +32,9 @@ public class TestClient {
             System.exit(0);
         }
 
+
+        
+
         // Open streams
         try {
             inputStream = new ObjectInputStream(sock.getInputStream());

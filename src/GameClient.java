@@ -1,3 +1,8 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -343,4 +348,113 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         return false;
     }
 
+    /**
+     * Get the top 10 scores from the online database
+     * @return String representation of the leaderboard
+     */
+    public String getLeaderBoard() {
+        Socket sock = new Socket();
+        ObjectInputStream inputStream = null;
+        ObjectOutputStream outputStream = null;
+        try {
+            sock.connect(new InetSocketAddress("127.0.0.1", 5000), 5000);
+        }
+        catch (IOException e) {
+            System.out.println("Error connecting to server.");
+            // Close socket
+            try{
+                sock.close();
+                System.out.println("Socket sucessfully closed.");
+            }
+            catch (IOException e1){
+                System.out.println("Error closing socket");
+                e1.printStackTrace();               
+            }
+        }
+
+        // Open streams
+        try {
+            inputStream = new ObjectInputStream(sock.getInputStream());
+            outputStream = new ObjectOutputStream(sock.getOutputStream());
+        }
+        catch (IOException e) {
+            System.out.println("Error opening streams");
+            e.printStackTrace();
+        }
+        
+        GetLeaderboard request = new GetLeaderboard();
+        // Write object
+        try {
+            outputStream.writeObject(request);
+            outputStream.flush();
+        }
+        catch (IOException e) {
+            System.out.println("Error writing object.");
+        }
+
+        // Get response
+        try {
+            Object packet = inputStream.readObject();
+            if (packet instanceof String){
+                System.out.println("Get packet recieved");
+                return (String) packet;
+            }
+        }
+        catch (ClassNotFoundException | IOException e) {
+            System.out.println("Erroring reading packet.");
+        }
+        return null;
+    }
+
+    /**
+     * Connects to the online database and adds the score to the leaderboard
+     */
+    public void writeToLeaderboard(){
+        Socket sock = new Socket();
+        ObjectOutputStream outputStream = null;
+        try {
+            sock.connect(new InetSocketAddress("127.0.0.1", 5000), 5000);
+        }
+        catch (IOException e) {
+            System.out.println("Error connecting to server.");
+            // Close socket
+            try{
+                sock.close();
+                System.out.println("Socket sucessfully closed.");
+            }
+            catch (IOException e1){
+                System.out.println("Error closing socket");             
+            }
+        }
+
+        // Open stream
+        try {
+            outputStream = new ObjectOutputStream(sock.getOutputStream());
+        }
+        catch (IOException e) {
+            System.out.println("Error opening streams");
+        }
+
+        WriteLeaderboard packet = new WriteLeaderboard();
+        packet.name = "test";
+        packet.score = 69;
+
+        // Write object
+        try {
+            outputStream.writeObject(packet);
+            outputStream.flush();
+        }
+        catch (IOException e) {
+            System.out.println("Error writing object.");
+        }
+
+        // Close socket
+        try {
+            sock.close();
+        }
+        catch (IOException e) {
+            System.out.println("Error closing socket.");
+        }
+        System.out.println("Stats written");
+    }
 }
