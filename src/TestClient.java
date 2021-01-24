@@ -29,11 +29,7 @@ public class TestClient {
                 System.out.println("Error closing socket");
                 e1.printStackTrace();               
             }
-            System.exit(0);
         }
-
-
-        
 
         // Open streams
         try {
