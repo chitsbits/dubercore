@@ -200,6 +200,19 @@ public class MyContactListener implements ContactListener {
                 //System.out.println("hit wall");
                 game.enemyRotateList.add(enemy);
             }
+            else if(enemy.enemyState.equals("pursuit")){
+                if (contact.getFixtureA().getUserData() instanceof Terrain){
+                    enemy.enemyState = "wander";
+                    game.enemyRotateList.add(enemy);
+                }
+                else if (contact.getFixtureA().getUserData() instanceof Player) {
+                    Player player = (Player)(contact.getFixtureA().getUserData());
+                    if (player.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY)){
+                        player.hp -= enemy.damage;
+                    }
+                    
+                }
+            }
         }
 
     }

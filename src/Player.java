@@ -22,6 +22,7 @@ public class Player extends Entity {
     public static final float X_SPEED = 5;
     public static final float JUMP_SPEED = 10;
     public static final float MAX_VELOCITY = 5f;
+    public static final long INVINCIBILITY = 666;
 
     public int collidingCount;
     public boolean canJump;
@@ -33,11 +34,16 @@ public class Player extends Entity {
     private Grenade grenade;
     private Weapon weapon;
     public int activeItem;
+    public float hp = 9000;
+
     Vector2 feetCenter;
+    Fixture playerFixture;
+    FixtureDef bodyFixtureDef;
 
     public long lastGrenadeUse;
     public long lastWeaponFire;
     public long lastGrappleUse;
+    public long lastDamageTaken;
 
     public GrapplingHook grapple;
     
@@ -72,14 +78,16 @@ public class Player extends Entity {
         body = world.createBody(bodyDef);
 
         // Add main body fixture
-        FixtureDef bodyFixtureDef = new FixtureDef();
+        bodyFixtureDef = new FixtureDef();
         bodyFixtureDef.shape = entityShape;
         bodyFixtureDef.filter.categoryBits = Game.PLAYER;
-        bodyFixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE;
+        bodyFixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE  | Game.ENEMY;
         bodyFixtureDef.friction = 1.0f;
-        Fixture playerFixture = body.createFixture(bodyFixtureDef);
+        
+        playerFixture = body.createFixture(bodyFixtureDef);
         body.setFixedRotation(true);
-        playerFixture.setUserData(this);
+        playerFixture.setDensity(475);
+        playerFixture.setUserData("player");
 
         //adding a sprite to the box2d player object
         sprite = GameClient.textureAtlas.createSprite("playerspriteplaceholder");

@@ -9,6 +9,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+
+import javafx.scene.paint.RadialGradient;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -55,7 +58,7 @@ public class GruntEnemy extends Enemy {
     }
 
     @Override
-    public void wander() {
+    public void move() {
         float bodyAngle = this.body.getAngle();
         bodyAngle = (bodyAngle * MathUtils.radiansToDegrees + 270) % 360;
 
@@ -63,7 +66,7 @@ public class GruntEnemy extends Enemy {
         float opp = (float) Math.sin(bodyAngle);
         float adj = (float) Math.cos(bodyAngle);
 
-        this.body.setLinearVelocity(adj * 5, opp * 5);
+        this.body.setLinearVelocity(adj * 4, opp * 4);
 
     }
 
@@ -77,11 +80,22 @@ public class GruntEnemy extends Enemy {
         }
         this.sprite.setRotation((bodyAngle + randAngle) * MathUtils.radiansToDegrees + 180);
         this.body.setTransform(this.body.getPosition(), bodyAngle + randAngle);
-        //System.out.println((this.body.getAngle() * MathUtils.radiansToDegrees + 270 )% 360);
     }
 
     @Override
-    public void pursuit() {
+    public void pursuit(Vector2 playerPos) {
+        float angleToPlayer = (float) Math.atan2(playerPos.y - this.body.getPosition().y, playerPos.x - this.body.getPosition().x);
+
+        if (angleToPlayer < 0){
+            angleToPlayer += 360 * MathUtils.degreesToRadians;
+        }
+
+
+        this.sprite.setRotation((angleToPlayer) * MathUtils.radiansToDegrees + 270);
+        this.body.setTransform(this.body.getPosition(), angleToPlayer + 90 * MathUtils.degreesToRadians);
+        move();
+        //float yInt  = (playerPos.y/(slope * playerPos.x));
+
     }
 
 

@@ -18,15 +18,15 @@ public abstract class Enemy extends Entity {
 
     }
 
-    public abstract void wander();
+    public abstract void move();
 
     public abstract void randRotate();
 
-    public abstract void pursuit();
+    public abstract void pursuit(Vector2 playerPos);
 
     public float heuristic(Vector2 enemyPos, Vector2 playerPos){
         double dx = enemyPos.x - playerPos.x;
-        double dy = enemyPos.x - playerPos.y;
+        double dy = enemyPos.y - playerPos.y;
         return (float) Math.sqrt((dx*dx)+(dy*dy));
         
     }

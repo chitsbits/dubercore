@@ -181,23 +181,38 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         sr.line(player.getPos(), tempMouseVector);
         sr.end();
 
+        //System.out.println(enemy.heuristic(enemy.body.getPosition(), player.getPos()));
         for (int e = 0; e < localGame.entityList.size(); e++){
             if (localGame.entityList.get(e) instanceof Enemy){
                 Enemy enemy = ((Enemy) localGame.entityList.get(e));
+
+                EnemyAiRayCastCallback callback = new EnemyAiRayCastCallback();
+                localGame.world.rayCast(callback, enemy.body.getPosition(), player.getPos());
+
                 if (enemy.enemyState.equals("wander")){
 
-                    // if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 75) {
-                    //     enemy.enemyState = "pursuit";
-                    // }
-                    enemy.wander();
+                    if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 15 && callback.los) {
+                        enemy.enemyState = "pursuit";
+                        enemy.body.setLinearVelocity(0,0);
+                    }
+                    
+                    enemy.move();
                 }
 
                 else if (enemy.enemyState.equals("pursuit")) {
-                    EnemyAiRayCastCallback callback = new EnemyAiRayCastCallback();
-                    localGame.world.rayCast(callback, enemy.body.getPosition(), player.getPos());
-                    if (callback.fixtureType != null && callback.fixtureType.equals("player")) {
-                        enemy.pursuit();
+
+                    if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) > 15 && callback.los) {
+                        enemy.enemyState = "wander";
+                        enemy.body.setLinearVelocity(0,0);
                     }
+
+
+                    else if (callback.fixtureType != null && callback.fixtureType.equals("player")) {
+                        enemy.body.setLinearVelocity(0,0);
+                        enemy.pursuit(player.getPos());
+
+                    }
+                    
                 }
             }
         }
@@ -251,18 +266,6 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
             player.throwGrenade(localGame, mousePos);
             player.lastGrenadeUse = System.currentTimeMillis();
-            //player.grenadeCount = player.grenadeCount - 1;
-
-            enemy.randRotate();
-            //enemy.pathfind(player.body.getPosition());
-            // for(Terrain tile: enemy.path){
-            //     System.out.println("enemy.pathfind sss");
-            //     System.out.println(tile.worldX);
-            //     System.out.println(tile.worldY);
-            //     System.out.println("enemy.pathfind eee");
-    
-            // }
-
 
             return true;
         }
