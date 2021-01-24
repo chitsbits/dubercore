@@ -189,7 +189,7 @@ public class MyContactListener implements ContactListener {
         else if (contact.getFixtureA().getUserData() instanceof Enemy){
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("wander")){
-                System.out.println("hit wall");
+                //System.out.println("hit wall");
                 game.enemyRotateList.add(enemy);
             }
         }

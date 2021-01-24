@@ -42,13 +42,14 @@ public class GruntEnemy extends Enemy {
         bodyFixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE;
         bodyFixtureDef.friction = 1.0f;
         
+        sprite = GameClient.textureAtlas.createSprite("enemyspriteplaceholder");
+        sprite.setSize(this.width*2, this.height*2);
+        sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+
         Fixture enemyFixture = body.createFixture(bodyFixtureDef);
-        enemyFixture.setUserData(this);
+        enemyFixture.setDensity(500);
         body.setFixedRotation(true);
-    
-        // sprite = GameClient.textureAtlas.createSprite("enemyspriteplaceholder");
-        // sprite.setSize(this.width*2, this.height*2);
-        // sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+        enemyFixture.setUserData(this);
 
         entityShape.dispose();
     }
@@ -74,8 +75,13 @@ public class GruntEnemy extends Enemy {
         while (bodyAngle * MathUtils.radiansToDegrees % 90 == randAngle * MathUtils.radiansToDegrees % 90){
             randAngle = (float) (Math.random() * 360 * MathUtils.degreesToRadians);
         }
+        this.sprite.setRotation((bodyAngle + randAngle) * MathUtils.radiansToDegrees + 180);
         this.body.setTransform(this.body.getPosition(), bodyAngle + randAngle);
         //System.out.println((this.body.getAngle() * MathUtils.radiansToDegrees + 270 )% 360);
+    }
+
+    @Override
+    public void pursuit() {
     }
 
 

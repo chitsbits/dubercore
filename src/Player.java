@@ -33,6 +33,7 @@ public class Player extends Entity {
     private Grenade grenade;
     private Weapon weapon;
     public int activeItem;
+    Vector2 feetCenter;
 
     public long lastGrenadeUse;
     public long lastWeaponFire;
@@ -76,8 +77,9 @@ public class Player extends Entity {
         bodyFixtureDef.filter.categoryBits = Game.PLAYER;
         bodyFixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE;
         bodyFixtureDef.friction = 1.0f;
-        body.createFixture(bodyFixtureDef);
+        Fixture playerFixture = body.createFixture(bodyFixtureDef);
         body.setFixedRotation(true);
+        playerFixture.setUserData(this);
 
         //adding a sprite to the box2d player object
         sprite = GameClient.textureAtlas.createSprite("playerspriteplaceholder");
@@ -88,7 +90,7 @@ public class Player extends Entity {
 
         // Feet shape definition
         PolygonShape feetShape = new PolygonShape();
-        Vector2 feetCenter = new Vector2();
+        feetCenter = new Vector2();
         feetCenter.x = getPos().x;
         feetCenter.y = getPos().y;
         feetShape.setAsBox(PLAYER_WIDTH - 0.05f, 0.1f, new Vector2(0, -0.75f), 0);

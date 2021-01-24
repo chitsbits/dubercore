@@ -154,7 +154,9 @@ public class Game {
          } while (!validSpawn);
       enemyBodyDef.position.set(x / 2, y / 2);
       GruntEnemy enemy = new GruntEnemy(this, enemyBodyDef);
-      //entityList.add(enemy);
+      enemyRotateList.add(enemy);
+      entityList.add(enemy);
+      
 
      
   }

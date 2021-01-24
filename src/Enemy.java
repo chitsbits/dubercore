@@ -22,9 +22,11 @@ public abstract class Enemy extends Entity {
 
     public abstract void randRotate();
 
-    public float heuristicCost(float sx, float sy, float gx, float gy){
-        double dx = sx - gx;
-        double dy = sy - gy;
+    public abstract void pursuit();
+
+    public float heuristic(Vector2 enemyPos, Vector2 playerPos){
+        double dx = enemyPos.x - playerPos.x;
+        double dy = enemyPos.x - playerPos.y;
         return (float) Math.sqrt((dx*dx)+(dy*dy));
         
     }

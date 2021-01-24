@@ -91,8 +91,12 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
 
+        BodyDef tempEnemyBodyDef = player.bodyDef;
+        tempEnemyBodyDef.position.set(player.getPos().x + 3, player.getPos().y + 3);
+
         enemy = new GruntEnemy(localGame, player.bodyDef);
-        //localGame.entityList.add(enemy);
+        enemy.enemyState = "pursuit";
+        localGame.entityList.add(enemy);
     }
 
     @Override
@@ -158,7 +162,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         // Draw entities
         for(Entity ent : localGame.entityList){
-            Sprite sprite = ((Entity)(ent.body.getUserData())).sprite;
+            Sprite sprite = ent.sprite;
             sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2, ent.body.getPosition().y - sprite.getHeight() / 2);
             sprite.draw(worldBatch);
         }
@@ -177,18 +181,26 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         sr.line(player.getPos(), tempMouseVector);
         sr.end();
 
-        if (enemy.enemyState.equals("wander")){
-            enemy.wander();
+        for (int e = 0; e < localGame.entityList.size(); e++){
+            if (localGame.entityList.get(e) instanceof Enemy){
+                Enemy enemy = ((Enemy) localGame.entityList.get(e));
+                if (enemy.enemyState.equals("wander")){
+
+                    // if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 75) {
+                    //     enemy.enemyState = "pursuit";
+                    // }
+                    enemy.wander();
+                }
+
+                else if (enemy.enemyState.equals("pursuit")) {
+                    EnemyAiRayCastCallback callback = new EnemyAiRayCastCallback();
+                    localGame.world.rayCast(callback, enemy.body.getPosition(), player.getPos());
+                    if (callback.fixtureType != null && callback.fixtureType.equals("player")) {
+                        enemy.pursuit();
+                    }
+                }
+            }
         }
-
-        // for (int e = 0; e < localGame.entityList.size(); e++){
-        //     if (localGame.entityList.get(e) instanceof Enemy){
-        //         if (enemy.enemyState.equals("wander")){
-        //             enemy.wander();
-        //         }
-        //     }
-
-        // }
 
         //periodic spawning of enemies
         clock += Gdx.graphics.getDeltaTime();

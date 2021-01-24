@@ -3,6 +3,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Bullet extends Projectile {
@@ -21,6 +22,7 @@ public class Bullet extends Projectile {
         body = this.world.createBody(bodyDef);
         body.setGravityScale(0);
 
+
         entityShape = new CircleShape();
         ((CircleShape) entityShape).setRadius(0.1f);
 
@@ -29,8 +31,10 @@ public class Bullet extends Projectile {
         bulletFixtureDef.filter.categoryBits = Game.PROJECTILE;
         bulletFixtureDef.filter.maskBits = Game.TERRAIN | Game.ENEMY;
         bulletFixtureDef.friction = 1f;
+        bulletFixtureDef.density  = 1f;
 
         Fixture bulletFixture = body.createFixture(bulletFixtureDef);
+
         bulletFixture.setUserData(this);
         entityShape.dispose();
 
