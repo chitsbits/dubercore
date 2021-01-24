@@ -28,8 +28,8 @@ public class Bullet extends Projectile {
 
         FixtureDef bulletFixtureDef = new FixtureDef();
         bulletFixtureDef.shape = entityShape;
-        bulletFixtureDef.filter.categoryBits = Game.PROJECTILE;
-        bulletFixtureDef.filter.maskBits = Game.TERRAIN | Game.ENEMY;
+        bulletFixtureDef.filter.categoryBits = DuberCore.PROJECTILE;
+        bulletFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.ENEMY;
         bulletFixtureDef.friction = 1f;
         bulletFixtureDef.density  = 1f;
 

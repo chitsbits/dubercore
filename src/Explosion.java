@@ -33,8 +33,8 @@ public class Explosion extends Entity {
 
         FixtureDef explosionFixtureDef = new FixtureDef();
         explosionFixtureDef.shape = entityShape;
-        explosionFixtureDef.filter.categoryBits = Game.PROJECTILE;
-        explosionFixtureDef.filter.maskBits = Game.TERRAIN | Game.ENEMY;
+        explosionFixtureDef.filter.categoryBits = DuberCore.PROJECTILE;
+        explosionFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.ENEMY;
 
         Fixture explosionFixture = body.createFixture(explosionFixtureDef);
         explosionFixture.setUserData(this);

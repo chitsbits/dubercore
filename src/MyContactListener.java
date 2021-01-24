@@ -6,9 +6,9 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 
 public class MyContactListener implements ContactListener {
 
-    private Game game;  // reference to game
+    private DuberCore game;  // reference to game
 
-    public MyContactListener(Game game){
+    public MyContactListener(DuberCore game){
         this.game = game;
     }
 
@@ -16,7 +16,7 @@ public class MyContactListener implements ContactListener {
     public void endContact(Contact contact) {
         // Can jump flag for player 1
         if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player) {
-            game.player1.collidingCount -= 1;
+            game.player.collidingCount -= 1;
         }
     }
 
@@ -24,7 +24,7 @@ public class MyContactListener implements ContactListener {
     public void beginContact(Contact contact) {
 
         if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player){
-            game.player1.collidingCount += 1;
+            game.player.collidingCount += 1;
         }
         // Grappling hook
         else if (contact.getFixtureA().getUserData() instanceof GrapplingHook){

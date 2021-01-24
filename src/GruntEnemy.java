@@ -41,8 +41,8 @@ public class GruntEnemy extends Enemy {
 
         FixtureDef bodyFixtureDef = new FixtureDef();
         bodyFixtureDef.shape = entityShape;
-        bodyFixtureDef.filter.categoryBits = Game.ENEMY;
-        bodyFixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE;
+        bodyFixtureDef.filter.categoryBits = DuberCore.ENEMY;
+        bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE;
         bodyFixtureDef.friction = 1.0f;
         
         sprite = GameClient.textureAtlas.createSprite("enemyspriteplaceholder");

@@ -80,8 +80,8 @@ public class Player extends Entity {
         // Add main body fixture
         bodyFixtureDef = new FixtureDef();
         bodyFixtureDef.shape = entityShape;
-        bodyFixtureDef.filter.categoryBits = Game.PLAYER;
-        bodyFixtureDef.filter.maskBits = Game.TERRAIN | Game.PROJECTILE  | Game.ENEMY;
+        bodyFixtureDef.filter.categoryBits = DuberCore.PLAYER;
+        bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE;
         bodyFixtureDef.friction = 1.0f;
         
         playerFixture = body.createFixture(bodyFixtureDef);
@@ -90,7 +90,7 @@ public class Player extends Entity {
         playerFixture.setUserData("player");
 
         //adding a sprite to the box2d player object
-        sprite = GameClient.textureAtlas.createSprite("playerspriteplaceholder");
+        sprite = GameScreen.textureAtlas.createSprite("playerspriteplaceholder");
         sprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
@@ -107,8 +107,8 @@ public class Player extends Entity {
         // Add feet fixture
         FixtureDef feetFixtureDef = new FixtureDef();
         feetFixtureDef.shape = feetShape;
-        feetFixtureDef.filter.categoryBits = Game.SENSOR;
-        feetFixtureDef.filter.maskBits = Game.TERRAIN;
+        feetFixtureDef.filter.categoryBits = DuberCore.SENSOR;
+        feetFixtureDef.filter.maskBits = DuberCore.TERRAIN;
         feetFixtureDef.isSensor = true;
         Fixture feetFixture = body.createFixture(feetFixtureDef);
 
@@ -154,7 +154,7 @@ public class Player extends Entity {
         }
     }
 
-    public void throwGrenade(Game game, Vector3 mousePos){
+    public void throwGrenade(DuberCore game, Vector3 mousePos){
 
         grenade = new Grenade(game.world, this);
 
