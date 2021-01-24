@@ -27,8 +27,8 @@ public class Grenade extends Entity {
 
         FixtureDef grenadeFixtureDef = new FixtureDef();
         grenadeFixtureDef.shape = entityShape;
-        grenadeFixtureDef.filter.categoryBits = Game.PROJECTILE;
-        grenadeFixtureDef.filter.maskBits = Game.TERRAIN | Game.ENEMY;
+        grenadeFixtureDef.filter.categoryBits = DuberCore.PROJECTILE;
+        grenadeFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.ENEMY;
         grenadeFixtureDef.friction = 1f;
 
         Fixture grenadeFixture = body.createFixture(grenadeFixtureDef);

@@ -12,6 +12,6 @@ public class DoubleStone extends Stone {
         this.body1 = body1;
         this.body2 = body2;
         //this.sprite = new Sprite(GameClient.stoneTextures[tileCase-1]);
-        this.sprite = GameClient.textureAtlas.createSprite("stone" + (tileCase));
+        this.sprite = GameScreen.textureAtlas.createSprite("stone" + (tileCase));
     }
 }

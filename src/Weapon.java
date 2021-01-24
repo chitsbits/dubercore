@@ -21,6 +21,6 @@ public abstract class Weapon {
         this.player = player;
     }
 
-    public abstract void fire(Game game, Vector3 mousePos);
+    public abstract void fire(DuberCore game, Vector3 mousePos);
     
 }

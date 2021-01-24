@@ -1,5 +1,7 @@
 
 import java.util.ArrayList;
+
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,7 +16,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 /**
  * Holds all game logic
  */
-public class Game {
+public class DuberCore extends Game {
 
    public static final float STEP_TIME = 1f / 60f;
    public static final int VELOCITY_ITERATIONS = 6;
@@ -41,12 +43,13 @@ public class Game {
    public ArrayList<Explosion> explosionBodyList;
    public ArrayList<Entity> entityList;
 
-   public Player player1;
+   public Player player;
 
    public int score;
 
-   public Game() {
-      initialize();
+   @Override
+   public void create() {
+      
    }
 
    public void initialize() {
@@ -120,8 +123,8 @@ public class Game {
          }
       } while (!validSpawn);
       player1BodyDef.position.set(x / 2, y / 2);
-      player1 = new Player(world, player1BodyDef);
-      entityList.add(player1);
+      player = new Player(world, player1BodyDef);
+      entityList.add(player);
    }
 
    public void spawnEnemy() {
@@ -148,5 +151,5 @@ public class Game {
       //entityList.add(enemy);
 
      
-  }
+   }
 }

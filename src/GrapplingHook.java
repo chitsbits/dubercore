@@ -29,8 +29,8 @@ public class GrapplingHook extends Entity {
         
         FixtureDef grappleFixtureDef = new FixtureDef();
         grappleFixtureDef.shape = entityShape;
-        grappleFixtureDef.filter.categoryBits = Game.GRAPPLE;
-        grappleFixtureDef.filter.maskBits = Game.TERRAIN;
+        grappleFixtureDef.filter.categoryBits = DuberCore.GRAPPLE;
+        grappleFixtureDef.filter.maskBits = DuberCore.TERRAIN;
         grappleFixtureDef.friction = 1f;
 
         Fixture grappleFixture = body.createFixture(grappleFixtureDef);

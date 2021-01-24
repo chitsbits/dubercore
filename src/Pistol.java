@@ -21,7 +21,7 @@ public class Pistol extends Weapon {
     }
 
     @Override
-    public void fire(Game game, Vector3 mousePos) {
+    public void fire(DuberCore game, Vector3 mousePos) {
         // TODO Auto-generated method stub
 
         bulletDirection = new Vector2();

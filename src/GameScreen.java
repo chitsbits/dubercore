@@ -6,10 +6,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -37,13 +40,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class GameClient extends ApplicationAdapter implements InputProcessor {
+public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     // Camera dimensions in metres. TODO: scale with monitor
     public static final float CAMERA_WIDTH = 32f;
     public static final float CAMERA_HEIGHT = 18f;
 
-    Game localGame; // Local instance of the game
+    DuberCore dubercore; // Local instance of the game
     OrthographicCamera camera;
     SpriteBatch worldBatch;
     SpriteBatch hudBatch;
@@ -66,14 +69,17 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
     int screenY;
     float clock;
 
-    @Override
-    public void create() {
+    public GameScreen(DuberCore dubercore){
+        this.dubercore = dubercore;
+    }
 
+    @Override
+    public void show() {
+        
         textureAtlas = new TextureAtlas("assets\\sprites.txt");
         font = new BitmapFont();
 
-        localGame = new Game();
-        player = localGame.player1;
+        player = dubercore.player;
 
         worldBatch = new SpriteBatch();
         hudBatch = new SpriteBatch();
@@ -83,7 +89,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         // viewport = new FitViewport(800, 480, camera);
 
         if(useDebugCamera)
-        camera.setToOrtho(false, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
+        camera.setToOrtho(false, DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
         else
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
         
@@ -93,10 +99,11 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         Gdx.input.setInputProcessor(this);
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
+
     }
 
     @Override
-    public void render() {
+    public void render(float delta) {
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
         // blue and alpha component in the range [0,1]
@@ -124,7 +131,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         //System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Step physics world
-        localGame.doPhysicsStep(Gdx.graphics.getDeltaTime());
+        dubercore.doPhysicsStep(delta);
 
 
         // Focus camera on player
@@ -138,7 +145,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         worldBatch.setProjectionMatrix(camera.combined);
 
         // Draw map sprites
-        Terrain[][] terrainArr = localGame.tileMap.terrainArr;
+        Terrain[][] terrainArr = dubercore.tileMap.terrainArr;
 
         // Set bounds of the map to render
         int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
@@ -157,7 +164,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         }
 
         // Draw entities
-        for(Entity ent : localGame.entityList){
+        for(Entity ent : dubercore.entityList){
             Sprite sprite = ((Entity)(ent.body.getUserData())).sprite;
             sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2, ent.body.getPosition().y - sprite.getHeight() / 2);
             sprite.draw(worldBatch);
@@ -166,22 +173,22 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
         // Draw hud
         hudBatch.begin();
-        font.draw(hudBatch, "Score: " + Integer.toString(localGame.score), 20, 20);
+        font.draw(hudBatch, "Score: " + Integer.toString(dubercore.score), 20, 20);
         hudBatch.end();
 
         // Render Box2D world
-        debugRenderer.render(localGame.world, camera.combined);
+        debugRenderer.render(dubercore.world, camera.combined);
         // Render test mouse line
         sr.setProjectionMatrix(camera.combined);
         sr.begin(ShapeType.Line);
         sr.line(player.getPos(), tempMouseVector);
         sr.end();
 
-        clock += Gdx.graphics.getDeltaTime();
+        clock += delta;
         
         if (clock > 10) {
             System.out.println("spawned");
-            localGame.spawnEnemy();
+            dubercore.spawnEnemy();
             clock = 0;
         }
             
@@ -209,7 +216,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public void dispose(){
-        localGame.world.dispose();
+        dubercore.world.dispose();
         worldBatch.dispose();
         hudBatch.dispose();
         textureAtlas.dispose();
@@ -217,14 +224,12 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
         sr.dispose();
     }
     
-    // TODO: move all actual logic to game class, so that only inputs are sent to server
-
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.G && player.checkCooldown(player.lastGrenadeUse, Grenade.COOLDOWN)){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
 
-            player.throwGrenade(localGame, mousePos);
+            player.throwGrenade(dubercore, mousePos);
             player.lastGrenadeUse = System.currentTimeMillis();
             //player.grenadeCount = player.grenadeCount - 1;
             return true;
@@ -235,7 +240,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             System.out.println("gun go pew");
             if(player.isGrappling){
                 player.retractGrapple();
-                localGame.bodyDeletionList.add(player.grapple.body);
+                dubercore.bodyDeletionList.add(player.grapple.body);
             }
             return true;
         }
@@ -266,9 +271,9 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             Vector2 breakPoint = new Vector2(player.getPos().x + pickaxeDirection.x, player.getPos().y + pickaxeDirection.y);
 
             PickaxeRayCastCallback callback = new PickaxeRayCastCallback();
-            localGame.world.rayCast(callback, player.getPos(), breakPoint);
+            dubercore.world.rayCast(callback, player.getPos(), breakPoint);
             if (callback.collisionPoint != null) {
-                localGame.destroyTerrain(callback.collisionPoint);
+                dubercore.destroyTerrain(callback.collisionPoint);
                 tempMouseVector = callback.collisionPoint;
             }
             return true;
@@ -278,7 +283,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
 
             if (player.activeItem == 1 && player.checkCooldown(player.lastWeaponFire, player.getWeapon().fireRate)){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-                player.getWeapon().fire(localGame, mousePos);
+                player.getWeapon().fire(dubercore, mousePos);
                 player.lastWeaponFire = System.currentTimeMillis();
                 return true;
             }
@@ -286,7 +291,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             else if (player.activeItem == 2 && player.checkCooldown(player.lastGrappleUse, GrapplingHook.COOLDOWN)){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 //System.out.println("shot grapple");
-                player.shootGrapple(localGame.world, mousePos);
+                player.shootGrapple(dubercore.world, mousePos);
                 player.lastGrappleUse = System.currentTimeMillis();
                 return true; 
             }
@@ -300,7 +305,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
             if (player.activeItem == 2 && player.isGrappling){
                 //System.out.println("released grapple");
                 player.retractGrapple();
-                localGame.bodyDeletionList.add(player.grapple.body);
+                dubercore.bodyDeletionList.add(player.grapple.body);
                 return true;
             }
         }
@@ -336,7 +341,7 @@ public class GameClient extends ApplicationAdapter implements InputProcessor {
                 System.out.println("gun go pew");
                 if (player.isGrappling){
                     player.retractGrapple();
-                    localGame.bodyDeletionList.add(player.grapple.body);
+                    dubercore.bodyDeletionList.add(player.grapple.body);
                 }
             }
             else {

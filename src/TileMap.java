@@ -59,9 +59,9 @@ public class TileMap {
         }
 
         // World edge
-        Vector2 a = new Vector2(0, Game.WORLD_HEIGHT);
-        Vector2 b = new Vector2(Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
-        Vector2 c = new Vector2(Game.WORLD_WIDTH, 0);
+        Vector2 a = new Vector2(0, DuberCore.WORLD_HEIGHT);
+        Vector2 b = new Vector2(DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
+        Vector2 c = new Vector2(DuberCore.WORLD_WIDTH, 0);
         Vector2 d = new Vector2(0, 0);
 
         makeEdgeShape(a, b);
@@ -207,8 +207,9 @@ public class TileMap {
   
         FixtureDef edgeFixtureDef = new FixtureDef();
         edgeFixtureDef.shape = edgeShape;
-        edgeFixtureDef.filter.categoryBits = Game.TERRAIN;
-        edgeFixtureDef.filter.maskBits = Game.PLAYER | Game.ENEMY | Game.PROJECTILE | Game.GRAPPLE | Game.SENSOR;
+        edgeFixtureDef.filter.categoryBits = DuberCore.TERRAIN;
+        edgeFixtureDef.filter.maskBits = DuberCore.PLAYER | DuberCore.ENEMY | DuberCore.PROJECTILE |
+                                        DuberCore.GRAPPLE | DuberCore.SENSOR;
         edgeFixtureDef.friction = 0.5f;
         Fixture edgeFixture = edgeBody.createFixture(edgeFixtureDef);
         edgeFixture.setUserData("edgeFixture");
