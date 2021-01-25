@@ -5,7 +5,7 @@ public class Shotgun extends Weapon {
 
     Shotgun() {
         weaponType = "Shotgun";
-        damage = 2f;
+        damage = 3f;
         fireRate = 1200;
         isFiring = false;
         magazineSize = 4;
