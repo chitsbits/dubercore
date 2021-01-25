@@ -8,7 +8,7 @@ public class SubmachineGun extends Weapon {
     SubmachineGun() {
         weaponType = "SubmachineGun";
         damage = 1f;
-        fireRate = 100;
+        fireRate = 150;
         isFiring = false;
 
         TextureAtlas textureAtlas = new TextureAtlas("assets\\sprites.txt");

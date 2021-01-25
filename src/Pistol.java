@@ -22,6 +22,8 @@ public class Pistol extends Weapon {
         bulletDirection.x = mousePos.x - playerPos.x;
         bulletDirection.y = mousePos.y - playerPos.y;
         bulletDirection.clamp(40f, 40f);
+        System.out.println(bulletDirection.x);
+        System.out.println(bulletDirection.y);
         Bullet bullet = new Bullet(game.world, damage, playerPos);
         game.entityList.add(bullet);
         bullet.body.setLinearVelocity(bulletDirection);

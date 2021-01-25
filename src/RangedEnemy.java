@@ -18,7 +18,7 @@ public class RangedEnemy extends Enemy {
     long lastAttack;
 
     RangedEnemy(DuberCore game, BodyDef bodyDef) {
-        super(2f, 6f);
+        super(4f, 6f);
         this.width = 0.4f;
         this.height = 0.7f;
         this.enemyState = "wander";

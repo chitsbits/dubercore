@@ -242,13 +242,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         grappleSprite.draw(hudBatch);
         
         for (int w = 0; w < 2; w++){
-            if (player.weaponReady[w]){
-                if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
-                    player.getWeapon(w).sprite.setColor(Color.WHITE);
-                }
-                else {
-                    player.getWeapon(w).sprite.setColor(Color.RED);
-                }
+            if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
+                player.getWeapon(w).sprite.setColor(Color.WHITE);
+            }
+            else {
+                player.getWeapon(w).sprite.setColor(Color.RED);
             }
             player.getWeapon(w).sprite.draw(hudBatch);
         }
@@ -444,8 +442,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.retractGrapple();
             dubercore.entityDeletionQueue.add(player.grapple);
         }
-
-        System.out.println(player.activeItem);
         return true;
     }
 

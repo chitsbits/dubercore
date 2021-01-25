@@ -228,7 +228,7 @@ public class TileMap {
         }
         else if (terrainArr[x][y] instanceof HealthCrystal){
             game.score += 3;
-            game.player.hp += 3;
+            game.player.hp += 2;
         }
 
         // Set tile's corner points to 0
