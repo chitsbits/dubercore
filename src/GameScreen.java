@@ -377,7 +377,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.lastWeaponFire = System.currentTimeMillis();
                 return true;
             }
-
             else if (player.activeItem == 1 && player.grappleReady){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(dubercore.world, mousePos);

@@ -28,7 +28,7 @@ public class Explosion extends Entity {
         body.setGravityScale(0);
 
         entityShape = new CircleShape();
-        ((CircleShape) entityShape).setRadius(2f);
+        ((CircleShape) entityShape).setRadius(3.5f);
 
         FixtureDef explosionFixtureDef = new FixtureDef();
         explosionFixtureDef.shape = entityShape;
@@ -40,7 +40,7 @@ public class Explosion extends Entity {
         entityShape.dispose();
 
         this.sprite = GameScreen.textureAtlas.createSprite("explosion");
-        sprite.setSize(4f, 4f);
+        sprite.setSize(6f, 6f);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
     }
