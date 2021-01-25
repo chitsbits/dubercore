@@ -4,8 +4,10 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -64,10 +66,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         worldBatch = new SpriteBatch();
         hudBatch = new SpriteBatch();
 
+        Pixmap pixmap = new Pixmap(Gdx.files.internal("assets\\crosshair.png"));
+        int xHotspot = pixmap.getWidth() / 2;
+        int yHotspot = pixmap.getHeight() / 2;
+        Cursor cursor = Gdx.graphics.newCursor(pixmap, xHotspot, yHotspot);
+        Gdx.graphics.setCursor(cursor);
+        pixmap.dispose();
+
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
 
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
+        //camera.setToOrtho(false, DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
         shapeRenderer = new ShapeRenderer();
@@ -126,23 +136,24 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.grenadeReady = true;
             }
         }
-
         if (!player.grappleReady){
             if (DuberCore.checkCooldown(player.lastGrappleUse, GrapplingHook.COOLDOWN)){
                 player.grappleReady = true;
             }
         }
-
         if (!player.weaponReady){
             if (DuberCore.checkCooldown(player.lastWeaponFire, player.getWeapon().fireRate)){
                 player.weaponReady = true;
             }
         }
-
         if (!player.mineReady){
             if (DuberCore.checkCooldown(player.lastTerrainMined, Player.MINING_SPEED)){
                 player.mineReady = true;
             }
+        }
+
+        if (player.isGrappling) {
+            player.followGrapple();
         }
 
         // ~~~~ DRAWING ~~~~~
@@ -385,9 +396,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return true;
         }
         if(button == Input.Buttons.LEFT){
-            if (player.activeItem == 1 && player.isGrappling){
+            if (player.activeItem == 1 && player.grappleFired) {
                 player.retractGrapple();
-                player.lastGrappleUse = System.currentTimeMillis();
                 dubercore.entityDeletionQueue.add(player.grapple);
                 return true;
             }
@@ -412,32 +422,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.retractGrapple();
             dubercore.entityDeletionQueue.add(player.grapple);
         }
-
-        System.out.println(player.activeItem);
         return true;
-
-        // if (amountY == 1 || amountY == -1){
-        //     player.activeItem += amountY;
-        //     if (player.activeItem > 2) {
-        //         player.activeItem = 1;
-        //     }
-        //     else if (player.activeItem < 1) {
-        //         player.activeItem = 2;
-        //     }
-        //     else if (player.activeItem == 1){
-        //         System.out.println("gun go pew");
-        //         if (player.isGrappling){
-        //             player.retractGrapple();
-        //             dubercore.entityDeletionQueue.add(player.grapple);
-        //         }
-        //     }
-        //     else {
-        //         System.out.println("grapple go hook");
-        //     }
-        //     return true;
-        // }
-
-        // return false;
     }
 
     @Override

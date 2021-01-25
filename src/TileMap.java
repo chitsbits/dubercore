@@ -21,7 +21,7 @@ public class TileMap {
     // while the game world is 240 met
     public static final float MAP_WORLD_RATIO = 2f;
 
-    private float increment = 0.05f;
+    private float increment = 0.07f;
     private float zIncrement = 0.2f;
 
     public World world; // Reference to Box2D world
@@ -132,8 +132,8 @@ public class TileMap {
             }
         }
 
-        // Generate ores
-        OpenSimplexNoise oreGenNoise = new OpenSimplexNoise((long)(Math.random() * Long.MAX_VALUE));
+        // Generate Gold
+        OpenSimplexNoise GoldGenNoise = new OpenSimplexNoise((long)(Math.random() * Long.MAX_VALUE));
         
         // Generate tilemap from noise
         xoffset = 0f;
@@ -153,7 +153,7 @@ public class TileMap {
                 for(int k = 0; k < 40; k++){
                     zoffset += zIncrement;
 
-                    float value = (float) oreGenNoise.eval(xoffset, yoffset, zoffset); // eval returns a double from -1 to 1
+                    float value = (float) GoldGenNoise.eval(xoffset, yoffset, zoffset); // eval returns a double from -1 to 1
 
                     Terrain currentTile = terrainArr[i][j];
 
@@ -167,8 +167,8 @@ public class TileMap {
                                 terrainArr[i][j] = new Gold(currentTile.marchingSquaresCase, currentTile.worldX, currentTile.worldY);
                             }
                             // Generate health crystal
-                            else if (value > 0.75f){
-
+                            else if (value > 0.85f){
+                                terrainArr[i][j] = new HealthCrystal(currentTile.marchingSquaresCase, currentTile.worldX, currentTile.worldY);
                             }
                         }
                         // Surface ore (exposed to air)
@@ -178,8 +178,8 @@ public class TileMap {
                                 terrainArr[i][j] = new Gold(currentTile.marchingSquaresCase, currentTile.worldX, currentTile.worldY, currentTile.body1);
                             }
                             // Generate health crystal
-                            else if (value > 0.5f){
-
+                            else if (value > 0.9f){
+                                terrainArr[i][j] = new HealthCrystal(currentTile.marchingSquaresCase, currentTile.worldX, currentTile.worldY, currentTile.body1);
                             }
                         }
 
@@ -219,13 +219,16 @@ public class TileMap {
     /**
      * @param tileMapBreakPoint vector with tilemap coords
      */
-    public int clearTile(Vector2 tileMapBreakPoint){
-        int scoreGained = 0;
+    public void clearTile(Vector2 tileMapBreakPoint, DuberCore game){
         int x = (int)(tileMapBreakPoint.x);
         int y = (int)(tileMapBreakPoint.y);
 
         if (terrainArr[x][y] instanceof Gold){
-            scoreGained = 5;
+            game.score += 5;
+        }
+        else if (terrainArr[x][y] instanceof HealthCrystal){
+            game.score += 3;
+            game.player.hp += 3;
         }
 
         // Set tile's corner points to 0
@@ -370,9 +373,59 @@ public class TileMap {
                                 terrainArr[currentX][currentY] = new Gold(tileCase, currentX/2f, currentY/2f);
                         }
                     }
+                    else if (terrainArr[currentX][currentY] instanceof HealthCrystal){
+                        switch (tileCase) {
+                            case 0:
+                                terrainArr[currentX][currentY] = new Air(tileCase, currentX/2f, currentY/2f);
+                                break;
+                            case 1:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d));
+                                break;
+                            case 2:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
+                                break;
+                            case 3:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
+                                break;
+                            case 4:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
+                                break;
+                            case 5:
+                                terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, c), makeEdgeShape(b, a));
+                                break;
+                            case 6:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
+                                break;
+                            case 7:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
+                                break;
+                            case 8:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, d));
+                                break;
+                            case 9:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, c));
+                                break;
+                            case 10:
+                                terrainArr[currentX][currentY] = new DoubleStone(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, d), makeEdgeShape(b, c));
+                                break;
+                            case 11:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(c, b));
+                                break;
+                            case 12:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, b));
+                                break;
+                            case 13:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(a, b));
+                                break;
+                            case 14:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f, makeEdgeShape(d, a));
+                                break;
+                            case 15:
+                                terrainArr[currentX][currentY] = new HealthCrystal(tileCase, currentX/2f, currentY/2f);
+                        }
+                    }
                 }
             }
         }
-        return scoreGained;
     }
 }
