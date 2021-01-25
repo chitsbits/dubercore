@@ -11,6 +11,7 @@ public abstract class Enemy extends Entity {
     float width;
     float height;
     float damage;
+    boolean isColliding;
     String enemyState;
     ArrayList<Terrain> path;
 
@@ -20,6 +21,7 @@ public abstract class Enemy extends Entity {
         this.damage = damage;
         this.hp = hp;
         this.path = new ArrayList<Terrain>();
+        this.isColliding = false;
     }
 
     public abstract void move();

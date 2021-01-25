@@ -244,6 +244,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                     enemy.move();
                 }
                 else if (enemy.enemyState.equals("pursuit")) {
+
+                    if (DuberCore.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY) && enemy.isColliding) {
+                        player.hp -= enemy.damage;
+                        player.lastDamageTaken = System.currentTimeMillis();
+                    }  
+
                     if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) > 15 && callback.los) {
                         enemy.pursuitTimer = System.currentTimeMillis();
                         enemy.enemyState = "wander";

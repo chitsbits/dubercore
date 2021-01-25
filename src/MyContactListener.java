@@ -14,10 +14,27 @@ public class MyContactListener implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
+
+        if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof GruntEnemy) {
+            
+            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureB().getUserData());
+            if (enemy.enemyState.equals("pursuit")){
+                enemy.isColliding = false; 
+            }
+        }
+        else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof GruntEnemy) {
+
+            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureA().getUserData());
+            if (enemy.enemyState.equals("pursuit")){
+                enemy.isColliding = false;
+            }
+
+        }
         // Can jump flag for player 1
-        if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player) {
+        else if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player) {
             game.player.collidingCount -= 1;
         }
+        
 
     }
 
@@ -28,19 +45,14 @@ public class MyContactListener implements ContactListener {
             
             GruntEnemy enemy = (GruntEnemy)(contact.getFixtureB().getUserData());
             if (enemy.enemyState.equals("pursuit")){
-                if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
-                    game.player.hp -= enemy.damage;
-                }   
+                enemy.isColliding = true; 
             }
-            game.player.collidingCount += 1;
         }
         else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof GruntEnemy) {
 
             GruntEnemy enemy = (GruntEnemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("pursuit")){
-                if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
-                    game.player.hp -= enemy.damage;
-                }   
+                enemy.isColliding = true;
             }
 
         }
