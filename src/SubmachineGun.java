@@ -13,9 +13,9 @@ public class SubmachineGun extends Weapon {
         magazineSize = 25;
         reloadTime = 3500;
 
-        sprite = GameScreen.textureAtlas.createSprite("pistol");
-        sprite.setSize(60, 40);
-        sprite.setPosition(1000, 30);
+        sprite = GameScreen.textureAtlas.createSprite("smg");
+        sprite.setSize(70, 30);
+        sprite.setPosition(895, 40);
     }
 
     @Override

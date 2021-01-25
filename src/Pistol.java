@@ -13,8 +13,8 @@ public class Pistol extends Weapon {
         reloadTime = 2000;
 
         sprite = GameScreen.textureAtlas.createSprite("pistol");
-        sprite.setSize(60, 40);
-        sprite.setPosition(800, 30);
+        sprite.setSize(50, 30);
+        sprite.setPosition(805, 40);
     }
 
     @Override
