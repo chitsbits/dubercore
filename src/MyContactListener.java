@@ -89,12 +89,12 @@ public class MyContactListener implements ContactListener {
         else if (contact.getFixtureA().getUserData() instanceof GrapplingHook) {
             contact.getFixtureA().getBody().setLinearVelocity(0,0);
             GrapplingHook hook = (GrapplingHook)(contact.getFixtureA().getUserData());
-            hook.player.followGrapple();
+            hook.player.isGrappling = true;
         }
         else if(contact.getFixtureB().getUserData() instanceof GrapplingHook) {
             contact.getFixtureB().getBody().setLinearVelocity(0,0);
             GrapplingHook hook = (GrapplingHook)(contact.getFixtureB().getUserData());
-            hook.player.followGrapple();
+            hook.player.isGrappling = true;
         }
         // Bullets
         else if (contact.getFixtureA().getUserData() instanceof Bullet && contact.getFixtureB().getUserData() instanceof Enemy){

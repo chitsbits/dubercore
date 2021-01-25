@@ -160,7 +160,7 @@ public class DuberCore extends Game {
       if(tileMapBreakPoint.y >= TileMap.MAP_ROWS){
          tileMapBreakPoint.y = TileMap.MAP_ROWS - 1;
       }
-      score += tileMap.clearTile(tileMapBreakPoint);
+      tileMap.clearTile(tileMapBreakPoint, this);
    }
 
    public void spawnPlayer() {

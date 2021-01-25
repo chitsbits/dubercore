@@ -182,6 +182,19 @@
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">air.png</key>
+            <key type="filename">crystal1.png</key>
+            <key type="filename">crystal11.png</key>
+            <key type="filename">crystal12.png</key>
+            <key type="filename">crystal13.png</key>
+            <key type="filename">crystal14.png</key>
+            <key type="filename">crystal15.png</key>
+            <key type="filename">crystal2.png</key>
+            <key type="filename">crystal3.png</key>
+            <key type="filename">crystal4.png</key>
+            <key type="filename">crystal6.png</key>
+            <key type="filename">crystal7.png</key>
+            <key type="filename">crystal8.png</key>
+            <key type="filename">crystal9.png</key>
             <key type="filename">gold1.png</key>
             <key type="filename">gold11.png</key>
             <key type="filename">gold12.png</key>
@@ -225,7 +238,9 @@
                 <false/>
             </struct>
             <key type="filename">bullet.png</key>
+            <key type="filename">crosshair.png</key>
             <key type="filename">grapple.png</key>
+            <key type="filename">projectilespit.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -240,8 +255,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">enemyspriteplaceholder.png</key>
-            <key type="filename">playerspriteplaceholder.png</key>
+            <key type="filename">chevron.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -250,9 +264,9 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>20,38,40,75</rect>
+                <rect>2,1,5,3</rect>
                 <key>scale9Paddings</key>
-                <rect>20,38,40,75</rect>
+                <rect>2,1,5,3</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -301,6 +315,23 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">meleespriteplaceholder.png</key>
+            <key type="filename">playerspriteplaceholder.png</key>
+            <key type="filename">rangedspriteplaceholder.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>20,38,40,75</rect>
+                <key>scale9Paddings</key>
+                <rect>20,38,40,75</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">pistol.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -313,6 +344,21 @@
                 <rect>4,2,7,5</rect>
                 <key>scale9Paddings</key>
                 <rect>4,2,7,5</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">player.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>6,5,12,10</rect>
+                <key>scale9Paddings</key>
+                <rect>6,5,12,10</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -349,13 +395,31 @@
             <filename>stone7.png</filename>
             <filename>stone8.png</filename>
             <filename>stone9.png</filename>
-            <filename>enemyspriteplaceholder.png</filename>
             <filename>grapple.png</filename>
             <filename>bullet.png</filename>
             <filename>grenade.png</filename>
             <filename>explosion.png</filename>
             <filename>grappleicon.png</filename>
             <filename>pistol.png</filename>
+            <filename>player.png</filename>
+            <filename>rangedspriteplaceholder.png</filename>
+            <filename>meleespriteplaceholder.png</filename>
+            <filename>chevron.png</filename>
+            <filename>projectilespit.png</filename>
+            <filename>crystal1.png</filename>
+            <filename>crystal11.png</filename>
+            <filename>crystal12.png</filename>
+            <filename>crystal13.png</filename>
+            <filename>crystal14.png</filename>
+            <filename>crystal15.png</filename>
+            <filename>crystal2.png</filename>
+            <filename>crystal3.png</filename>
+            <filename>crystal4.png</filename>
+            <filename>crystal6.png</filename>
+            <filename>crystal7.png</filename>
+            <filename>crystal8.png</filename>
+            <filename>crystal9.png</filename>
+            <filename>crosshair.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

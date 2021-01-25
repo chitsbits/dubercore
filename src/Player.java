@@ -22,6 +22,7 @@ public class Player extends Entity {
     public boolean canJump;
     public boolean canMove;
     public boolean isGrappling;
+    public boolean grappleFired;
     public boolean isMining;
     private Vector2 grappleDirection;
     private Vector2 grenadeDirection;
@@ -53,6 +54,7 @@ public class Player extends Entity {
         canJump = false;
         canMove = true;
         isGrappling = false;
+        grappleFired = false;
         isMining  = false;
         activeItem = 0;
 
@@ -126,9 +128,8 @@ public class Player extends Entity {
 
     public void shootGrapple(World world, Vector3 mousePos) {
 
-        isGrappling = true;
         grapple = new GrapplingHook(world, this);
-        
+        grappleFired = true;
         grappleDirection = new Vector2();
         grappleDirection.x = mousePos.x - getPos().x;
         grappleDirection.y = mousePos.y - getPos().y;
@@ -137,25 +138,21 @@ public class Player extends Entity {
     }
 
     public void retractGrapple() {
-        if(isGrappling){
-            body.setGravityScale(1);
-            canMove = true;
-            isGrappling = false;
-            grappleReady = false;
-        }
+        lastGrappleUse = System.currentTimeMillis();
+        canMove = true;
+        isGrappling = false;
+        grappleReady = false;
+        grappleFired = false;
     }
 
     public void followGrapple(){
-        if(isGrappling){
-            grappleDirection = new Vector2();
-            grappleDirection.x = grapple.getPos().x - getPos().x;
-            grappleDirection.y = grapple.getPos().y - getPos().y;
-            grappleDirection.clamp(15f, 15f);
+        grappleDirection = new Vector2();
+        grappleDirection.x = grapple.getPos().x - getPos().x;
+        grappleDirection.y = grapple.getPos().y - getPos().y;
+        grappleDirection.clamp(15f, 15f);
             
-            body.setLinearVelocity(grappleDirection);
-            body.setGravityScale(0);
-            canMove = false;
-        }
+        body.setLinearVelocity(grappleDirection);
+        canMove = false;
     }
 
     public void throwGrenade(DuberCore game, Vector3 mousePos){
@@ -165,8 +162,8 @@ public class Player extends Entity {
         grenadeDirection = new Vector2();
         grenadeDirection.x = mousePos.x - getPos().x;
         grenadeDirection.y = mousePos.y - getPos().y;
-        grenadeDirection.clamp(40f, 40f);
-        grenade.body.setGravityScale(5);
+        grenadeDirection.clamp(20f, 20f);
+        grenade.body.setGravityScale(2);
         grenade.body.setLinearVelocity(grenadeDirection);
         game.entityList.add(grenade);
     }
