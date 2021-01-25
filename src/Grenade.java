@@ -1,3 +1,4 @@
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -7,20 +8,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Grenade extends Entity {
 
-    Player player;
-    World world;
-
     public static final long COOLDOWN = 10000;
 
-    Grenade(World world, Player player){
-        this.player = player;
-        this.world = world;
+    Grenade(World world, Vector2 pos){
 
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
-        bodyDef.position.set(player.getPos());
+        bodyDef.position.set(pos);
 
-        body = this.world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
 
         entityShape = new CircleShape();
         ((CircleShape) entityShape).setRadius(0.2f);
@@ -34,6 +30,10 @@ public class Grenade extends Entity {
         Fixture grenadeFixture = body.createFixture(grenadeFixtureDef);
         grenadeFixture.setUserData(this);
         entityShape.dispose();
+
+        this.sprite = GameScreen.textureAtlas.createSprite("grenade");
+        sprite.setSize(0.5f, 0.5f);
+        sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
     }
     

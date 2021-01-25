@@ -16,7 +16,6 @@ public class Explosion extends Entity {
         this.world = world;
         this.damage = 10f;
         this.position = position;
-
     }
 
     public void explode(){
@@ -39,6 +38,10 @@ public class Explosion extends Entity {
         Fixture explosionFixture = body.createFixture(explosionFixtureDef);
         explosionFixture.setUserData(this);
         entityShape.dispose();
+
+        this.sprite = GameScreen.textureAtlas.createSprite("explosion");
+        sprite.setSize(4f, 4f);
+        sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
     }
 

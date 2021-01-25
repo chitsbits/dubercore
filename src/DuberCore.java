@@ -234,4 +234,12 @@ public class DuberCore extends Game {
    public void setDebugMode(boolean mode){
       this.debugMode = mode;
    }
+
+   public static boolean checkCooldown(long lastUse, long cooldown){
+      long time = System.currentTimeMillis();
+      if (time > lastUse + cooldown){
+         return true;
+      }
+      return false;
+   }
 }
