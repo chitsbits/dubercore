@@ -200,7 +200,8 @@ public class MyContactListener implements ContactListener {
                 else if (contact.getFixtureB().getUserData() instanceof Player) {
                     Player player = (Player)(contact.getFixtureA().getUserData());
                     if (player.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY)){
-                        player.hp -= enemy.damage;
+                        game.player.hp -= enemy.damage;
+                        System.out.println("asdf");
                     }
                     
                 }
@@ -221,7 +222,8 @@ public class MyContactListener implements ContactListener {
                 else if (contact.getFixtureA().getUserData() instanceof Player) {
                     Player player = (Player)(contact.getFixtureA().getUserData());
                     if (player.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY)){
-                        player.hp -= enemy.damage;
+                        game.player.hp -= enemy.damage;
+                        System.out.println("asdf2");
                     }
                     
                 }

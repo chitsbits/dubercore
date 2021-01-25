@@ -4,8 +4,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Enemy extends Entity {
 
-    private float hp;
     public static final float MAX_VELOCITY = 5f;
+    public static final float MAX_HP = 5f;
+
+    private float hp;
     float width;
     float height;
     float damage;

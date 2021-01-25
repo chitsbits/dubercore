@@ -51,6 +51,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private Player player;
 
     private Box2DDebugRenderer debugRenderer;
+    private ShapeRenderer shapeRenderer;
 
     private boolean useDebugCamera = false;
 
@@ -76,8 +77,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         textureAtlas = new TextureAtlas("assets\\sprites.txt");
         dubercore.initialize();
         font = new BitmapFont();
+        font.getData().setScale(1.5f);
         
-
         player = dubercore.player;
 
         worldBatch = new SpriteBatch();
@@ -92,9 +93,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         else {
             camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
         }
-        
 
         debugRenderer = new Box2DDebugRenderer();
+        shapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
@@ -127,7 +128,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         // Step physics world
         dubercore.doPhysicsStep(delta);
-
 
         // Focus camera on player
         if(!useDebugCamera)
@@ -166,10 +166,30 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
         worldBatch.end();
 
+        // World UI elements
+        shapeRenderer.setAutoShapeType(true);
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin();
+        for(Entity ent : dubercore.entityList) {
+            if(ent instanceof Enemy){
+                Enemy enemy = (Enemy) ent;
+                Vector2 enemyPos = enemy.getPos();
+                shapeRenderer.set(ShapeType.Line);
+                shapeRenderer.setColor(Color.WHITE);
+                shapeRenderer.rect(enemyPos.x - 0.4f, enemyPos.y + 0.7f, 0.8f, 0.1f);
+                shapeRenderer.set(ShapeType.Filled);
+                shapeRenderer.setColor(Color.RED);
+                float hpWidth = (enemy.getHp() / Enemy.MAX_HP) * 0.7f;
+                shapeRenderer.rect(enemyPos.x - 0.35f, enemyPos.y + 0.73f, hpWidth, 0.05f);
+            }
+        }
+        shapeRenderer.end();
+
         // Draw hud
         hudBatch.begin();
-        font.draw(hudBatch, "Score: " + Integer.toString(dubercore.score), 20, 20);
-        font.draw(hudBatch, dubercore.playerName, 50, 20);
+        font.draw(hudBatch, dubercore.playerName, 50, 50);
+        font.draw(hudBatch, "Score: " + Integer.toString(dubercore.score), 150, 50);
+        font.draw(hudBatch, "Health: " + Integer.toString((int)dubercore.player.hp), 250, 50);
         hudBatch.end();
 
         // Render Box2D world
@@ -339,7 +359,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         this.screenX = screenX;
         this.screenY = screenY;
-
         return false;
     }
 
