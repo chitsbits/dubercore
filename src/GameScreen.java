@@ -65,7 +65,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     int screenX;
     int screenY;
-    float clock;
+    float spawnClock;
 
     public GameScreen(DuberCore dubercore){
         this.dubercore = dubercore;
@@ -222,27 +222,28 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
 
         //periodic spawning of enemies
-        clock += Gdx.graphics.getDeltaTime();
+        spawnClock += Gdx.graphics.getDeltaTime();
         
-        if (clock > (int)(Math.random() * ((10 - 5)+1)) + 5) {
+        if (spawnClock > (int)(Math.random() * ((10 - 5)+1)) + 5) {
             //System.out.println("spawned");
             dubercore.spawnEnemy();
-            clock = 0;
+            spawnClock = 0;
 
         }
 
-        /* sr.begin(ShapeType.Filled);
-        for(int i = 0; i < TileMap.MAP_COLS+1; i++){
-            for(int j = 0; j < TileMap.MAP_ROWS+1; j++){
-                if(dubercore.tileMap.cornerArr[i][j] == 1){
-                    sr.setColor(Color.RED);
-                } else{
-                    sr.setColor(Color.BLACK);
-                }
-                sr.rect(i / 2f - 0.05f, j / 2f - 0.05f, 0.1f, 0.1f);
+        if (player.checkCooldown(player.lastTerrainMined, Player.MINING_SPEED) && player.isMining){
+            Vector3 mouseWorldPos = camera.unproject(new Vector3(this.screenX, this.screenY, 0));  // Maps the mouse from camera pos to world pos
+            Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
+            Vector2 breakPoint = new Vector2(player.getPos().x + pickaxeDirection.x, player.getPos().y + pickaxeDirection.y);
+
+            PickaxeRayCastCallback callback = new PickaxeRayCastCallback();
+            dubercore.world.rayCast(callback, player.getPos(), breakPoint);
+            if (callback.collisionPoint != null) {
+                dubercore.destroyTerrain(callback.collisionPoint);
             }
+            player.lastTerrainMined = System.currentTimeMillis();
+
         }
-        sr.end(); */
         
     }
 
@@ -303,16 +304,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Pickaxe
         if (button == Input.Buttons.RIGHT) {
-            Vector3 mouseWorldPos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
-            Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
-            Vector2 breakPoint = new Vector2(player.getPos().x + pickaxeDirection.x, player.getPos().y + pickaxeDirection.y);
-
-            PickaxeRayCastCallback callback = new PickaxeRayCastCallback();
-            dubercore.world.rayCast(callback, player.getPos(), breakPoint);
-            if (callback.collisionPoint != null) {
-                dubercore.destroyTerrain(callback.collisionPoint);
-                // tempMouseVector = callback.collisionPoint;
-            }
+            player.isMining = true;
             return true;
         }
         //firing weapon/grapple hook
@@ -337,6 +329,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+
+        if (button == Input.Buttons.RIGHT) {
+            player.isMining = false;
+            return true;
+        }
+
         if(button == Input.Buttons.LEFT){
             if (player.activeItem == 2 && player.isGrappling){
                 //System.out.println("released grapple");
@@ -351,6 +349,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+        this.screenX = screenX;
+        this.screenY = screenY;
+
         return false;
     }
 
