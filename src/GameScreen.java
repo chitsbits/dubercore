@@ -41,6 +41,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private int screenY;
     private float spawnClock;
 
+    // Hud elements
+    Sprite grenadeSprite;
+    Sprite grappleSprite;
+    Sprite pistolSprite;
+
     public GameScreen(DuberCore dubercore){
         this.dubercore = dubercore;
     }
@@ -68,6 +73,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         Gdx.input.setInputProcessor(this);
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
+
+        grenadeSprite = textureAtlas.createSprite("grenade");
+        grenadeSprite.setSize(36f, 40);
+        grenadeSprite.setPosition(1200, 30);
+
+        grappleSprite = textureAtlas.createSprite("grappleicon");
+        grappleSprite.setSize(40, 50);
+        grappleSprite.setPosition(1100, 30);
+
+        pistolSprite = textureAtlas.createSprite("pistol");
+        pistolSprite.setSize(60, 40);
+        pistolSprite.setPosition(1000, 30);
     }
 
     @Override
@@ -97,9 +114,34 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         // Focus camera on player
         camera.position.set(player.getPos().x, player.getPos().y, 0);
-        // tell the camera to update its matrices.
         camera.update();
 
+        // Update cooldown timers
+        if (!player.grenadeReady){
+            if (DuberCore.checkCooldown(player.lastGrenadeUse, Grenade.COOLDOWN)){
+                player.grenadeReady = true;
+            }
+        }
+
+        if (!player.grappleReady){
+            if (DuberCore.checkCooldown(player.lastGrappleUse, GrapplingHook.COOLDOWN)){
+                player.grappleReady = true;
+            }
+        }
+
+        if (!player.weaponReady){
+            if (DuberCore.checkCooldown(player.lastWeaponFire, player.getWeapon().fireRate)){
+                player.weaponReady = true;
+            }
+        }
+
+        if (!player.mineReady){
+            if (DuberCore.checkCooldown(player.lastTerrainMined, Player.MINING_SPEED)){
+                player.mineReady = true;
+            }
+        }
+
+        // ~~~~ DRAWING ~~~~~
         worldBatch.begin();
         worldBatch.setProjectionMatrix(camera.combined);
 
@@ -159,7 +201,28 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudBatch.begin();
         font.draw(hudBatch, dubercore.playerName, 50, 50);
         font.draw(hudBatch, "Score: " + Integer.toString(dubercore.score), 150, 50);
-        font.draw(hudBatch, "Health: " + Integer.toString((int)dubercore.player.hp), 250, 50);
+        font.draw(hudBatch, "Health: " + Integer.toString((int)dubercore.player.hp), 300, 50);
+
+        if (player.grenadeReady){
+            grenadeSprite.setColor(Color.WHITE);
+        } else {
+            grenadeSprite.setColor(Color.RED);
+        }
+        grenadeSprite.draw(hudBatch);
+
+        if (player.grappleReady){
+            grappleSprite.setColor(Color.WHITE);
+        } else {
+            grappleSprite.setColor(Color.RED);
+        }
+        grappleSprite.draw(hudBatch);
+
+        if (player.weaponReady){
+            pistolSprite.setColor(Color.WHITE);
+        } else {
+            pistolSprite.setColor(Color.RED);
+        }
+        pistolSprite.draw(hudBatch);
         hudBatch.end();
 
         // Render Box2D world
@@ -167,7 +230,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             debugRenderer.render(dubercore.world, camera.combined);
         }
 
-        //System.out.println(enemy.heuristic(enemy.body.getPosition(), player.getPos()));
         for (int e = 0; e < dubercore.entityList.size(); e++){
             if (dubercore.entityList.get(e) instanceof Enemy){
                 Enemy enemy = ((Enemy) dubercore.entityList.get(e));
@@ -198,12 +260,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         //periodic spawning of enemies
         spawnClock += Gdx.graphics.getDeltaTime();
         
-        if (spawnClock > (int) Math.random() * ((10 - 5)) + 5) {
+        if (spawnClock > (int)(Math.random()*(10 - 5)) + 5) {
+            //System.out.println("spawned");
             dubercore.spawnEnemy();
             spawnClock = 0;
         }
-
-        if (player.checkCooldown(player.lastTerrainMined, Player.MINING_SPEED) && player.isMining){
+        if (player.mineReady && player.isMining){
             Vector3 mouseWorldPos = camera.unproject(new Vector3(this.screenX, this.screenY, 0));  // Maps the mouse from camera pos to world pos
             Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
             Vector2 breakPoint = new Vector2(player.getPos().x + pickaxeDirection.x, player.getPos().y + pickaxeDirection.y);
@@ -233,19 +295,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.G && player.checkCooldown(player.lastGrenadeUse, Grenade.COOLDOWN)){
+        if (keycode == Input.Keys.G && player.grenadeReady){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-
             player.throwGrenade(dubercore, mousePos);
+            player.grenadeReady = false;
             player.lastGrenadeUse = System.currentTimeMillis();
 
             return true;
         }
-
-        else if (keycode == Input.Keys.ESCAPE){
-            dubercore.changeScreen(DuberCore.GAME_OVER);
-        }
-        
         else if (keycode == Input.Keys.NUM_1){
             player.activeItem = 1;
             System.out.println("gun go pew");
@@ -260,16 +317,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             System.out.println("grapple go hook");
             return true;
         }
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
+        else if (keycode == Input.Keys.ESCAPE){
+            dubercore.changeScreen(DuberCore.GAME_OVER);
+        }
         return false;
     }
 
@@ -280,17 +330,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.isMining = true;
             return true;
         }
-        //firing weapon/grapple hook
+        // Firing weapon/grapple hook
         else if(button == Input.Buttons.LEFT){
 
-            if (player.activeItem == 1 && player.checkCooldown(player.lastWeaponFire, player.getWeapon().fireRate)){
+            if (player.activeItem == 1 && player.weaponReady){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-                player.getWeapon().fire(dubercore, mousePos);
+                player.getWeapon().fire(dubercore, mousePos, player.getPos());
+                player.weaponReady = false;
                 player.lastWeaponFire = System.currentTimeMillis();
                 return true;
             }
 
-            else if (player.activeItem == 2 && player.checkCooldown(player.lastGrappleUse, GrapplingHook.COOLDOWN)){
+            else if (player.activeItem == 2 && player.grappleReady){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(dubercore.world, mousePos);
                 dubercore.entityList.add(player.grapple);
@@ -321,23 +372,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     }
 
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-
-        this.screenX = screenX;
-        this.screenY = screenY;
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-
-        this.screenX = screenX;
-        this.screenY = screenY;
-
-        return false;
-    }
-
-    @Override
     public boolean scrolled(float amountX, float amountY) {
 
         if (amountY == 1 || amountY == -1){
@@ -361,6 +395,33 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return true;
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+        this.screenX = screenX;
+        this.screenY = screenY;
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+
+        this.screenX = screenX;
+        this.screenY = screenY;
+
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
         return false;
     }
 }

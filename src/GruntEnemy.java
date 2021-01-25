@@ -65,7 +65,7 @@ public class GruntEnemy extends Enemy {
         float opp = (float) Math.sin(bodyAngle);
         float adj = (float) Math.cos(bodyAngle);
 
-        this.body.setLinearVelocity(adj * 4, opp * 4);
+        this.body.setLinearVelocity(adj * 2, opp * 2);
 
     }
 

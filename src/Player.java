@@ -23,7 +23,6 @@ public class Player extends Entity {
     public boolean canMove;
     public boolean isGrappling;
     public boolean isMining;
-    public int grenadeCount;
     private Vector2 grappleDirection;
     private Vector2 grenadeDirection;
     private Grenade grenade;
@@ -31,15 +30,20 @@ public class Player extends Entity {
     public int activeItem;
     public float hp = 100;
 
-    Vector2 feetCenter;
-    Fixture playerFixture;
-    FixtureDef bodyFixtureDef;
+    private Vector2 feetCenter;
+    private Fixture playerFixture;
+    private FixtureDef bodyFixtureDef;
 
     public long lastGrenadeUse;
     public long lastWeaponFire;
     public long lastGrappleUse;
     public long lastDamageTaken;
     public long lastTerrainMined;
+
+    public boolean grenadeReady;
+    public boolean grappleReady;
+    public boolean weaponReady;
+    public boolean mineReady;
 
     public GrapplingHook grapple;
     
@@ -48,13 +52,17 @@ public class Player extends Entity {
         collidingCount = 0;
         canJump = false;
         canMove = true;
-        grenadeCount = 5;
         isGrappling = false;
         isMining  = false;
         activeItem = 1;
-        lastDamageTaken = 0;
+
+        grappleReady = true;
+        grenadeReady = true;
+        weaponReady = true;
+        mineReady = true;
+        
         //adding a default weapon
-        weapon = new Pistol(this);
+        weapon = new Pistol();
 
         // Body definition
         this.bodyDef = bodyDef;
@@ -133,6 +141,7 @@ public class Player extends Entity {
             body.setGravityScale(1);
             canMove = true;
             isGrappling = false;
+            grappleReady = false;
         }
     }
 
@@ -151,7 +160,7 @@ public class Player extends Entity {
 
     public void throwGrenade(DuberCore game, Vector3 mousePos){
 
-        grenade = new Grenade(game.world, this);
+        grenade = new Grenade(game.world, getPos());
 
         grenadeDirection = new Vector2();
         grenadeDirection.x = mousePos.x - getPos().x;
@@ -159,6 +168,7 @@ public class Player extends Entity {
         grenadeDirection.clamp(40f, 40f);
         grenade.body.setGravityScale(5);
         grenade.body.setLinearVelocity(grenadeDirection);
+        game.entityList.add(grenade);
     }
 
     public void moveLeft() {
@@ -171,14 +181,6 @@ public class Player extends Entity {
 
     public void jump() {
         body.setLinearVelocity(getVel().x, 10);
-    }
-
-    public boolean checkCooldown(long lastUse, long cooldown){
-        long time = System.currentTimeMillis();
-        if (time > lastUse + cooldown){
-            return true;
-        }
-        return false;
     }
 
     public Weapon getWeapon(){
