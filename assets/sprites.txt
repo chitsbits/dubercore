@@ -1,11 +1,11 @@
 sprites.png
-size: 242, 182
+size: 252, 182
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 air
   rotate: false
-  xy: 50, 0
+  xy: 38, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -19,105 +19,105 @@ bullet
   index: -1
 enemyspriteplaceholder
   rotate: false
-  xy: 76, 32
+  xy: 84, 32
   size: 80, 150
   orig: 80, 150
   offset: 0, 0
   index: -1
 explosion
   rotate: false
-  xy: 32, 32
+  xy: 40, 32
   size: 44, 45
   orig: 44, 45
   offset: 0, 0
   index: -1
 gold1
   rotate: false
-  xy: 66, 0
+  xy: 54, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold2
   rotate: false
-  xy: 162, 0
+  xy: 150, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold3
   rotate: false
-  xy: 178, 0
+  xy: 166, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold4
   rotate: false
-  xy: 194, 0
+  xy: 182, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold6
   rotate: false
-  xy: 210, 0
+  xy: 198, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold7
   rotate: false
-  xy: 226, 0
+  xy: 214, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold8
   rotate: false
-  xy: 0, 16
+  xy: 230, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold9
   rotate: false
-  xy: 16, 16
+  xy: 0, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold11
   rotate: false
-  xy: 82, 0
+  xy: 70, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold12
   rotate: false
-  xy: 98, 0
+  xy: 86, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold13
   rotate: false
-  xy: 114, 0
+  xy: 102, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold14
   rotate: false
-  xy: 130, 0
+  xy: 118, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold15
   rotate: false
-  xy: 146, 0
+  xy: 134, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -131,133 +131,140 @@ grapple
   index: -1
 grappleicon
   rotate: false
-  xy: 23, 0
+  xy: 16, 16
   size: 12, 16
   orig: 12, 16
   offset: 0, 0
   index: -1
 grenade
   rotate: false
-  xy: 14, 0
+  xy: 29, 0
   size: 9, 11
   orig: 9, 11
   offset: 0, 0
   index: -1
 pistol
   rotate: false
-  xy: 35, 0
+  xy: 14, 0
   size: 15, 9
   orig: 15, 9
   offset: 0, 0
   index: -1
+player
+  rotate: false
+  xy: 16, 32
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
 playerspriteplaceholder
   rotate: false
-  xy: 156, 32
+  xy: 164, 32
   size: 80, 150
   orig: 80, 150
   offset: 0, 0
   index: -1
 stone1
   rotate: false
-  xy: 32, 16
+  xy: 28, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone2
   rotate: false
-  xy: 144, 16
+  xy: 140, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone3
   rotate: false
-  xy: 160, 16
+  xy: 156, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone4
   rotate: false
-  xy: 176, 16
+  xy: 172, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone5
   rotate: false
-  xy: 192, 16
+  xy: 188, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone6
   rotate: false
-  xy: 208, 16
+  xy: 204, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone7
   rotate: false
-  xy: 224, 16
+  xy: 220, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone8
   rotate: false
-  xy: 0, 32
+  xy: 236, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone9
   rotate: false
-  xy: 16, 32
+  xy: 0, 32
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone10
   rotate: false
-  xy: 48, 16
+  xy: 44, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone11
   rotate: false
-  xy: 64, 16
+  xy: 60, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone12
   rotate: false
-  xy: 80, 16
+  xy: 76, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone13
   rotate: false
-  xy: 96, 16
+  xy: 92, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone14
   rotate: false
-  xy: 112, 16
+  xy: 108, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone15
   rotate: false
-  xy: 128, 16
+  xy: 124, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
