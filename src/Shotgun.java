@@ -5,10 +5,11 @@ public class Shotgun extends Weapon {
 
     Shotgun() {
         weaponType = "Shotgun";
-        damage = 2f;
+        damage = 3f;
         fireRate = 1200;
         isFiring = false;
         magazineSize = 4;
+        reloadTime = 3000;
 
         sprite = GameScreen.textureAtlas.createSprite("shotgun");
         sprite.setSize(80, 13);
@@ -32,7 +33,7 @@ public class Shotgun extends Weapon {
         }
         magazineSize -= 1;
         if (magazineSize <= 0){
-            fireRate = 3000;
+            fireRate = reloadTime;
         }
     }
 

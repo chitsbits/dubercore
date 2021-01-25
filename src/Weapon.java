@@ -11,6 +11,7 @@ public abstract class Weapon {
     public boolean isFiring;
     public long fireRate;
     public int magazineSize;
+    public long reloadTime;
 
     public abstract void fire(DuberCore game, Vector3 mousePos, Vector2 playerPos);
 

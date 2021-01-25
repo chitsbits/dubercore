@@ -11,6 +11,7 @@ public class SubmachineGun extends Weapon {
         fireRate = 150;
         isFiring = false;
         magazineSize = 25;
+        reloadTime = 3500;
 
         sprite = GameScreen.textureAtlas.createSprite("smg");
         sprite.setSize(70, 30);
@@ -28,7 +29,7 @@ public class SubmachineGun extends Weapon {
         bullet.body.setLinearVelocity(bulletDirection);
         magazineSize -= 1;
         if (magazineSize <= 0){
-            fireRate = 3500;
+            fireRate = reloadTime;
         }
     }
 

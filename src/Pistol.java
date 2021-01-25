@@ -10,6 +10,7 @@ public class Pistol extends Weapon {
         fireRate = 400;
         isFiring = false;
         magazineSize = 8;
+        reloadTime = 2000;
 
         sprite = GameScreen.textureAtlas.createSprite("pistol");
         sprite.setSize(50, 30);
@@ -27,7 +28,7 @@ public class Pistol extends Weapon {
         bullet.body.setLinearVelocity(bulletDirection);
         magazineSize -= 1;
         if (magazineSize <= 0){
-            fireRate = 2000;
+            fireRate = reloadTime;
         }
     }
 
