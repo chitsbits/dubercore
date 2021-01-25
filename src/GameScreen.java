@@ -198,7 +198,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 shapeRenderer.rect(enemyPos.x - 0.4f, enemyPos.y + 0.7f, 0.8f, 0.1f);
                 shapeRenderer.set(ShapeType.Filled);
                 shapeRenderer.setColor(Color.RED);
-                float hpWidth = (enemy.getHp() / Enemy.MAX_HP) * 0.7f;
+                float hpWidth = (enemy.getHp() / enemy.maxHp) * 0.7f;
                 shapeRenderer.rect(enemyPos.x - 0.35f, enemyPos.y + 0.73f, hpWidth, 0.05f);
             }
             else if (ent instanceof GrapplingHook){

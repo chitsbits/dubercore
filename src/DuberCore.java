@@ -221,9 +221,17 @@ public class DuberCore extends Game {
       } while(!validSpawn);
 
       enemyBodyDef.position.set(x / 2, y / 2);
-      GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
-      enemyRotateQueue.add(enemy);
-      entityList.add(enemy);
+      double enemyType = Math.random();
+      if (enemyType <= 0.5){
+         MeleeEnemy enemy = new MeleeEnemy(this.world, enemyBodyDef);
+         enemyRotateQueue.add(enemy);
+         entityList.add(enemy);
+      }
+      else {
+         RangedEnemy enemy = new RangedEnemy(this, enemyBodyDef);
+         enemyRotateQueue.add(enemy);
+         entityList.add(enemy);
+      }
    }
 
    public boolean getDebugMode(){

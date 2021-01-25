@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Enemy extends Entity {
 
-    public static final float MAX_HP = 5f;
     public static final long ATTENTION_SPAN = 2000;
 
     private float hp;
+    public float maxHp;
     float width;
     float height;
     float damage;
@@ -20,6 +20,7 @@ public abstract class Enemy extends Entity {
     Enemy(float damage, float hp){
         this.damage = damage;
         this.hp = hp;
+        this.maxHp = hp;
         this.path = new ArrayList<Terrain>();
         this.isColliding = false;
     }

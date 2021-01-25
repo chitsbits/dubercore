@@ -5,8 +5,8 @@ public class Pistol extends Weapon {
 
     Pistol() {
         weaponType = "Pistol";
-        damage = 1f;
-        fireRate = 500;
+        damage = 4f;
+        fireRate = 400;
     }
 
     @Override

@@ -15,52 +15,74 @@ public class MyContactListener implements ContactListener {
     @Override
     public void endContact(Contact contact) {
 
-        if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof GruntEnemy) {
+        if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof Enemy) {
             
-            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureB().getUserData());
+            Enemy enemy = (Enemy) contact.getFixtureB().getUserData();
             if (enemy.enemyState.equals("pursuit")){
                 enemy.isColliding = false; 
             }
         }
-        else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof GruntEnemy) {
+        else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof Enemy) {
 
-            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureA().getUserData());
+            Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("pursuit")){
                 enemy.isColliding = false;
             }
 
         }
         // Can jump flag for player 1
-        else if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player) {
+        else if(contact.getFixtureA().getUserData() instanceof Player && !(contact.getFixtureB().getUserData() instanceof ProjectileSpit)) {
             game.player.collidingCount -= 1;
         }
-        
-
+        else if(contact.getFixtureB().getUserData() instanceof Player && !(contact.getFixtureB().getUserData() instanceof ProjectileSpit)) {
+            game.player.collidingCount -= 1;
+        }     
     }
-
+    
     @Override
     public void beginContact(Contact contact) {
 
-        if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof GruntEnemy) {
+        if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof Enemy) {
             
-            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureB().getUserData());
+            Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
             if (enemy.enemyState.equals("pursuit")){
                 enemy.isColliding = true; 
             }
         }
-        else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof GruntEnemy) {
+        else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof Enemy) {
 
-            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureA().getUserData());
+            Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("pursuit")){
                 enemy.isColliding = true;
             }
 
         }
-        else if (contact.getFixtureA().getUserData() instanceof Player && !(contact.getFixtureB().getUserData() instanceof GruntEnemy)){
+        else if (contact.getFixtureA().getUserData() instanceof ProjectileSpit && contact.getFixtureB().getUserData() instanceof Player){
+            ProjectileSpit spit = (ProjectileSpit)(contact.getFixtureA().getUserData());
+            if (!game.entityDeletionQueue.contains(spit)){
+                game.entityDeletionQueue.add(spit);
+            }
+            if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
+                game.player.hp = (game.player.hp - spit.getDamage());
+                game.player.lastDamageTaken = System.currentTimeMillis();
+            }
+        }
+        else if (contact.getFixtureB().getUserData() instanceof ProjectileSpit && contact.getFixtureA().getUserData() instanceof Player){
+            ProjectileSpit spit = (ProjectileSpit)(contact.getFixtureB().getUserData());
+            if (!game.entityDeletionQueue.contains(spit)){
+                game.entityDeletionQueue.add(spit);
+            }
+            if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
+                game.player.hp = (game.player.hp - spit.getDamage());
+                game.player.lastDamageTaken = System.currentTimeMillis();
+            }
+        }
+        else if (contact.getFixtureA().getUserData() instanceof Player){
             game.player.collidingCount += 1;
+
         }
 
-        else if (contact.getFixtureB().getUserData() instanceof Player && !(contact.getFixtureA().getUserData() instanceof GruntEnemy)){
+        else if (contact.getFixtureB().getUserData() instanceof Player){
             game.player.collidingCount += 1;
         }
             // Grappling hook
@@ -112,11 +134,23 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(bullet);
             }
         }
-        
-        else if (contact.getFixtureB().getUserData() instanceof Bullet){
+        else if (contact.getFixtureB().getUserData() instanceof Bullet) {
             Bullet bullet = (Bullet)(contact.getFixtureB().getUserData());
             if (!game.entityDeletionQueue.contains(bullet)){
                 game.entityDeletionQueue.add(bullet);
+            }
+        }
+        else if (contact.getFixtureA().getUserData() instanceof ProjectileSpit) {
+            ProjectileSpit spit = (ProjectileSpit)(contact.getFixtureA().getUserData());
+            if (!game.entityDeletionQueue.contains(spit)){
+                game.entityDeletionQueue.add(spit);
+            }
+        }
+        
+        else if (contact.getFixtureB().getUserData() instanceof ProjectileSpit){
+            ProjectileSpit spit = (ProjectileSpit)(contact.getFixtureB().getUserData());
+            if (!game.entityDeletionQueue.contains(spit)){
+                game.entityDeletionQueue.add(spit);
             }
         }
         //Grenades
