@@ -10,9 +10,9 @@ public class Shotgun extends Weapon {
         isFiring = false;
         magazineSize = 4;
 
-        sprite = GameScreen.textureAtlas.createSprite("pistol");
-        sprite.setSize(60, 40);
-        sprite.setPosition(1100, 30);
+        sprite = GameScreen.textureAtlas.createSprite("shotgun");
+        sprite.setSize(80, 13);
+        sprite.setPosition(990, 47);
     }
 
     @Override

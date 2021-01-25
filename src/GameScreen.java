@@ -74,13 +74,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudShapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
 
+        // UI Sprite definitions
         grenadeSprite = textureAtlas.createSprite("grenade");
         grenadeSprite.setSize(36f, 40);
-        grenadeSprite.setPosition(1200, 30);
+        grenadeSprite.setPosition(1200, 40);
 
         grappleSprite = textureAtlas.createSprite("grappleicon");
         grappleSprite.setSize(40, 50);
-        grappleSprite.setPosition(900, 30);
+        grappleSprite.setPosition(1110, 35);
 
         chevron = textureAtlas.createSprite("chevron");
         chevron.setSize(20, 15);
@@ -218,19 +219,20 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         switch (player.activeItem){
             case 0 :
-                chevron.setPosition(820, 100);
+                chevron.setPosition(820, 120);
                 break;
             case 1 :
-                chevron.setPosition(910, 100);
+                chevron.setPosition(920, 120);
                 break;
             case 2 :
-                chevron.setPosition(1020, 100);
+                chevron.setPosition(1020, 120);
                 break;
             case 3 :
-                chevron.setPosition(1120, 100);
+                chevron.setPosition(1120, 120);
         }
         chevron.draw(hudBatch);
 
+        // Grenade UI
         if (player.grenadeReady){
             grenadeSprite.setColor(Color.WHITE);
         } else {
@@ -238,6 +240,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
         grenadeSprite.draw(hudBatch);
 
+        // Grapple UI
         if (player.grappleReady){
             grappleSprite.setColor(Color.WHITE);
         } else {
@@ -245,6 +248,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
         grappleSprite.draw(hudBatch);
         
+        // Weapon UI
         for (int w = 0; w < 3; w++){
             if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
                 player.getWeapon(w).sprite.setColor(Color.WHITE);
@@ -257,16 +261,17 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         hudBatch.end();
 
+        // UI Bars (health, ammo)
         hudShapeRenderer.setAutoShapeType(true);
         hudShapeRenderer.begin();
         Gdx.gl.glLineWidth(1);
         hudShapeRenderer.set(ShapeType.Line);
         hudShapeRenderer.setColor(Color.WHITE);
-        hudShapeRenderer.rect(50, 20, 200f, 20f);   // Player health
-        hudShapeRenderer.rect(800, 20, 50f, 10f);   
-        hudShapeRenderer.rect(900, 20, 50f, 10f);
-        hudShapeRenderer.rect(1000, 20, 50f, 10f);
-        hudShapeRenderer.rect(1100, 20, 50f, 10f);
+        hudShapeRenderer.rect(50, 30, 200f, 20f);   // Player health
+
+        hudShapeRenderer.rect(805, 20, 50f, 10f);   
+        hudShapeRenderer.rect(905, 20, 50f, 10f);
+        hudShapeRenderer.rect(1005, 20, 50f, 10f);
 
         hudShapeRenderer.set(ShapeType.Filled);
         hudShapeRenderer.setColor(Color.RED);

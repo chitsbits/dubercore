@@ -106,7 +106,6 @@ public class MyContactListener implements ContactListener {
             enemy.damage(bullet.getDamage());
 
             if (enemy.getHp() <= 0){
-                //System.out.println("enemy killed");
                 if (!game.entityDeletionQueue.contains(enemy)){
                     game.entityDeletionQueue.add(enemy);
                     game.score += 10;
@@ -220,7 +219,6 @@ public class MyContactListener implements ContactListener {
         else if (contact.getFixtureA().getUserData() instanceof Enemy){
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("wander")){
-                //System.out.println("hit wall");
                 game.enemyRotateQueue.add(enemy);
             }
             else if(enemy.enemyState.equals("pursuit")){
@@ -236,7 +234,6 @@ public class MyContactListener implements ContactListener {
                 game.enemyRotateQueue.add(enemy);
             }
             else if(enemy.enemyState.equals("pursuit")){
-                //System.out.println("got here");
                 if (contact.getFixtureA().getUserData() instanceof Terrain){
                     enemy.pursuitTimer = System.currentTimeMillis();
                     enemy.enemyState = "wander";
