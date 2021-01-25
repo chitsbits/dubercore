@@ -390,7 +390,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.lastWeaponFire[0] = System.currentTimeMillis();
                 return true;
             }
-            else if (player.activeItem == 1 && player.grappleReady){
+            else if (player.activeItem == 1 && player.grappleReady && !player.grappleFired){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(dubercore.world, mousePos);
                 dubercore.entityList.add(player.grapple);
@@ -412,7 +412,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return true;
         }
         if(button == Input.Buttons.LEFT){
-            if (player.activeItem == 1 && player.isGrappling){
+            if (player.activeItem == 1 && player.grappleFired){
                 player.retractGrapple();
                 player.lastGrappleUse = System.currentTimeMillis();
                 dubercore.entityDeletionQueue.add(player.grapple);
@@ -435,7 +435,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.activeItem = (player.activeItem - 1) % 3;
         }
         if (player.activeItem < 0){
-            player.activeItem += 2;
+            player.activeItem += 3;
         }
 
         if (player.isGrappling){
