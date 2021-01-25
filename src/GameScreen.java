@@ -146,7 +146,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             }
         }
 
-        // ~~~~ DRAWING ~~~~~
+        // ~~~~~~~~~~~~~~~~~ DRAWING ~~~~~~~~~~~~~~~~~
+
         worldBatch.begin();
         worldBatch.setProjectionMatrix(camera.combined);
 
@@ -202,10 +203,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 cameraShapeRenderer.rect(enemyPos.x - 0.35f, enemyPos.y + 0.73f, hpWidth, 0.05f);
             }
             else if (ent instanceof GrapplingHook){
+                Gdx.gl.glLineWidth(4);
                 cameraShapeRenderer.set(ShapeType.Line);
                 cameraShapeRenderer.setColor(Color.GRAY);
                 cameraShapeRenderer.line(player.getPos(), ent.getPos());
-                Gdx.gl.glLineWidth(4);
             }
         }
         cameraShapeRenderer.end();
@@ -254,24 +255,34 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.getWeapon(w).sprite.draw(hudBatch);
         }
 
+        hudBatch.end();
+
         hudShapeRenderer.setAutoShapeType(true);
         hudShapeRenderer.begin();
-
+        Gdx.gl.glLineWidth(1);
         hudShapeRenderer.set(ShapeType.Line);
         hudShapeRenderer.setColor(Color.WHITE);
-        hudShapeRenderer.rect(50, 30, 200f, 20f);
+        hudShapeRenderer.rect(50, 20, 200f, 20f);   // Player health
+        hudShapeRenderer.rect(800, 20, 50f, 10f);   
+        hudShapeRenderer.rect(900, 20, 50f, 10f);
+        hudShapeRenderer.rect(1000, 20, 50f, 10f);
+        hudShapeRenderer.rect(1100, 20, 50f, 10f);
+
         hudShapeRenderer.set(ShapeType.Filled);
         hudShapeRenderer.setColor(Color.RED);
         float hpWidth = (player.getHp() / Player.MAX_HP) * 196f;
         hudShapeRenderer.rect(52f, 32f, hpWidth, 16f);
-        hudShapeRenderer.end();
 
-        hudBatch.end();
+
+
+        hudShapeRenderer.end();
 
         // Render Box2D world
         if (dubercore.getDebugMode()){
             debugRenderer.render(dubercore.world, camera.combined);
         }
+
+        // ~~~~~~~~~~~~~~~~~ END DRAWING ~~~~~~~~~~~~~~~~~
 
         for (int e = 0; e < dubercore.entityList.size(); e++){
             if (dubercore.entityList.get(e) instanceof Enemy){
@@ -355,51 +366,56 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     
     @Override
     public boolean keyDown(int keycode) {
+        // Grenade
         if (keycode == Input.Keys.G && player.grenadeReady){
             Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
             player.throwGrenade(dubercore, mousePos);
             player.grenadeReady = false;
             player.lastGrenadeUse = System.currentTimeMillis();
-
             return true;
         }
+        // Pistol
         else if (keycode == Input.Keys.NUM_1){
-            player.activeItem = 0;
+            player.activeItem = Player.PISTOL;
             if(player.isGrappling){
                 player.retractGrapple();
                 dubercore.entityDeletionQueue.add(player.grapple);
             }
-            if (player.getWeapon(1).isFiring){
-                player.getWeapon(1).isFiring = false;
+            if (player.getWeapon(Player.SMG).isFiring){
+                player.getWeapon(Player.SMG).isFiring = false;
             }
             return true;
         }
+        // SMG
         else if (keycode == Input.Keys.NUM_2){
-            player.activeItem = 1;
-            if (player.getWeapon(1).isFiring){
-                player.getWeapon(1).isFiring = false;
+            player.activeItem = Player.SMG;
+            if(player.isGrappling){
+                player.retractGrapple();
+                dubercore.entityDeletionQueue.add(player.grapple);
             }
             return true;
         }
+        // Shotgun
         else if (keycode == Input.Keys.NUM_3){
-            player.activeItem = 2;
+            player.activeItem = Player.SHOTGUN;
             if(player.isGrappling){
                 player.retractGrapple();
                 dubercore.entityDeletionQueue.add(player.grapple);
             }
+            if (player.getWeapon(Player.SMG).isFiring){
+                player.getWeapon(Player.SMG).isFiring = false;
+            }
             return true;
         }
+        // Grapple
         else if (keycode == Input.Keys.NUM_4){
-            player.activeItem = 3;
-            if(player.isGrappling){
-                player.retractGrapple();
-                dubercore.entityDeletionQueue.add(player.grapple);
-            }
-            if (player.getWeapon(1).isFiring){
-                player.getWeapon(1).isFiring = false;
+            player.activeItem = Player.GRAPPLING_HOOK;
+            if (player.getWeapon(Player.SMG).isFiring){
+                player.getWeapon(Player.SMG).isFiring = false;
             }
             return true;
         }
+        // Quit game
         else if (keycode == Input.Keys.ESCAPE){
             dubercore.changeScreen(DuberCore.GAME_OVER);
         }
@@ -416,29 +432,29 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Firing weapon/grapple hook
         else if(button == Input.Buttons.LEFT){
 
-            if (player.activeItem == 0 && player.weaponReady[0]){
+            if (player.activeItem == Player.PISTOL && player.weaponReady[Player.PISTOL]){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-                player.getWeapon(0).fire(dubercore, mousePos, player.getPos());
-                player.weaponReady[0] = false;
-                player.lastWeaponFire[0] = System.currentTimeMillis();
+                player.getWeapon(Player.PISTOL).fire(dubercore, mousePos, player.getPos());
+                player.weaponReady[Player.PISTOL] = false;
+                player.lastWeaponFire[Player.PISTOL] = System.currentTimeMillis();
                 return true;
             }
-            else if (player.activeItem == 1 && player.grappleReady && !player.grappleFired){
+            else if (player.activeItem == Player.SMG && player.weaponReady[Player.SMG]){
+                player.getWeapon(Player.SMG).isFiring = true;
+                return true;
+            }
+            else if (player.activeItem == Player.SHOTGUN && player.weaponReady[Player.SHOTGUN]){
+                Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
+                player.getWeapon(Player.SHOTGUN).fire(dubercore, mousePos, player.getPos());
+                player.weaponReady[Player.SHOTGUN] = false;
+                player.lastWeaponFire[Player.SHOTGUN] = System.currentTimeMillis();
+                return true;
+            }
+            else if (player.activeItem == Player.GRAPPLING_HOOK && player.grappleReady && !player.grappleFired){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(dubercore.world, mousePos);
                 dubercore.entityList.add(player.grapple);
                 return true; 
-            }
-            else if (player.activeItem == 2 && player.weaponReady[1]){
-                player.getWeapon(1).isFiring = true;
-                return true;
-            }
-            else if (player.activeItem == 3 && player.weaponReady[2]){
-                Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-                player.getWeapon(2).fire(dubercore, mousePos, player.getPos());
-                player.weaponReady[2] = false;
-                player.lastWeaponFire[2] = System.currentTimeMillis();
-                return true;
             }
         }
         return false;
@@ -469,13 +485,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public boolean scrolled(float amountX, float amountY) {
 
         if (amountY > 0){
-            player.activeItem = (player.activeItem + 1) % 3;
+            player.activeItem = (player.activeItem + 1) % 4;
         }
         else if (amountY < 0){
-            player.activeItem = (player.activeItem - 1) % 3;
+            player.activeItem = (player.activeItem - 1) % 4;
         }
         if (player.activeItem < 0){
-            player.activeItem += 3;
+            player.activeItem += 4;
         }
 
         if (player.isGrappling){

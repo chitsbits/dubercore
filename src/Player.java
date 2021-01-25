@@ -19,6 +19,12 @@ public class Player extends Character {
     public static final long MINING_SPEED = 300;
     public static final long MAX_HP = 100;
 
+    public static final int PISTOL = 0;
+    public static final int SMG = 1;
+    public static final int SHOTGUN = 2;
+    public static final int GRAPPLING_HOOK = 3;
+    
+
     public int collidingCount;
     public boolean canJump;
     public boolean canMove;
