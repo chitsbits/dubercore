@@ -24,7 +24,6 @@ public class GruntEnemy extends Enemy {
 
         this.bodyDef = bodyDef;
         this.bodyDef.type = BodyType.DynamicBody;
-        //bodyDef.position.set(10, 24);
 
         entityShape = new PolygonShape();
         ((PolygonShape) entityShape).setAsBox(width, height);
