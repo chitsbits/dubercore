@@ -29,7 +29,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private Player player;
 
     private Box2DDebugRenderer debugRenderer;
-    private ShapeRenderer shapeRenderer;
+    private ShapeRenderer cameraShapeRenderer;
+    private ShapeRenderer hudShapeRenderer;
 
     private BitmapFont font;
     private SpriteBatch worldBatch;
@@ -69,10 +70,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
-        shapeRenderer = new ShapeRenderer();
+        cameraShapeRenderer = new ShapeRenderer();
+        hudShapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
-
-        System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
 
         grenadeSprite = textureAtlas.createSprite("grenade");
         grenadeSprite.setSize(36f, 40);
@@ -181,41 +181,39 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                                     ent.body.getPosition().y - sprite.getHeight() / 2);
             }
             sprite.draw(worldBatch);
-            
         }
         worldBatch.end();
 
         // World UI elements
         Gdx.gl.glLineWidth(1);
-        shapeRenderer.setAutoShapeType(true);
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin();
+        cameraShapeRenderer.setAutoShapeType(true);
+        cameraShapeRenderer.setProjectionMatrix(camera.combined);
+        cameraShapeRenderer.begin();
         for(Entity ent : dubercore.entityList) {
             if(ent instanceof Enemy){
                 Enemy enemy = (Enemy) ent;
                 Vector2 enemyPos = enemy.getPos();
-                shapeRenderer.set(ShapeType.Line);
-                shapeRenderer.setColor(Color.WHITE);
-                shapeRenderer.rect(enemyPos.x - 0.4f, enemyPos.y + 0.7f, 0.8f, 0.1f);
-                shapeRenderer.set(ShapeType.Filled);
-                shapeRenderer.setColor(Color.RED);
+                cameraShapeRenderer.set(ShapeType.Line);
+                cameraShapeRenderer.setColor(Color.WHITE);
+                cameraShapeRenderer.rect(enemyPos.x - 0.4f, enemyPos.y + 0.7f, 0.8f, 0.1f);
+                cameraShapeRenderer.set(ShapeType.Filled);
+                cameraShapeRenderer.setColor(Color.RED);
                 float hpWidth = (enemy.getHp() / enemy.maxHp) * 0.7f;
-                shapeRenderer.rect(enemyPos.x - 0.35f, enemyPos.y + 0.73f, hpWidth, 0.05f);
+                cameraShapeRenderer.rect(enemyPos.x - 0.35f, enemyPos.y + 0.73f, hpWidth, 0.05f);
             }
             else if (ent instanceof GrapplingHook){
-                shapeRenderer.set(ShapeType.Line);
-                shapeRenderer.setColor(Color.GRAY);
-                shapeRenderer.line(player.getPos(), ent.getPos());
+                cameraShapeRenderer.set(ShapeType.Line);
+                cameraShapeRenderer.setColor(Color.GRAY);
+                cameraShapeRenderer.line(player.getPos(), ent.getPos());
                 Gdx.gl.glLineWidth(4);
             }
         }
-        shapeRenderer.end();
+        cameraShapeRenderer.end();
 
         // Draw hud
         hudBatch.begin();
-        font.draw(hudBatch, dubercore.playerName, 50, 50);
-        font.draw(hudBatch, "Score: " + Integer.toString(dubercore.score), 150, 50);
-        font.draw(hudBatch, "Health: " + Integer.toString((int)dubercore.player.hp), 300, 50);
+        font.draw(hudBatch, dubercore.playerName, 50, 80);
+        font.draw(hudBatch, "Score: " + Integer.toString(dubercore.score), 50, 690);
 
         switch (player.activeItem){
             case 0 :
@@ -255,6 +253,19 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             }
             player.getWeapon(w).sprite.draw(hudBatch);
         }
+
+        hudShapeRenderer.setAutoShapeType(true);
+        hudShapeRenderer.begin();
+
+        hudShapeRenderer.set(ShapeType.Line);
+        hudShapeRenderer.setColor(Color.WHITE);
+        hudShapeRenderer.rect(50, 30, 200f, 20f);
+        hudShapeRenderer.set(ShapeType.Filled);
+        hudShapeRenderer.setColor(Color.RED);
+        float hpWidth = (player.getHp() / Player.MAX_HP) * 196f;
+        hudShapeRenderer.rect(52f, 32f, hpWidth, 16f);
+        hudShapeRenderer.end();
+
         hudBatch.end();
 
         // Render Box2D world
@@ -278,7 +289,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 else if (enemy.enemyState.equals("pursuit")) {
 
                     if (DuberCore.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY) && enemy.isColliding) {
-                        player.hp -= enemy.damage;
+                        player.damage(enemy.damage);
                         player.lastDamageTaken = System.currentTimeMillis();
                     }  
 
@@ -328,7 +339,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.lastWeaponFire[1] = System.currentTimeMillis();
         }
         // death
-        if (player.hp <= 0){
+        if (player.getHp() <= 0){
             dubercore.changeScreen(DuberCore.GAME_OVER);
         }
     }

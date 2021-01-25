@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class Player extends Entity {
+public class Player extends Character {
 
     public static final float PLAYER_WIDTH = 0.4f;
     public static final float PLAYER_HEIGHT = 0.7f;
@@ -17,6 +17,7 @@ public class Player extends Entity {
     public static final float MAX_VELOCITY = 5f;
     public static final long INVINCIBILITY = 666;
     public static final long MINING_SPEED = 300;
+    public static final long MAX_HP = 100;
 
     public int collidingCount;
     public boolean canJump;
@@ -29,7 +30,6 @@ public class Player extends Entity {
     private Grenade grenade;
     private Weapon[] weaponArray;
     public int activeItem;
-    public float hp = 100;
 
     private Vector2 feetCenter;
     private Fixture playerFixture;
@@ -49,7 +49,7 @@ public class Player extends Entity {
     public GrapplingHook grapple;
     
     public Player(World world, BodyDef bodyDef){
-
+        super(MAX_HP);
         collidingCount = 0;
         canJump = false;
         canMove = true;

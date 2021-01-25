@@ -63,7 +63,7 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(spit);
             }
             if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
-                game.player.hp = (game.player.hp - spit.getDamage());
+                game.player.damage(spit.getDamage());
                 game.player.lastDamageTaken = System.currentTimeMillis();
             }
         }
@@ -73,7 +73,7 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(spit);
             }
             if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
-                game.player.hp = (game.player.hp - spit.getDamage());
+                game.player.damage(spit.getDamage());
                 game.player.lastDamageTaken = System.currentTimeMillis();
             }
         }
@@ -103,7 +103,7 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(bullet);
             }
             Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
-            enemy.setHp(enemy.getHp() - bullet.getDamage());
+            enemy.damage(bullet.getDamage());
 
             if (enemy.getHp() <= 0){
                 //System.out.println("enemy killed");
@@ -119,7 +119,7 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(bullet);
             }
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
-            enemy.setHp(enemy.getHp() - bullet.getDamage());
+            enemy.damage(bullet.getDamage());
 
             if (enemy.getHp() <= 0){
                 if (!game.entityDeletionQueue.contains(enemy)){
@@ -189,10 +189,9 @@ public class MyContactListener implements ContactListener {
             }
             if (contact.getFixtureB().getUserData() instanceof Enemy){
                 Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
-                enemy.setHp(enemy.getHp() - explosion.getDamage());
+                enemy.damage(explosion.getDamage());
     
                 if (enemy.getHp() <= 0){
-                    //System.out.println("enemy killed");
                     if (!game.entityDeletionQueue.contains(enemy)){
                         game.entityDeletionQueue.add(enemy);
                     }
@@ -209,10 +208,9 @@ public class MyContactListener implements ContactListener {
             if (contact.getFixtureA().getUserData() instanceof Enemy){
 
                 Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
-                enemy.setHp(enemy.getHp() - explosion.getDamage());
+                enemy.damage(explosion.getDamage());
     
                 if (enemy.getHp() <= 0){
-                    //System.out.println("enemy killed");
                     if (!game.entityDeletionQueue.contains(enemy)){
                         game.entityDeletionQueue.add(enemy);
                     }

@@ -10,10 +10,10 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class MeleeEnemy extends Enemy {
 
-    World world;
+    public static final float MAX_HP = 6f;
 
     MeleeEnemy(World world, BodyDef bodyDef) {
-        super(6f, 10f);
+        super(MAX_HP, 10f);
         this.width = 0.4f;
         this.height =  0.7f;
         this.enemyState = "wander";

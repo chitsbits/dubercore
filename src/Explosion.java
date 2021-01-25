@@ -42,7 +42,6 @@ public class Explosion extends Entity {
         this.sprite = GameScreen.textureAtlas.createSprite("explosion");
         sprite.setSize(6f, 6f);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-
     }
 
     public float getDamage(){

@@ -40,6 +40,7 @@ public class TutorialScreen extends ScreenAdapter {
         String tutorial = "LMB to shoot/use grapple\n" +
         "RMB to mine\n" +
         "MWHEEL to switch equipment\n" +
+        "G to throw grenade\n" +
         "WASD to move\n";
 
         Label tutorialLabel = new Label(tutorial, skin);
