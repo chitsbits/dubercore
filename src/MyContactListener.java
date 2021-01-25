@@ -18,16 +18,41 @@ public class MyContactListener implements ContactListener {
         if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player) {
             game.player.collidingCount -= 1;
         }
+
     }
 
     @Override
     public void beginContact(Contact contact) {
 
-        if(contact.getFixtureA().getUserData() instanceof Player || contact.getFixtureB().getUserData() instanceof Player){
+        if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof GruntEnemy) {
+            
+            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureB().getUserData());
+            if (enemy.enemyState.equals("pursuit")){
+                if (game.player.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
+                    game.player.hp -= enemy.damage;
+                }   
+            }
             game.player.collidingCount += 1;
         }
-        // Grappling hook
-        else if (contact.getFixtureA().getUserData() instanceof GrapplingHook){
+        else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof GruntEnemy) {
+
+            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureB().getUserData());
+            if (enemy.enemyState.equals("pursuit")){
+                if (game.player.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
+                    game.player.hp -= enemy.damage;
+                }   
+            }
+
+        }
+        else if (contact.getFixtureA().getUserData() instanceof Player && !(contact.getFixtureB().getUserData() instanceof GruntEnemy)){
+            game.player.collidingCount += 1;
+        }
+
+        else if (contact.getFixtureB().getUserData() instanceof Player && !(contact.getFixtureA().getUserData() instanceof GruntEnemy)){
+            game.player.collidingCount += 1;
+        }
+            // Grappling hook
+        else if (contact.getFixtureA().getUserData() instanceof GrapplingHook) {
             contact.getFixtureA().getBody().setLinearVelocity(0,0);
             GrapplingHook hook = (GrapplingHook)(contact.getFixtureA().getUserData());
             hook.player.followGrapple();
@@ -197,14 +222,6 @@ public class MyContactListener implements ContactListener {
                     enemy.enemyState = "wander";
                     game.enemyRotateQueue.add(enemy);
                 }
-                else if (contact.getFixtureB().getUserData() instanceof Player) {
-                    Player player = (Player)(contact.getFixtureA().getUserData());
-                    if (player.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY)){
-                        game.player.hp -= enemy.damage;
-                        System.out.println("asdf");
-                    }
-                    
-                }
             }
         }
 
@@ -215,21 +232,17 @@ public class MyContactListener implements ContactListener {
                 game.enemyRotateQueue.add(enemy);
             }
             else if(enemy.enemyState.equals("pursuit")){
+                //System.out.println("got here");
                 if (contact.getFixtureA().getUserData() instanceof Terrain){
+                    enemy.pursuitTimer = System.currentTimeMillis();
                     enemy.enemyState = "wander";
                     game.enemyRotateQueue.add(enemy);
                 }
                 else if (contact.getFixtureA().getUserData() instanceof Player) {
-                    Player player = (Player)(contact.getFixtureA().getUserData());
-                    if (player.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY)){
-                        game.player.hp -= enemy.damage;
-                        System.out.println("asdf2");
-                    }
-                    
+
                 }
             }
         }
-
     }
 
     @Override

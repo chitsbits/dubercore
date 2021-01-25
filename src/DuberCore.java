@@ -204,7 +204,6 @@ public class DuberCore extends Game {
          dx = x - (player.getPos().x * 2);
          dy = y - (player.getPos().y * 2);
          distance  = (float) Math.sqrt((dx*dx)+(dy*dy));
-         System.out.println(distance);
          
          if (distance > 80 || distance < 38){
             validSpawn = false;

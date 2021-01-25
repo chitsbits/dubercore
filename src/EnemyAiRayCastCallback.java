@@ -15,19 +15,16 @@ public class EnemyAiRayCastCallback implements RayCastCallback {
         if (fixture.getUserData().equals("edgeFixture")){
             fixtureType = "terrain";
             los = false;
-            //System.out.println(los);
             return 0;
         }
             
-        else if (fixture.getUserData().equals("player")){
+        else if (fixture.getUserData() instanceof Player){
             fixtureType = "player";
             los = true;
-            //System.out.println(los);
             return 0;
         }
 
         else {
-            //System.out.println("other");
             return -1;
         }
     }

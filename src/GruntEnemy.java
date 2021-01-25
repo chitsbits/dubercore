@@ -34,7 +34,7 @@ public class GruntEnemy extends Enemy {
         FixtureDef bodyFixtureDef = new FixtureDef();
         bodyFixtureDef.shape = entityShape;
         bodyFixtureDef.filter.categoryBits = DuberCore.ENEMY;
-        bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE;
+        bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE | DuberCore.ENEMY | DuberCore.PLAYER ;
         bodyFixtureDef.friction = 1.0f;
         
         sprite = GameScreen.textureAtlas.createSprite("enemyspriteplaceholder");
@@ -48,7 +48,7 @@ public class GruntEnemy extends Enemy {
 
         FixtureDef collisionFixtureDef = new FixtureDef();
         collisionFixtureDef.shape = entityShape;
-        collisionFixtureDef.filter.categoryBits = DuberCore.SENSOR;
+        collisionFixtureDef.filter.categoryBits = DuberCore.SENSOR | DuberCore.ENEMY;
         collisionFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PLAYER;
         collisionFixtureDef.isSensor = true;
         Fixture collisionFixture = body.createFixture(collisionFixtureDef);
@@ -89,11 +89,8 @@ public class GruntEnemy extends Enemy {
             angleToPlayer += 360 * MathUtils.degreesToRadians;
         }
 
-
         this.sprite.setRotation((angleToPlayer) * MathUtils.radiansToDegrees + 270);
         this.body.setTransform(this.body.getPosition(), angleToPlayer + 90 * MathUtils.degreesToRadians);
         move();
-        //float yInt  = (playerPos.y/(slope * playerPos.x));
-
     }
 }

@@ -68,9 +68,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         Gdx.input.setInputProcessor(this);
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
-
-        BodyDef tempEnemyBodyDef = player.bodyDef;
-        tempEnemyBodyDef.position.set(player.getPos().x + 3, player.getPos().y + 3);
     }
 
     @Override
@@ -174,12 +171,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         for (int e = 0; e < dubercore.entityList.size(); e++){
             if (dubercore.entityList.get(e) instanceof Enemy){
                 Enemy enemy = ((Enemy) dubercore.entityList.get(e));
-
                 EnemyAiRayCastCallback callback = new EnemyAiRayCastCallback();
                 dubercore.world.rayCast(callback, enemy.body.getPosition(), player.getPos());
 
                 if (enemy.enemyState.equals("wander")){
-                    if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 15 && callback.los) {
+                    if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 15 && callback.los && enemy.checkCooldown(enemy.pursuitTimer, Enemy.ATTENTION_SPAN)) {
                         enemy.enemyState = "pursuit";
                         enemy.body.setLinearVelocity(0,0);
                     }
@@ -187,6 +183,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 }
                 else if (enemy.enemyState.equals("pursuit")) {
                     if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) > 15 && callback.los) {
+                        enemy.pursuitTimer = System.currentTimeMillis();
                         enemy.enemyState = "wander";
                         enemy.body.setLinearVelocity(0,0);
                     }
@@ -197,11 +194,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 }
             }
         }
-
+        //System.out.println(player.playerFixture.getUserData());
         //periodic spawning of enemies
         spawnClock += Gdx.graphics.getDeltaTime();
         
-        if (spawnClock > (int)(Math.random() * ((10 - 5)+1)) + 5) {
+        if (spawnClock > (int) Math.random() * ((10 - 5)) + 5) {
             dubercore.spawnEnemy();
             spawnClock = 0;
         }
