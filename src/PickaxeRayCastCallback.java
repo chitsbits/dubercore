@@ -17,7 +17,6 @@ public class PickaxeRayCastCallback implements RayCastCallback {
 
         if(fixture.getUserData() != null && fixture.getUserData().equals("edgeFixture")){
             this.collisionPoint = collisionPoint;
-            //System.out.println("mining");
             return 0;
         }
         else {

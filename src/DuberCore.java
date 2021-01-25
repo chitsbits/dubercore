@@ -18,10 +18,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
  */
 public class DuberCore extends Game {
 
-   public final static int START = 0;
-   public final static int MENU = 1;
-   public final static int LEADERBOARD = 2;
-   public final static int PREFERENCES = 3;
+   public static final int START = 0;
+   public static final int MENU = 1;
+   public static final int LEADERBOARD = 2;
+   public static final int PREFERENCES = 3;
+   public static final int GAME_OVER = 4;
 
    public static final float STEP_TIME = 1f / 60f;
    public static final int VELOCITY_ITERATIONS = 6;
@@ -38,7 +39,6 @@ public class DuberCore extends Game {
    public static final short GRAPPLE = 0x0020;
    public static final short PROJECTILE = 0x0040;
    public static final short SENSOR = 0x0080;
-   public static final short DESTRUCTION = 0x0100;
 
    private float accumulator = 0;
 
@@ -50,16 +50,19 @@ public class DuberCore extends Game {
    public ArrayList<Entity> entityList;
 
    public Player player;
+   public String playerName;
    public int score;
 
    private GameScreen gameScreen;
    private MenuScreen menuScreen;
    private LeaderboardScreen leaderboardScreen;
    private PreferencesScreen preferencesScreen;
+   private GameOverScreen gameOverScreen;
 
    @Override
    public void create() {
       this.changeScreen(MENU);
+      this.playerName = "Player";
    }
 
    public void changeScreen(int screen) {
@@ -88,6 +91,11 @@ public class DuberCore extends Game {
             }
             this.setScreen(leaderboardScreen);
             break;
+         case GAME_OVER :
+            if (gameOverScreen == null) {
+               gameOverScreen = new GameOverScreen(this);
+            }
+            this.setScreen(gameOverScreen);
       }
    }
 
@@ -100,13 +108,13 @@ public class DuberCore extends Game {
       explosionBodyList = new ArrayList<Explosion>();
       enemyRotateList = new ArrayList<Enemy>();
       entityList = new ArrayList<Entity>();
-
       MyContactListener contactListener = new MyContactListener(this);
       world.setContactListener(contactListener);
 
       tileMap = new TileMap(world);
+      player = null;
+      score = 0;
       spawnPlayer();
-
    }
 
    public void doPhysicsStep(float deltaTime) {
@@ -137,7 +145,6 @@ public class DuberCore extends Game {
             }
          }
          enemyRotateList.clear();
-
          accumulator -= STEP_TIME;
       }
    }
@@ -145,6 +152,12 @@ public class DuberCore extends Game {
    public void destroyTerrain(Vector2 breakPoint) {
       // Convert breakpoint to tilemap coords
       Vector2 tileMapBreakPoint = new Vector2(breakPoint.x * 2f, breakPoint.y * 2f);
+      if(tileMapBreakPoint.x >= TileMap.MAP_COLS){
+         tileMapBreakPoint.x = TileMap.MAP_COLS - 1;
+      }
+      if(tileMapBreakPoint.y >= TileMap.MAP_ROWS){
+         tileMapBreakPoint.y = TileMap.MAP_ROWS - 1;
+      }
       score += tileMap.clearTile(tileMapBreakPoint);
    }
 
@@ -196,7 +209,5 @@ public class DuberCore extends Game {
       GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
       enemyRotateList.add(enemy);
       entityList.add(enemy);
-      
-
    }
 }

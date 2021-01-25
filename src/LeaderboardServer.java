@@ -159,7 +159,7 @@ public class LeaderboardServer implements Runnable {
             while (set.next() && i < 10) {
                 String name = set.getString("NAME");
                 int score = set.getInt("SCORE");
-                returnString += "Name: " + name + "\tScore: " + Integer.toString(score) + "\n";
+                returnString += Integer.toString(i + 1) + ". Name: " + name + "\tScore: " + Integer.toString(score) + "\n";
                 i++;
             }
             set.close();

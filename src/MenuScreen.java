@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -38,15 +39,17 @@ public class MenuScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
         stage.addActor(table);
 
         Skin skin = new Skin(Gdx.files.internal("assets\\skin\\craftacular-ui.json"));
+        Label titleLabel = new Label("DuberCore", skin);
         TextButton startButton = new TextButton("Start", skin);
         TextButton leaderboardButton = new TextButton("Leaderboard", skin);
         TextButton preferencesButton = new TextButton("Preferences", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
+        table.add(titleLabel).fillY().uniformX();
         table.row().pad(50, 0, 10, 0);
         table.add(startButton).fillX().uniformX();
         table.row().pad(10, 0, 10, 0);
@@ -74,7 +77,7 @@ public class MenuScreen extends ScreenAdapter {
         preferencesButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {	
-                System.out.println("lol");
+                dubercore.changeScreen(DuberCore.PREFERENCES);
             }
         });
 

@@ -42,16 +42,15 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
-    // Camera dimensions in metres. TODO: scale with monitor
+    // Camera dimensions in metres.
     public static final float CAMERA_WIDTH = 32f;
     public static final float CAMERA_HEIGHT = 18f;
 
-    DuberCore dubercore; // Local instance of the game
+    DuberCore dubercore;
     OrthographicCamera camera;
     Player player;
 
     Box2DDebugRenderer debugRenderer;
-    //Vector2 tempMouseVector = new Vector2(0, 0);
 
     boolean useDebugCamera = false;
 
@@ -85,7 +84,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        // viewport = new FitViewport(800, 480, camera);
 
         if(useDebugCamera)
         camera.setToOrtho(false, DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
@@ -94,7 +92,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         
 
         debugRenderer = new Box2DDebugRenderer();
-        // sr = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
 
         System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
@@ -105,10 +102,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public void render(float delta) {
-        // clear the screen with a dark blue color. The
-        // arguments to glClearColor are the red, green
-        // blue and alpha component in the range [0,1]
-        // of the color to be used to clear the screen.
+
         Gdx.gl.glClearColor(0.57f, 0.77f, 0.85f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
@@ -128,7 +122,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.jump();
         }
 
-        //System.out.println("x: " + player.getPos().x + " y: " + player.getPos().y);
         //System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Step physics world
@@ -179,11 +172,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         // Render Box2D world
         debugRenderer.render(dubercore.world, camera.combined);
-        // Render test mouse line
-        // sr.setProjectionMatrix(camera.combined);
-        // sr.begin(ShapeType.Line);
-        // sr.line(player.getPos(), tempMouseVector);
-        // sr.end();
 
         //System.out.println(enemy.heuristic(enemy.body.getPosition(), player.getPos()));
         for (int e = 0; e < dubercore.entityList.size(); e++){
@@ -194,29 +182,21 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 dubercore.world.rayCast(callback, enemy.body.getPosition(), player.getPos());
 
                 if (enemy.enemyState.equals("wander")){
-
                     if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 15 && callback.los) {
                         enemy.enemyState = "pursuit";
                         enemy.body.setLinearVelocity(0,0);
                     }
-                    
                     enemy.move();
                 }
-
                 else if (enemy.enemyState.equals("pursuit")) {
-
                     if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) > 15 && callback.los) {
                         enemy.enemyState = "wander";
                         enemy.body.setLinearVelocity(0,0);
                     }
-
-
                     else if (callback.fixtureType != null && callback.fixtureType.equals("player")) {
                         enemy.body.setLinearVelocity(0,0);
                         enemy.pursuit(player.getPos());
-
                     }
-                    
                 }
             }
         }
@@ -228,22 +208,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             //System.out.println("spawned");
             dubercore.spawnEnemy();
             clock = 0;
-
         }
-
-        /* sr.begin(ShapeType.Filled);
-        for(int i = 0; i < TileMap.MAP_COLS+1; i++){
-            for(int j = 0; j < TileMap.MAP_ROWS+1; j++){
-                if(dubercore.tileMap.cornerArr[i][j] == 1){
-                    sr.setColor(Color.RED);
-                } else{
-                    sr.setColor(Color.BLACK);
-                }
-                sr.rect(i / 2f - 0.05f, j / 2f - 0.05f, 0.1f, 0.1f);
-            }
-        }
-        sr.end(); */
-        
     }
 
     @Override
@@ -270,6 +235,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.lastGrenadeUse = System.currentTimeMillis();
 
             return true;
+        }
+
+        else if (keycode == Input.Keys.ESCAPE){
+            dubercore.changeScreen(DuberCore.GAME_OVER);
         }
         
         else if (keycode == Input.Keys.NUM_1){
@@ -311,7 +280,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             dubercore.world.rayCast(callback, player.getPos(), breakPoint);
             if (callback.collisionPoint != null) {
                 dubercore.destroyTerrain(callback.collisionPoint);
-                // tempMouseVector = callback.collisionPoint;
             }
             return true;
         }
@@ -388,115 +356,5 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
 
         return false;
-    }
-
-    /**
-     * Get the top 10 scores from the online database
-     * @return String representation of the leaderboard
-     */
-    public String getLeaderBoard() {
-        Socket sock = new Socket();
-        ObjectInputStream inputStream = null;
-        ObjectOutputStream outputStream = null;
-        try {
-            sock.connect(new InetSocketAddress("127.0.0.1", 5000), 5000);
-        }
-        catch (IOException e) {
-            System.out.println("Error connecting to server.");
-            // Close socket
-            try{
-                sock.close();
-                System.out.println("Socket sucessfully closed.");
-            }
-            catch (IOException e1){
-                System.out.println("Error closing socket");
-                e1.printStackTrace();               
-            }
-        }
-
-        // Open streams
-        try {
-            inputStream = new ObjectInputStream(sock.getInputStream());
-            outputStream = new ObjectOutputStream(sock.getOutputStream());
-        }
-        catch (IOException e) {
-            System.out.println("Error opening streams");
-            e.printStackTrace();
-        }
-        
-        GetLeaderboard request = new GetLeaderboard();
-        // Write object
-        try {
-            outputStream.writeObject(request);
-            outputStream.flush();
-        }
-        catch (IOException e) {
-            System.out.println("Error writing object.");
-        }
-
-        // Get response
-        try {
-            Object packet = inputStream.readObject();
-            if (packet instanceof String){
-                System.out.println("Get packet recieved");
-                return (String) packet;
-            }
-        }
-        catch (ClassNotFoundException | IOException e) {
-            System.out.println("Erroring reading packet.");
-        }
-        return null;
-    }
-
-    /**
-     * Connects to the online database and adds the score to the leaderboard
-     */
-    public void writeToLeaderboard(){
-        Socket sock = new Socket();
-        ObjectOutputStream outputStream = null;
-        try {
-            sock.connect(new InetSocketAddress("127.0.0.1", 5000), 5000);
-        }
-        catch (IOException e) {
-            System.out.println("Error connecting to server.");
-            // Close socket
-            try{
-                sock.close();
-                System.out.println("Socket sucessfully closed.");
-            }
-            catch (IOException e1){
-                System.out.println("Error closing socket");             
-            }
-        }
-
-        // Open stream
-        try {
-            outputStream = new ObjectOutputStream(sock.getOutputStream());
-        }
-        catch (IOException e) {
-            System.out.println("Error opening streams");
-        }
-
-        WriteLeaderboard packet = new WriteLeaderboard();
-        packet.name = "test";
-        packet.score = 69;
-
-        // Write object
-        try {
-            outputStream.writeObject(packet);
-            outputStream.flush();
-        }
-        catch (IOException e) {
-            System.out.println("Error writing object.");
-        }
-
-        // Close socket
-        try {
-            sock.close();
-        }
-        catch (IOException e) {
-            System.out.println("Error closing socket.");
-        }
-        System.out.println("Stats written");
     }
 }
