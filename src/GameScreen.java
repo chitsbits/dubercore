@@ -468,14 +468,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return true;
         }
         if(button == Input.Buttons.LEFT){
-            if (player.activeItem == 1 && player.grappleFired){
+            if (player.activeItem == Player.GRAPPLING_HOOK && player.grappleFired){
                 player.retractGrapple();
                 player.lastGrappleUse = System.currentTimeMillis();
                 dubercore.entityDeletionQueue.add(player.grapple);
                 return true;
             }
-            else if (player.activeItem == 2 && player.getWeapon(1).isFiring){
-                player.getWeapon(1).isFiring = false;
+            else if (player.activeItem == Player.SMG && player.getWeapon(Player.SMG).isFiring){
+                player.getWeapon(Player.SMG).isFiring = false;
             }
         }
         return false;
