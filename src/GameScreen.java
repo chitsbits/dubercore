@@ -167,12 +167,21 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Draw entities
         for(Entity ent : dubercore.entityList){
             Sprite sprite = ent.sprite;
-            sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2, ent.body.getPosition().y - sprite.getHeight() / 2);
+            // Slight offset for player sprites
+            if (ent instanceof Player){
+                sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2 + 0.14f,
+                                    ent.body.getPosition().y - sprite.getHeight() / 2);
+            } else {
+                sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2,
+                                    ent.body.getPosition().y - sprite.getHeight() / 2);
+            }
             sprite.draw(worldBatch);
+            
         }
         worldBatch.end();
 
         // World UI elements
+        Gdx.gl.glLineWidth(1);
         shapeRenderer.setAutoShapeType(true);
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin();
@@ -189,10 +198,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 shapeRenderer.rect(enemyPos.x - 0.35f, enemyPos.y + 0.73f, hpWidth, 0.05f);
             }
             else if (ent instanceof GrapplingHook){
-                Gdx.gl.glLineWidth(2);
                 shapeRenderer.set(ShapeType.Line);
                 shapeRenderer.setColor(Color.GRAY);
                 shapeRenderer.line(player.getPos(), ent.getPos());
+                Gdx.gl.glLineWidth(4);
             }
         }
         shapeRenderer.end();
@@ -280,6 +289,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             dubercore.world.rayCast(callback, player.getPos(), breakPoint);
             if (callback.collisionPoint != null) {
                 dubercore.destroyTerrain(callback.collisionPoint);
+                player.mineReady = false;
             }
             player.lastTerrainMined = System.currentTimeMillis();
 

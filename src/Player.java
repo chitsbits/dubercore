@@ -96,8 +96,8 @@ public class Player extends Entity {
         playerFixture.setUserData(this);
 
         //adding a sprite to the box2d player object
-        sprite = GameScreen.textureAtlas.createSprite("playerspriteplaceholder");
-        sprite.setSize(PLAYER_WIDTH*2 ,PLAYER_HEIGHT*2);
+        sprite = GameScreen.textureAtlas.createSprite("player");
+        sprite.setSize(PLAYER_WIDTH*2 + 0.7f, PLAYER_HEIGHT*2);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
         body.setUserData(this);
