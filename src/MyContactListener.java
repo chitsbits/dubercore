@@ -36,7 +36,7 @@ public class MyContactListener implements ContactListener {
         }
         else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof GruntEnemy) {
 
-            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureB().getUserData());
+            GruntEnemy enemy = (GruntEnemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("pursuit")){
                 if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
                     game.player.hp -= enemy.damage;
