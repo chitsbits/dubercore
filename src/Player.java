@@ -23,11 +23,13 @@ public class Player extends Entity {
     public static final float JUMP_SPEED = 10;
     public static final float MAX_VELOCITY = 5f;
     public static final long INVINCIBILITY = 666;
+    public static final long MINING_SPEED = 350;
 
     public int collidingCount;
     public boolean canJump;
     public boolean canMove;
     public boolean isGrappling;
+    public boolean isMining;
     public int grenadeCount;
     private Vector2 grappleDirection;
     private Vector2 grenadeDirection;
@@ -44,6 +46,7 @@ public class Player extends Entity {
     public long lastWeaponFire;
     public long lastGrappleUse;
     public long lastDamageTaken;
+    public long lastTerrainMined;
 
     public GrapplingHook grapple;
     
@@ -54,6 +57,7 @@ public class Player extends Entity {
         canMove = true;
         grenadeCount = 5;
         isGrappling = false;
+        isMining  = false;
         activeItem = 1;
         //adding a default weapon
         weapon = new Pistol(this);

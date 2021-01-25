@@ -64,7 +64,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private int screenX;
     private int screenY;
-    private float clock;
+    private float spawnClock;
 
     public GameScreen(DuberCore dubercore){
         this.dubercore = dubercore;
@@ -204,18 +204,31 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
 
         //periodic spawning of enemies
-        clock += Gdx.graphics.getDeltaTime();
+        spawnClock += Gdx.graphics.getDeltaTime();
         
-        if (clock > (int)(Math.random() * ((10 - 5)+1)) + 5) {
+        if (spawnClock > (int)(Math.random() * ((10 - 5)+1)) + 5) {
             //System.out.println("spawned");
             dubercore.spawnEnemy();
-            clock = 0;
+            spawnClock = 0;
         }
+        if (player.checkCooldown(player.lastTerrainMined, Player.MINING_SPEED) && player.isMining){
+            Vector3 mouseWorldPos = camera.unproject(new Vector3(this.screenX, this.screenY, 0));  // Maps the mouse from camera pos to world pos
+            Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
+            Vector2 breakPoint = new Vector2(player.getPos().x + pickaxeDirection.x, player.getPos().y + pickaxeDirection.y);
 
+            PickaxeRayCastCallback callback = new PickaxeRayCastCallback();
+            dubercore.world.rayCast(callback, player.getPos(), breakPoint);
+            if (callback.collisionPoint != null) {
+                dubercore.destroyTerrain(callback.collisionPoint);
+            }
+            player.lastTerrainMined = System.currentTimeMillis();
+
+        }
         // death
         if (player.hp <= 0){
             dubercore.changeScreen(DuberCore.GAME_OVER);
         }
+        
     }
 
     @Override
@@ -252,7 +265,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             System.out.println("gun go pew");
             if(player.isGrappling){
                 player.retractGrapple();
-                dubercore.bodyDeletionList.add(player.grapple.body);
+                dubercore.entityDeletionQueue.add(player.grapple);
             }
             return true;
         }
@@ -278,15 +291,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Pickaxe
         if (button == Input.Buttons.RIGHT) {
-            Vector3 mouseWorldPos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
-            Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
-            Vector2 breakPoint = new Vector2(player.getPos().x + pickaxeDirection.x, player.getPos().y + pickaxeDirection.y);
-
-            PickaxeRayCastCallback callback = new PickaxeRayCastCallback();
-            dubercore.world.rayCast(callback, player.getPos(), breakPoint);
-            if (callback.collisionPoint != null) {
-                dubercore.destroyTerrain(callback.collisionPoint);
-            }
+            player.isMining = true;
             return true;
         }
         //firing weapon/grapple hook
@@ -303,7 +308,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 //System.out.println("shot grapple");
                 player.shootGrapple(dubercore.world, mousePos);
-                player.lastGrappleUse = System.currentTimeMillis();
                 return true; 
             }
         }
@@ -312,11 +316,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+
+        if (button == Input.Buttons.RIGHT) {
+            player.isMining = false;
+            return true;
+        }
+
         if(button == Input.Buttons.LEFT){
             if (player.activeItem == 2 && player.isGrappling){
                 //System.out.println("released grapple");
                 player.retractGrapple();
-                dubercore.bodyDeletionList.add(player.grapple.body);
+                player.lastGrappleUse = System.currentTimeMillis();
+                dubercore.entityDeletionQueue.add(player.grapple);
                 return true;
             }
         }
@@ -325,6 +336,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+        this.screenX = screenX;
+        this.screenY = screenY;
+
         return false;
     }
 
@@ -352,7 +367,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 System.out.println("gun go pew");
                 if (player.isGrappling){
                     player.retractGrapple();
-                    dubercore.bodyDeletionList.add(player.grapple.body);
+                    dubercore.entityDeletionQueue.add(player.grapple);
                 }
             }
             else {

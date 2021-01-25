@@ -54,6 +54,13 @@ public class GruntEnemy extends Enemy {
         body.setFixedRotation(true);
         enemyFixture.setUserData(this);
 
+        FixtureDef collisionFixtureDef = new FixtureDef();
+        collisionFixtureDef.shape = entityShape;
+        collisionFixtureDef.filter.categoryBits = DuberCore.SENSOR;
+        collisionFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PLAYER;
+        collisionFixtureDef.isSensor = true;
+        Fixture collisionFixture = body.createFixture(collisionFixtureDef);
+        collisionFixture.setUserData(this);
         entityShape.dispose();
     }
 

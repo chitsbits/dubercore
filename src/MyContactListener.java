@@ -44,8 +44,8 @@ public class MyContactListener implements ContactListener {
         else if (contact.getFixtureA().getUserData() instanceof Bullet && contact.getFixtureB().getUserData() instanceof Enemy){
             Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
             //System.out.println("enemy hit");
-            if (!game.bodyDeletionList.contains(bullet.body)){
-                game.bodyDeletionList.add(bullet.body);
+            if (!game.entityDeletionQueue.contains(bullet)){
+                game.entityDeletionQueue.add(bullet);
             }
 
             Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
@@ -53,8 +53,8 @@ public class MyContactListener implements ContactListener {
 
             if (enemy.getHp() <= 0){
                 //System.out.println("enemy killed");
-                if (!game.bodyDeletionList.contains(enemy.body)){
-                    game.bodyDeletionList.add(enemy.body);
+                if (!game.entityDeletionQueue.contains(enemy)){
+                    game.entityDeletionQueue.add(enemy);
                     game.score += 10;
                 }
             }
@@ -65,8 +65,8 @@ public class MyContactListener implements ContactListener {
         else if (contact.getFixtureB().getUserData() instanceof Bullet && contact.getFixtureA().getUserData() instanceof Enemy){
             Bullet bullet = (Bullet)(contact.getFixtureB().getUserData());
             //System.out.println("enemy hit");
-            if (!game.bodyDeletionList.contains(bullet.body)){
-                game.bodyDeletionList.add(bullet.body);
+            if (!game.entityDeletionQueue.contains(bullet)){
+                game.entityDeletionQueue.add(bullet);
             }
 
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
@@ -74,8 +74,8 @@ public class MyContactListener implements ContactListener {
 
             if (enemy.getHp() <= 0){
                 //System.out.println("enemy killed");
-                if (!game.bodyDeletionList.contains(enemy.body)){
-                    game.bodyDeletionList.add(enemy.body);
+                if (!game.entityDeletionQueue.contains(enemy)){
+                    game.entityDeletionQueue.add(enemy);
                     game.score += 10;
                 }
             }
@@ -86,8 +86,8 @@ public class MyContactListener implements ContactListener {
             Bullet bullet = (Bullet)(contact.getFixtureA().getUserData());
             //System.out.println("hit");
             //System.out.println(contact.getFixtureB().getUserData());
-            if (!game.bodyDeletionList.contains(bullet.body)){
-                game.bodyDeletionList.add(bullet.body);
+            if (!game.entityDeletionQueue.contains(bullet)){
+                game.entityDeletionQueue.add(bullet);
             }
             
 
@@ -97,8 +97,8 @@ public class MyContactListener implements ContactListener {
             Bullet bullet = (Bullet)(contact.getFixtureB().getUserData());
             //System.out.println("hit");
             //System.out.println(contact.getFixtureA().getUserData());
-            if (!game.bodyDeletionList.contains(bullet.body)){
-                game.bodyDeletionList.add(bullet.body);
+            if (!game.entityDeletionQueue.contains(bullet)){
+                game.entityDeletionQueue.add(bullet);
             }
         }
 
@@ -110,12 +110,12 @@ public class MyContactListener implements ContactListener {
             grenade.body.setLinearVelocity(0,0);
 
             Explosion explosion = new Explosion(grenade.body.getWorld(), grenade.body.getPosition());
-            if(!game.explosionBodyList.contains(explosion)){
-                game.explosionBodyList.add(explosion);
+            if(!game.explosionQueue.contains(explosion)){
+                game.explosionQueue.add(explosion);
             }
 
-            if (!game.bodyDeletionList.contains(grenade.body)){
-                game.bodyDeletionList.add(grenade.body);
+            if (!game.entityDeletionQueue.contains(grenade)){
+                game.entityDeletionQueue.add(grenade);
             }
 
         }
@@ -126,12 +126,12 @@ public class MyContactListener implements ContactListener {
             grenade.body.setLinearVelocity(0,0);
 
             Explosion explosion = new Explosion(grenade.body.getWorld(), grenade.body.getPosition());
-            if(!game.explosionBodyList.contains(explosion)){
-                game.explosionBodyList.add(explosion);
+            if(!game.explosionQueue.contains(explosion)){
+                game.explosionQueue.add(explosion);
             }
 
-            if (!game.bodyDeletionList.contains(grenade.body)){
-                game.bodyDeletionList.add(grenade.body);
+            if (!game.entityDeletionQueue.contains(grenade)){
+                game.entityDeletionQueue.add(grenade);
             }
 
         }
@@ -142,8 +142,8 @@ public class MyContactListener implements ContactListener {
             Explosion explosion = (Explosion)(contact.getFixtureA().getUserData());
             //System.out.println("kerblamo");
 
-            if (!game.bodyDeletionList.contains(explosion.body)){
-                game.bodyDeletionList.add(explosion.body);
+            if (!game.entityDeletionQueue.contains(explosion)){
+                game.entityDeletionQueue.add(explosion);
             }
 
             if (contact.getFixtureB().getUserData() instanceof Enemy){
@@ -153,8 +153,8 @@ public class MyContactListener implements ContactListener {
     
                 if (enemy.getHp() <= 0){
                     //System.out.println("enemy killed");
-                    if (!game.bodyDeletionList.contains(enemy.body)){
-                        game.bodyDeletionList.add(enemy.body);
+                    if (!game.entityDeletionQueue.contains(enemy)){
+                        game.entityDeletionQueue.add(enemy);
                     }
                 }
 
@@ -166,8 +166,8 @@ public class MyContactListener implements ContactListener {
             Explosion explosion = (Explosion)(contact.getFixtureB().getUserData());
             //System.out.println("kerblamo");
 
-            if (!game.bodyDeletionList.contains(explosion.body)){
-                game.bodyDeletionList.add(explosion.body);
+            if (!game.entityDeletionQueue.contains(explosion)){
+                game.entityDeletionQueue.add(explosion);
             }
 
             if (contact.getFixtureA().getUserData() instanceof Enemy){
@@ -177,8 +177,8 @@ public class MyContactListener implements ContactListener {
     
                 if (enemy.getHp() <= 0){
                     //System.out.println("enemy killed");
-                    if (!game.bodyDeletionList.contains(enemy.body)){
-                        game.bodyDeletionList.add(enemy.body);
+                    if (!game.entityDeletionQueue.contains(enemy)){
+                        game.entityDeletionQueue.add(enemy);
                     }
                 }
 
@@ -190,7 +190,20 @@ public class MyContactListener implements ContactListener {
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("wander")){
                 //System.out.println("hit wall");
-                game.enemyRotateList.add(enemy);
+                game.enemyRotateQueue.add(enemy);
+            }
+            else if(enemy.enemyState.equals("pursuit")){
+                if (contact.getFixtureB().getUserData() instanceof Terrain){
+                    enemy.enemyState = "wander";
+                    game.enemyRotateQueue.add(enemy);
+                }
+                else if (contact.getFixtureB().getUserData() instanceof Player) {
+                    Player player = (Player)(contact.getFixtureA().getUserData());
+                    if (player.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY)){
+                        player.hp -= enemy.damage;
+                    }
+                    
+                }
             }
         }
 
@@ -198,12 +211,12 @@ public class MyContactListener implements ContactListener {
             Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
             if (enemy.enemyState.equals("wander")){
                 //System.out.println("hit wall");
-                game.enemyRotateList.add(enemy);
+                game.enemyRotateQueue.add(enemy);
             }
             else if(enemy.enemyState.equals("pursuit")){
                 if (contact.getFixtureA().getUserData() instanceof Terrain){
                     enemy.enemyState = "wander";
-                    game.enemyRotateList.add(enemy);
+                    game.enemyRotateQueue.add(enemy);
                 }
                 else if (contact.getFixtureA().getUserData() instanceof Player) {
                     Player player = (Player)(contact.getFixtureA().getUserData());
