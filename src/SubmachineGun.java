@@ -10,6 +10,7 @@ public class SubmachineGun extends Weapon {
         damage = 1f;
         fireRate = 150;
         isFiring = false;
+        magazineSize = 25;
 
         sprite = GameScreen.textureAtlas.createSprite("pistol");
         sprite.setSize(60, 40);
@@ -25,7 +26,15 @@ public class SubmachineGun extends Weapon {
         Bullet bullet = new Bullet(game.world, damage, playerPos);
         game.entityList.add(bullet);
         bullet.body.setLinearVelocity(bulletDirection);
-
+        magazineSize -= 1;
+        if (magazineSize <= 0){
+            fireRate = 3500;
+        }
     }
-    
+
+    @Override
+    public void reload() {
+        magazineSize = 25;
+        fireRate = 150;
+    }
 }

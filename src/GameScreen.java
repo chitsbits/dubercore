@@ -132,6 +132,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             if (!player.weaponReady[w]){
                 if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
                     player.weaponReady[w] = true;
+                    if (player.getWeapon(w).magazineSize <= 0){
+                       player.getWeapon(w).reload();
+                    }
                 }
             }
 

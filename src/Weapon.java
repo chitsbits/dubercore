@@ -10,7 +10,10 @@ public abstract class Weapon {
     public Vector2 bulletDirection;
     public boolean isFiring;
     public long fireRate;
+    public int magazineSize;
 
     public abstract void fire(DuberCore game, Vector3 mousePos, Vector2 playerPos);
+
+    public abstract void reload();
     
 }
