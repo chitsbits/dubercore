@@ -3,11 +3,13 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -15,11 +17,20 @@ public class PreferencesScreen extends ScreenAdapter {
 
     private Stage stage;
     private DuberCore dubercore;
-    TextField usernameTextField;
+    private TextField usernameTextField;
+    private CheckBox debugCheckbox;
+    private Skin skin;
+    private Skin skin2;
 
     public PreferencesScreen(DuberCore dubercore) {
+
+        skin = new Skin(Gdx.files.internal("assets\\skin\\craftacular-ui.json"));
+        skin2 = new Skin(Gdx.files.internal("assets\\skin2\\uiskin.json"));
+
         this.dubercore = dubercore;
         this.stage = new Stage(new ScreenViewport());
+        debugCheckbox = new CheckBox(null , skin2);
+        debugCheckbox.setChecked(false);
     }
 
     @Override
@@ -32,21 +43,30 @@ public class PreferencesScreen extends ScreenAdapter {
         table.setDebug(false);
         stage.addActor(table);
 
-        Skin skin = new Skin(Gdx.files.internal("assets\\skin\\craftacular-ui.json"));
         TextButton backButton = new TextButton("Back", skin);
         Label nameLabel = new Label("Display Name", skin);
-        usernameTextField = new TextField(dubercore.playerName , skin);
+        Label debugModeLabel = new Label("Debug Mode", skin);
+        usernameTextField = new TextField(dubercore.playerName, skin);
 
-        table.add(nameLabel).fillX().uniformX();
-        table.row().pad(0, 0, 0, 5);
+        table.add(nameLabel).fillY().uniformX();
         table.add(usernameTextField);
-        table.row().pad(10, 0, 0, 0);
+        table.row().pad(40, 0, 0, 0);
+        table.add(debugModeLabel).fillX().uniformX();
+        table.add(debugCheckbox);
+        table.row().pad(40, 0, 0, 0);
         table.add(backButton).fillX().uniformX().colspan(2);
 
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 dubercore.changeScreen(DuberCore.MENU);			
+            }
+        });
+
+        debugCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                dubercore.setDebugMode(debugCheckbox.isChecked());
             }
         });
 

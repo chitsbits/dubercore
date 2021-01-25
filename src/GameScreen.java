@@ -31,8 +31,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private Box2DDebugRenderer debugRenderer;
     private ShapeRenderer shapeRenderer;
 
-    private boolean useDebugCamera = false;
-
     private BitmapFont font;
     private SpriteBatch worldBatch;
     private SpriteBatch hudBatch;
@@ -65,12 +63,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
 
-        if(useDebugCamera) {
-            camera.setToOrtho(false, DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
-        }
-        else {
-            camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
-        }
+        camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
         shapeRenderer = new ShapeRenderer();
@@ -108,9 +101,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         dubercore.doPhysicsStep(delta);
 
         // Focus camera on player
-        if(!useDebugCamera)
         camera.position.set(player.getPos().x, player.getPos().y, 0);
-
         // tell the camera to update its matrices.
         camera.update();
 
@@ -171,7 +162,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudBatch.end();
 
         // Render Box2D world
-        debugRenderer.render(dubercore.world, camera.combined);
+        if (dubercore.getDebugMode()){
+            debugRenderer.render(dubercore.world, camera.combined);
+        }
 
         //System.out.println(enemy.heuristic(enemy.body.getPosition(), player.getPos()));
         for (int e = 0; e < dubercore.entityList.size(); e++){

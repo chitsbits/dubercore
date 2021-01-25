@@ -49,6 +49,8 @@ public class DuberCore extends Game {
    public String playerName;
    public int score;
 
+   private boolean debugMode = false;
+
    private GameScreen gameScreen;
    private MenuScreen menuScreen;
    private LeaderboardScreen leaderboardScreen;
@@ -201,5 +203,13 @@ public class DuberCore extends Game {
       GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
       enemyRotateQueue.add(enemy);
       entityList.add(enemy);
+   }
+
+   public boolean getDebugMode(){
+      return this.debugMode;
+   }
+
+   public void setDebugMode(boolean mode){
+      this.debugMode = mode;
    }
 }
