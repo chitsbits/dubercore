@@ -46,25 +46,25 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public static final float CAMERA_WIDTH = 32f;
     public static final float CAMERA_HEIGHT = 18f;
 
-    DuberCore dubercore;
-    OrthographicCamera camera;
-    Player player;
+    private DuberCore dubercore;
+    private OrthographicCamera camera;
+    private Player player;
 
-    Box2DDebugRenderer debugRenderer;
+    private Box2DDebugRenderer debugRenderer;
 
-    boolean useDebugCamera = false;
+    private boolean useDebugCamera = false;
 
-    BitmapFont font;
-    SpriteBatch worldBatch;
-    SpriteBatch hudBatch;
+    private BitmapFont font;
+    private SpriteBatch worldBatch;
+    private SpriteBatch hudBatch;
 
     public static Texture[] stoneTextures;
     public static Texture textureAir;
     public static TextureAtlas textureAtlas;
 
-    int screenX;
-    int screenY;
-    float clock;
+    private int screenX;
+    private int screenY;
+    private float clock;
 
     public GameScreen(DuberCore dubercore){
         this.dubercore = dubercore;
@@ -76,6 +76,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         textureAtlas = new TextureAtlas("assets\\sprites.txt");
         dubercore.initialize();
         font = new BitmapFont();
+        
 
         player = dubercore.player;
 
@@ -85,10 +86,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
 
-        if(useDebugCamera)
-        camera.setToOrtho(false, DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
-        else
-        camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
+        if(useDebugCamera) {
+            camera.setToOrtho(false, DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
+        }
+        else {
+            camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
+        }
         
 
         debugRenderer = new Box2DDebugRenderer();
@@ -121,8 +124,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0) {
             player.jump();
         }
-
-        //System.out.println(Gdx.graphics.getFramesPerSecond());
 
         // Step physics world
         dubercore.doPhysicsStep(delta);
@@ -168,6 +169,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Draw hud
         hudBatch.begin();
         font.draw(hudBatch, "Score: " + Integer.toString(dubercore.score), 20, 20);
+        font.draw(hudBatch, dubercore.playerName, 50, 20);
         hudBatch.end();
 
         // Render Box2D world
@@ -209,6 +211,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             dubercore.spawnEnemy();
             clock = 0;
         }
+
+        // death
+        if (player.hp <= 0){
+            dubercore.changeScreen(DuberCore.GAME_OVER);
+        }
     }
 
     @Override
@@ -223,7 +230,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudBatch.dispose();
         textureAtlas.dispose();
         debugRenderer.dispose();
-        // sr.dispose();
     }
     
     @Override
