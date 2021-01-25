@@ -80,7 +80,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         grappleSprite = textureAtlas.createSprite("grappleicon");
         grappleSprite.setSize(40, 50);
-        grappleSprite.setPosition(1000, 30);
+        grappleSprite.setPosition(900, 30);
 
         chevron = textureAtlas.createSprite("chevron");
         chevron.setSize(20, 15);
@@ -128,7 +128,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             }
         }
 
-        for (int w = 0; w < 2; w++){
+        for (int w = 0; w < 3; w++){
             if (!player.weaponReady[w]){
                 if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
                     player.weaponReady[w] = true;
@@ -216,14 +216,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         switch (player.activeItem){
             case 0 :
-                chevron.setPosition(920, 100);
+                chevron.setPosition(820, 100);
                 break;
             case 1 :
-                chevron.setPosition(1010, 100);
+                chevron.setPosition(910, 100);
                 break;
             case 2 :
-                chevron.setPosition(1120, 100);
+                chevron.setPosition(1020, 100);
                 break;
+            case 3 :
+                chevron.setPosition(1120, 100);
         }
         chevron.draw(hudBatch);
 
@@ -241,7 +243,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
         grappleSprite.draw(hudBatch);
         
-        for (int w = 0; w < 2; w++){
+        for (int w = 0; w < 3; w++){
             if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
                 player.getWeapon(w).sprite.setColor(Color.WHITE);
             }
@@ -353,18 +355,35 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.retractGrapple();
                 dubercore.entityDeletionQueue.add(player.grapple);
             }
+            if (player.getWeapon(1).isFiring){
+                player.getWeapon(1).isFiring = false;
+            }
             return true;
         }
         else if (keycode == Input.Keys.NUM_2){
             player.activeItem = 1;
+            if (player.getWeapon(1).isFiring){
+                player.getWeapon(1).isFiring = false;
+            }
             return true;
         }
         else if (keycode == Input.Keys.NUM_3){
             player.activeItem = 2;
+            if(player.isGrappling){
+                player.retractGrapple();
+                dubercore.entityDeletionQueue.add(player.grapple);
+            }
             return true;
         }
         else if (keycode == Input.Keys.NUM_4){
             player.activeItem = 3;
+            if(player.isGrappling){
+                player.retractGrapple();
+                dubercore.entityDeletionQueue.add(player.grapple);
+            }
+            if (player.getWeapon(1).isFiring){
+                player.getWeapon(1).isFiring = false;
+            }
             return true;
         }
         else if (keycode == Input.Keys.ESCAPE){
@@ -398,6 +417,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             }
             else if (player.activeItem == 2 && player.weaponReady[1]){
                 player.getWeapon(1).isFiring = true;
+                return true;
+            }
+            else if (player.activeItem == 3 && player.weaponReady[2]){
+                Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
+                player.getWeapon(2).fire(dubercore, mousePos, player.getPos());
+                player.weaponReady[2] = false;
+                player.lastWeaponFire[2] = System.currentTimeMillis();
                 return true;
             }
         }
@@ -442,6 +468,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.retractGrapple();
             dubercore.entityDeletionQueue.add(player.grapple);
         }
+        
         if (player.getWeapon(1).isFiring){
             player.getWeapon(1).isFiring = false;
         }

@@ -70,6 +70,7 @@ public class Player extends Entity {
         weaponArray = new Weapon[3];
         weaponArray[0] = new Pistol();
         weaponArray[1] = new SubmachineGun();
+        weaponArray[2] = new Shotgun();
         //adding weapon fire trackers
         lastWeaponFire = new long[3];
 

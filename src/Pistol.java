@@ -10,10 +10,9 @@ public class Pistol extends Weapon {
         fireRate = 400;
         isFiring = false;
 
-        TextureAtlas textureAtlas = new TextureAtlas("assets\\sprites.txt");
-        sprite = textureAtlas.createSprite("pistol");
+        sprite = GameScreen.textureAtlas.createSprite("pistol");
         sprite.setSize(60, 40);
-        sprite.setPosition(900, 30);
+        sprite.setPosition(800, 30);
     }
 
     @Override
@@ -22,8 +21,6 @@ public class Pistol extends Weapon {
         bulletDirection.x = mousePos.x - playerPos.x;
         bulletDirection.y = mousePos.y - playerPos.y;
         bulletDirection.clamp(40f, 40f);
-        System.out.println(bulletDirection.x);
-        System.out.println(bulletDirection.y);
         Bullet bullet = new Bullet(game.world, damage, playerPos);
         game.entityList.add(bullet);
         bullet.body.setLinearVelocity(bulletDirection);
