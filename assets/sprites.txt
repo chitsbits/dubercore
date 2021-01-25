@@ -17,23 +17,30 @@ bullet
   orig: 7, 7
   offset: 0, 0
   index: -1
-explosion
+chevron
   rotate: false
   xy: 23, 0
+  size: 9, 5
+  orig: 9, 5
+  offset: 0, 0
+  index: -1
+explosion
+  rotate: false
+  xy: 32, 0
   size: 44, 45
   orig: 44, 45
   offset: 0, 0
   index: -1
 gold1
   rotate: false
-  xy: 67, 0
+  xy: 76, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 gold2
   rotate: false
-  xy: 83, 0
+  xy: 92, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

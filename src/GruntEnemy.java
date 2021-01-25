@@ -37,7 +37,7 @@ public class GruntEnemy extends Enemy {
         bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE | DuberCore.ENEMY | DuberCore.PLAYER ;
         bodyFixtureDef.friction = 1.0f;
         
-        sprite = GameScreen.textureAtlas.createSprite("enemyspriteplaceholder");
+        sprite = GameScreen.textureAtlas.createSprite("meleespriteplaceholder");
         sprite.setSize(this.width*2, this.height*2);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 

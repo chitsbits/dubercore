@@ -54,7 +54,7 @@ public class Player extends Entity {
         canMove = true;
         isGrappling = false;
         isMining  = false;
-        activeItem = 1;
+        activeItem = 0;
 
         grappleReady = true;
         grenadeReady = true;

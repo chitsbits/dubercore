@@ -45,6 +45,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     Sprite grenadeSprite;
     Sprite grappleSprite;
     Sprite pistolSprite;
+    Sprite chevron;
 
     public GameScreen(DuberCore dubercore){
         this.dubercore = dubercore;
@@ -85,6 +86,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         pistolSprite = textureAtlas.createSprite("pistol");
         pistolSprite.setSize(60, 40);
         pistolSprite.setPosition(1000, 30);
+
+        chevron = textureAtlas.createSprite("chevron");
+        chevron.setSize(20, 15);
     }
 
     @Override
@@ -212,6 +216,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         font.draw(hudBatch, "Score: " + Integer.toString(dubercore.score), 150, 50);
         font.draw(hudBatch, "Health: " + Integer.toString((int)dubercore.player.hp), 300, 50);
 
+        switch (player.activeItem){
+            case 0 :
+                chevron.setPosition(1020, 100);
+                break;
+            case 1 :
+                chevron.setPosition(1110, 100);
+                break;
+        }
+        chevron.draw(hudBatch);
+
         if (player.grenadeReady){
             grenadeSprite.setColor(Color.WHITE);
         } else {
@@ -271,12 +285,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 }
             }
         }
-        //System.out.println(player.playerFixture.getUserData());
         //periodic spawning of enemies
         spawnClock += Gdx.graphics.getDeltaTime();
         
         if (spawnClock > (int)(Math.random()*(10 - 5)) + 5) {
-            //System.out.println("spawned");
             dubercore.spawnEnemy();
             spawnClock = 0;
         }
@@ -320,8 +332,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return true;
         }
         else if (keycode == Input.Keys.NUM_1){
-            player.activeItem = 1;
-            System.out.println("gun go pew");
+            player.activeItem = 0;
             if(player.isGrappling){
                 player.retractGrapple();
                 dubercore.entityDeletionQueue.add(player.grapple);
@@ -329,8 +340,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return true;
         }
         else if (keycode == Input.Keys.NUM_2){
-            player.activeItem = 2;
-            System.out.println("grapple go hook");
+            player.activeItem = 1;
             return true;
         }
         else if (keycode == Input.Keys.ESCAPE){
@@ -349,7 +359,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Firing weapon/grapple hook
         else if(button == Input.Buttons.LEFT){
 
-            if (player.activeItem == 1 && player.weaponReady){
+            if (player.activeItem == 0 && player.weaponReady){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
                 player.getWeapon().fire(dubercore, mousePos, player.getPos());
                 player.weaponReady = false;
@@ -357,7 +367,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 return true;
             }
 
-            else if (player.activeItem == 2 && player.grappleReady){
+            else if (player.activeItem == 1 && player.grappleReady){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(dubercore.world, mousePos);
                 dubercore.entityList.add(player.grapple);
@@ -374,10 +384,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.isMining = false;
             return true;
         }
-
         if(button == Input.Buttons.LEFT){
-            if (player.activeItem == 2 && player.isGrappling){
-                //System.out.println("released grapple");
+            if (player.activeItem == 1 && player.isGrappling){
                 player.retractGrapple();
                 player.lastGrappleUse = System.currentTimeMillis();
                 dubercore.entityDeletionQueue.add(player.grapple);
@@ -390,28 +398,46 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     @Override
     public boolean scrolled(float amountX, float amountY) {
 
-        if (amountY == 1 || amountY == -1){
-            player.activeItem += amountY;
-            if (player.activeItem > 2) {
-                player.activeItem = 1;
-            }
-            else if (player.activeItem < 1) {
-                player.activeItem = 2;
-            }
-            else if (player.activeItem == 1){
-                System.out.println("gun go pew");
-                if (player.isGrappling){
-                    player.retractGrapple();
-                    dubercore.entityDeletionQueue.add(player.grapple);
-                }
-            }
-            else {
-                System.out.println("grapple go hook");
-            }
-            return true;
+        if (amountY > 0){
+            player.activeItem = (player.activeItem + 1) % 2;
+        }
+        else if (amountY < 0){
+            player.activeItem = (player.activeItem - 1) % 2;
+        }
+        if (player.activeItem < 0){
+            player.activeItem += 2;
         }
 
-        return false;
+        if (player.isGrappling){
+            player.retractGrapple();
+            dubercore.entityDeletionQueue.add(player.grapple);
+        }
+
+        System.out.println(player.activeItem);
+        return true;
+
+        // if (amountY == 1 || amountY == -1){
+        //     player.activeItem += amountY;
+        //     if (player.activeItem > 2) {
+        //         player.activeItem = 1;
+        //     }
+        //     else if (player.activeItem < 1) {
+        //         player.activeItem = 2;
+        //     }
+        //     else if (player.activeItem == 1){
+        //         System.out.println("gun go pew");
+        //         if (player.isGrappling){
+        //             player.retractGrapple();
+        //             dubercore.entityDeletionQueue.add(player.grapple);
+        //         }
+        //     }
+        //     else {
+        //         System.out.println("grapple go hook");
+        //     }
+        //     return true;
+        // }
+
+        // return false;
     }
 
     @Override
