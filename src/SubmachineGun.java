@@ -5,12 +5,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class SubmachineGun extends Weapon {
 
+    public static final int MAGAZINE_SIZE = 25;
+
     SubmachineGun() {
         weaponType = "SubmachineGun";
         damage = 1f;
         fireRate = 150;
         isFiring = false;
-        magazineSize = 25;
+        ammo = 25;
         reloadTime = 3500;
 
         sprite = GameScreen.textureAtlas.createSprite("smg");
@@ -27,15 +29,15 @@ public class SubmachineGun extends Weapon {
         Bullet bullet = new Bullet(game.world, damage, playerPos);
         game.entityList.add(bullet);
         bullet.body.setLinearVelocity(bulletDirection);
-        magazineSize -= 1;
-        if (magazineSize <= 0){
+        ammo -= 1;
+        if (ammo <= 0){
             fireRate = reloadTime;
         }
     }
 
     @Override
     public void reload() {
-        magazineSize = 25;
+        ammo = MAGAZINE_SIZE;
         fireRate = 150;
     }
 }
