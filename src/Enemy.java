@@ -41,14 +41,5 @@ public abstract class Enemy extends Entity {
     public void setHp(float hp){
         this.hp = hp;
     }
-
-
-    public boolean checkCooldown(long lastUse, long cooldown){
-        long time = System.currentTimeMillis();
-        if (time > lastUse + cooldown){
-            return true;
-        }
-        return false;
-    }
     
 }
