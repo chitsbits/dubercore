@@ -9,6 +9,7 @@ public class Shotgun extends Weapon {
         fireRate = 1200;
         isFiring = false;
         magazineSize = 4;
+        reloadTime = 3000;
 
         sprite = GameScreen.textureAtlas.createSprite("pistol");
         sprite.setSize(60, 40);
@@ -32,7 +33,7 @@ public class Shotgun extends Weapon {
         }
         magazineSize -= 1;
         if (magazineSize <= 0){
-            fireRate = 3000;
+            fireRate = reloadTime;
         }
     }
 

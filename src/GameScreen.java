@@ -374,6 +374,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.lastGrenadeUse = System.currentTimeMillis();
             return true;
         }
+        else if (keycode == Input.Keys.R) {
+            if (player.activeItem <=2){
+                Weapon activeWeapon = player.getWeapon(player.activeItem);
+                activeWeapon.fireRate = activeWeapon.reloadTime;
+                player.weaponReady[player.activeItem] = false;
+                player.lastWeaponFire[player.activeItem] = System.currentTimeMillis();
+                activeWeapon.magazineSize = 0;
+            }
+
+        }
         // Pistol
         else if (keycode == Input.Keys.NUM_1){
             player.activeItem = Player.PISTOL;
