@@ -19,7 +19,6 @@ public class Bullet extends Projectile {
         body = this.world.createBody(bodyDef);
         body.setGravityScale(0);
 
-
         entityShape = new CircleShape();
         ((CircleShape) entityShape).setRadius(0.1f);
 
@@ -36,7 +35,7 @@ public class Bullet extends Projectile {
         entityShape.dispose();
 
         this.sprite = GameScreen.textureAtlas.createSprite("bullet");
-        sprite.setSize(0.3f, 0.3f);
+        sprite.setSize(0.2f, 0.2f);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
     }
 

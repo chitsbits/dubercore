@@ -11,8 +11,7 @@ public class SubmachineGun extends Weapon {
         fireRate = 150;
         isFiring = false;
 
-        TextureAtlas textureAtlas = new TextureAtlas("assets\\sprites.txt");
-        sprite = textureAtlas.createSprite("pistol");
+        sprite = GameScreen.textureAtlas.createSprite("pistol");
         sprite.setSize(60, 40);
         sprite.setPosition(1100, 30);
     }
