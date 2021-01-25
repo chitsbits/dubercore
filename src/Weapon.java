@@ -4,10 +4,11 @@ import com.badlogic.gdx.math.Vector3;
 
 public abstract class Weapon {
 
-    Sprite sprite;
-    String weaponType;
-    float damage;
-    Vector2 bulletDirection;
+    public Sprite sprite;
+    public String weaponType;
+    public float damage;
+    public Vector2 bulletDirection;
+    public boolean isFiring;
     public long fireRate;
 
     public abstract void fire(DuberCore game, Vector3 mousePos, Vector2 playerPos);

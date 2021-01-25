@@ -1,19 +1,20 @@
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-public class Pistol extends Weapon {
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-    Pistol() {
-        weaponType = "Pistol";
-        damage = 4f;
-        fireRate = 400;
+public class SubmachineGun extends Weapon {
+
+    SubmachineGun() {
+        weaponType = "SubmachineGun";
+        damage = 1f;
+        fireRate = 100;
         isFiring = false;
 
         TextureAtlas textureAtlas = new TextureAtlas("assets\\sprites.txt");
         sprite = textureAtlas.createSprite("pistol");
         sprite.setSize(60, 40);
-        sprite.setPosition(900, 30);
+        sprite.setPosition(1100, 30);
     }
 
     @Override
@@ -25,6 +26,7 @@ public class Pistol extends Weapon {
         Bullet bullet = new Bullet(game.world, damage, playerPos);
         game.entityList.add(bullet);
         bullet.body.setLinearVelocity(bulletDirection);
-    }
 
+    }
+    
 }

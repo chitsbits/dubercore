@@ -146,7 +146,7 @@ public class DuberCore extends Game {
          while (!this.enemyRotateQueue.isEmpty()){
             Enemy enemy = this.enemyRotateQueue.poll();
             enemy.randRotate();
-         }
+         } 
          accumulator -= STEP_TIME;
       }
    }

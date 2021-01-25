@@ -27,7 +27,7 @@ public class Player extends Entity {
     private Vector2 grappleDirection;
     private Vector2 grenadeDirection;
     private Grenade grenade;
-    private Weapon weapon;
+    private Weapon[] weaponArray;
     public int activeItem;
     public float hp = 100;
 
@@ -36,15 +36,15 @@ public class Player extends Entity {
     private FixtureDef bodyFixtureDef;
 
     public long lastGrenadeUse;
-    public long lastWeaponFire;
     public long lastGrappleUse;
     public long lastDamageTaken;
     public long lastTerrainMined;
+    public long[] lastWeaponFire;
 
     public boolean grenadeReady;
     public boolean grappleReady;
-    public boolean weaponReady;
     public boolean mineReady;
+    public boolean[] weaponReady;
 
     public GrapplingHook grapple;
     
@@ -60,11 +60,18 @@ public class Player extends Entity {
 
         grappleReady = true;
         grenadeReady = true;
-        weaponReady = true;
         mineReady = true;
+        weaponReady = new boolean[3];
+        for (int b = 0; b < 3; b++){
+            weaponReady[b] = true;
+        }
         
-        //adding a default weapon
-        weapon = new Pistol();
+        //adding a weapons
+        weaponArray = new Weapon[3];
+        weaponArray[0] = new Pistol();
+        weaponArray[1] = new SubmachineGun();
+        //adding weapon fire trackers
+        lastWeaponFire = new long[3];
 
         // Body definition
         this.bodyDef = bodyDef;
@@ -180,7 +187,7 @@ public class Player extends Entity {
         body.setLinearVelocity(getVel().x, 10);
     }
 
-    public Weapon getWeapon(){
-        return this.weapon;
+    public Weapon getWeapon(int weaponIndex){
+        return weaponArray[weaponIndex];
     }
 }

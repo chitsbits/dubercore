@@ -4,10 +4,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -46,7 +44,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     // Hud elements
     Sprite grenadeSprite;
     Sprite grappleSprite;
-    Sprite pistolSprite;
     Sprite chevron;
 
     public GameScreen(DuberCore dubercore){
@@ -66,18 +63,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         worldBatch = new SpriteBatch();
         hudBatch = new SpriteBatch();
 
-        Pixmap pixmap = new Pixmap(Gdx.files.internal("assets\\crosshair.png"));
-        int xHotspot = pixmap.getWidth() / 2;
-        int yHotspot = pixmap.getHeight() / 2;
-        Cursor cursor = Gdx.graphics.newCursor(pixmap, xHotspot, yHotspot);
-        Gdx.graphics.setCursor(cursor);
-        pixmap.dispose();
-
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
 
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
-        //camera.setToOrtho(false, DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
         shapeRenderer = new ShapeRenderer();
@@ -91,11 +80,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         grappleSprite = textureAtlas.createSprite("grappleicon");
         grappleSprite.setSize(40, 50);
-        grappleSprite.setPosition(1100, 30);
-
-        pistolSprite = textureAtlas.createSprite("pistol");
-        pistolSprite.setSize(60, 40);
-        pistolSprite.setPosition(1000, 30);
+        grappleSprite.setPosition(1000, 30);
 
         chevron = textureAtlas.createSprite("chevron");
         chevron.setSize(20, 15);
@@ -136,24 +121,26 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.grenadeReady = true;
             }
         }
+
         if (!player.grappleReady){
             if (DuberCore.checkCooldown(player.lastGrappleUse, GrapplingHook.COOLDOWN)){
                 player.grappleReady = true;
             }
         }
-        if (!player.weaponReady){
-            if (DuberCore.checkCooldown(player.lastWeaponFire, player.getWeapon().fireRate)){
-                player.weaponReady = true;
+
+        for (int w = 0; w < 2; w++){
+            if (!player.weaponReady[w]){
+                if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
+                    player.weaponReady[w] = true;
+                }
             }
+
         }
+
         if (!player.mineReady){
             if (DuberCore.checkCooldown(player.lastTerrainMined, Player.MINING_SPEED)){
                 player.mineReady = true;
             }
-        }
-
-        if (player.isGrappling) {
-            player.followGrapple();
         }
 
         // ~~~~ DRAWING ~~~~~
@@ -229,10 +216,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         switch (player.activeItem){
             case 0 :
-                chevron.setPosition(1020, 100);
+                chevron.setPosition(920, 100);
                 break;
             case 1 :
-                chevron.setPosition(1110, 100);
+                chevron.setPosition(1010, 100);
+                break;
+            case 2 :
+                chevron.setPosition(1120, 100);
                 break;
         }
         chevron.draw(hudBatch);
@@ -250,13 +240,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             grappleSprite.setColor(Color.RED);
         }
         grappleSprite.draw(hudBatch);
-
-        if (player.weaponReady){
-            pistolSprite.setColor(Color.WHITE);
-        } else {
-            pistolSprite.setColor(Color.RED);
+        
+        for (int w = 0; w < 2; w++){
+            if (player.weaponReady[w]){
+                if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
+                    player.getWeapon(w).sprite.setColor(Color.WHITE);
+                }
+                else {
+                    player.getWeapon(w).sprite.setColor(Color.RED);
+                }
+            }
+            player.getWeapon(w).sprite.draw(hudBatch);
         }
-        pistolSprite.draw(hudBatch);
         hudBatch.end();
 
         // Render Box2D world
@@ -303,6 +298,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             dubercore.spawnEnemy();
             spawnClock = 0;
         }
+        //followin grapple
+        if (player.isGrappling){
+            player.followGrapple();
+        }
+        //automining
         if (player.mineReady && player.isMining){
             Vector3 mouseWorldPos = camera.unproject(new Vector3(this.screenX, this.screenY, 0));  // Maps the mouse from camera pos to world pos
             Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
@@ -316,6 +316,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             }
             player.lastTerrainMined = System.currentTimeMillis();
 
+        }
+        //auto firing for smg
+        if (player.weaponReady[1] && player.getWeapon(1).isFiring){
+            Vector3 mousePos = camera.unproject(new Vector3(this.screenX, this.screenY, 0));
+            player.getWeapon(1).fire(dubercore, mousePos, player.getPos());
+            player.weaponReady[1] = false;
+            player.lastWeaponFire[1] = System.currentTimeMillis();
         }
         // death
         if (player.hp <= 0){
@@ -354,6 +361,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.activeItem = 1;
             return true;
         }
+        else if (keycode == Input.Keys.NUM_3){
+            player.activeItem = 2;
+            return true;
+        }
+        else if (keycode == Input.Keys.NUM_4){
+            player.activeItem = 3;
+            return true;
+        }
         else if (keycode == Input.Keys.ESCAPE){
             dubercore.changeScreen(DuberCore.GAME_OVER);
         }
@@ -370,19 +385,22 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Firing weapon/grapple hook
         else if(button == Input.Buttons.LEFT){
 
-            if (player.activeItem == 0 && player.weaponReady){
+            if (player.activeItem == 0 && player.weaponReady[0]){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-                player.getWeapon().fire(dubercore, mousePos, player.getPos());
-                player.weaponReady = false;
-                player.lastWeaponFire = System.currentTimeMillis();
+                player.getWeapon(0).fire(dubercore, mousePos, player.getPos());
+                player.weaponReady[0] = false;
+                player.lastWeaponFire[0] = System.currentTimeMillis();
                 return true;
             }
-
             else if (player.activeItem == 1 && player.grappleReady){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(dubercore.world, mousePos);
                 dubercore.entityList.add(player.grapple);
                 return true; 
+            }
+            else if (player.activeItem == 2 && player.weaponReady[1]){
+                player.getWeapon(1).isFiring = true;
+                return true;
             }
         }
         return false;
@@ -396,10 +414,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return true;
         }
         if(button == Input.Buttons.LEFT){
-            if (player.activeItem == 1 && player.grappleFired) {
+            if (player.activeItem == 1 && player.isGrappling){
                 player.retractGrapple();
+                player.lastGrappleUse = System.currentTimeMillis();
                 dubercore.entityDeletionQueue.add(player.grapple);
                 return true;
+            }
+            else if (player.activeItem == 2 && player.getWeapon(1).isFiring){
+                player.getWeapon(1).isFiring = false;
             }
         }
         return false;
@@ -422,6 +444,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.retractGrapple();
             dubercore.entityDeletionQueue.add(player.grapple);
         }
+
+        System.out.println(player.activeItem);
         return true;
     }
 
