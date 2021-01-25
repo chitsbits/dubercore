@@ -182,21 +182,35 @@ public class DuberCore extends Game {
       BodyDef enemyBodyDef = new BodyDef();
       boolean validSpawn;
       int x, y;
+      float distance;
+      double dx;
+      double dy;
       do {
+
          validSpawn = true;
          x = (int) (Math.random() * (TileMap.MAP_COLS - 14) + 7);
          y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
 
-         // Test if the surround 3x3 tiles are air
-         for (int a = -6; a < 6; a++) {
-            for (int b = -6; b < 6; b++) {
-               if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
-                  validSpawn = false;
-                  break;
+         dx = x - (player.getPos().x * 2);
+         dy = y - (player.getPos().y * 2);
+         distance  = (float) Math.sqrt((dx*dx)+(dy*dy));
+         System.out.println(distance);
+         
+         if (distance > 80 || distance < 38){
+            validSpawn = false;
+         }
+         else {
+            for (int a = -3; a < 3; a++) {
+               for (int b = -3; b < 3; b++) {
+                  if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
+                     validSpawn = false;
+                     break;
+                  }
                }
             }
          }
-      } while (!validSpawn);
+      } while(!validSpawn);
+
       enemyBodyDef.position.set(x / 2, y / 2);
       GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
       enemyRotateQueue.add(enemy);

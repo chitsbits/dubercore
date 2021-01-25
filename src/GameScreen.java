@@ -182,10 +182,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         spawnClock += Gdx.graphics.getDeltaTime();
         
         if (spawnClock > (int)(Math.random() * ((10 - 5)+1)) + 5) {
-            //System.out.println("spawned");
             dubercore.spawnEnemy();
             spawnClock = 0;
         }
+
         if (player.checkCooldown(player.lastTerrainMined, Player.MINING_SPEED) && player.isMining){
             Vector3 mouseWorldPos = camera.unproject(new Vector3(this.screenX, this.screenY, 0));  // Maps the mouse from camera pos to world pos
             Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
