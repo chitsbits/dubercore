@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
@@ -37,6 +39,13 @@ public class DuberCore extends Game {
    public static final short PROJECTILE = 0x0040;
    public static final short SENSOR = 0x0080;
 
+   //sfx
+   public static Sound PISTOL_SOUND;
+   public static Sound SHOTGUN_SOUND;
+   public static Sound SMG_SOUND;
+   public static Sound THROW_GRENADE_SOUND;
+   public static Sound EXPLOSION_SOUND;
+
    private float accumulator = 0;
 
    public World world;
@@ -63,6 +72,14 @@ public class DuberCore extends Game {
    public void create() {
       this.changeScreen(MENU);
       this.playerName = "Player";
+
+      //sfx
+      PISTOL_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\pistol.wav"));
+      SHOTGUN_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\shotgun.wav"));
+      SMG_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\smg.wav"));
+      THROW_GRENADE_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\throwGrenade.wav"));
+      EXPLOSION_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\explosion.wav"));
+
    }
 
    public void changeScreen(int screen) {
@@ -141,6 +158,7 @@ public class DuberCore extends Game {
          while (!this.explosionQueue.isEmpty()){
             Explosion explosion = this.explosionQueue.poll();
             explosion.explode();
+            EXPLOSION_SOUND.play();
          }
 
          while (!this.enemyRotateQueue.isEmpty()){
