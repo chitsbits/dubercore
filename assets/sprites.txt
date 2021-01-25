@@ -1,228 +1,263 @@
 sprites.png
-size: 215, 182
+size: 242, 182
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 air
   rotate: false
-  xy: 7, 0
+  xy: 50, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-enemyspriteplaceholder
-  rotate: false
-  xy: 48, 32
-  size: 80, 150
-  orig: 80, 150
-  offset: 0, 0
-  index: -1
-gold1
-  rotate: false
-  xy: 23, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold2
-  rotate: false
-  xy: 119, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold3
-  rotate: false
-  xy: 135, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold4
-  rotate: false
-  xy: 151, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold6
-  rotate: false
-  xy: 167, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold7
-  rotate: false
-  xy: 183, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold8
-  rotate: false
-  xy: 199, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold9
-  rotate: false
-  xy: 0, 16
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold11
-  rotate: false
-  xy: 39, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold12
-  rotate: false
-  xy: 55, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold13
-  rotate: false
-  xy: 71, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold14
-  rotate: false
-  xy: 87, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-gold15
-  rotate: false
-  xy: 103, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-grapple
+bullet
   rotate: false
   xy: 0, 0
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
   index: -1
-playerspriteplaceholder
+enemyspriteplaceholder
   rotate: false
-  xy: 128, 32
+  xy: 76, 32
   size: 80, 150
   orig: 80, 150
   offset: 0, 0
   index: -1
-stone1
+explosion
+  rotate: false
+  xy: 32, 32
+  size: 44, 45
+  orig: 44, 45
+  offset: 0, 0
+  index: -1
+gold1
+  rotate: false
+  xy: 66, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+gold2
+  rotate: false
+  xy: 162, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+gold3
+  rotate: false
+  xy: 178, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+gold4
+  rotate: false
+  xy: 194, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+gold6
+  rotate: false
+  xy: 210, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+gold7
+  rotate: false
+  xy: 226, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+gold8
+  rotate: false
+  xy: 0, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+gold9
   rotate: false
   xy: 16, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone2
+gold11
   rotate: false
-  xy: 128, 16
+  xy: 82, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone3
+gold12
   rotate: false
-  xy: 144, 16
+  xy: 98, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone4
+gold13
   rotate: false
-  xy: 160, 16
+  xy: 114, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone5
+gold14
   rotate: false
-  xy: 176, 16
+  xy: 130, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone6
+gold15
   rotate: false
-  xy: 192, 16
+  xy: 146, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone7
+grapple
   rotate: false
-  xy: 0, 32
-  size: 16, 16
-  orig: 16, 16
+  xy: 7, 0
+  size: 7, 7
+  orig: 7, 7
   offset: 0, 0
   index: -1
-stone8
+grappleicon
   rotate: false
-  xy: 16, 32
-  size: 16, 16
-  orig: 16, 16
+  xy: 23, 0
+  size: 12, 16
+  orig: 12, 16
   offset: 0, 0
   index: -1
-stone9
+grenade
   rotate: false
-  xy: 32, 32
-  size: 16, 16
-  orig: 16, 16
+  xy: 14, 0
+  size: 9, 11
+  orig: 9, 11
   offset: 0, 0
   index: -1
-stone10
+pistol
+  rotate: false
+  xy: 35, 0
+  size: 15, 9
+  orig: 15, 9
+  offset: 0, 0
+  index: -1
+playerspriteplaceholder
+  rotate: false
+  xy: 156, 32
+  size: 80, 150
+  orig: 80, 150
+  offset: 0, 0
+  index: -1
+stone1
   rotate: false
   xy: 32, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone11
+stone2
+  rotate: false
+  xy: 144, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone3
+  rotate: false
+  xy: 160, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone4
+  rotate: false
+  xy: 176, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone5
+  rotate: false
+  xy: 192, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone6
+  rotate: false
+  xy: 208, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone7
+  rotate: false
+  xy: 224, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone8
+  rotate: false
+  xy: 0, 32
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone9
+  rotate: false
+  xy: 16, 32
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone10
   rotate: false
   xy: 48, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone12
+stone11
   rotate: false
   xy: 64, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone13
+stone12
   rotate: false
   xy: 80, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone14
+stone13
   rotate: false
   xy: 96, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-stone15
+stone14
   rotate: false
   xy: 112, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone15
+  rotate: false
+  xy: 128, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

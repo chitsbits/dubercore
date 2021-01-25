@@ -6,15 +6,10 @@ public abstract class Weapon {
 
     Sprite sprite;
     String weaponType;
-    Player player;
     float damage;
     Vector2 bulletDirection;
     public long fireRate;
 
-    Weapon(Player player){
-        this.player = player;
-    }
-
-    public abstract void fire(DuberCore game, Vector3 mousePos);
+    public abstract void fire(DuberCore game, Vector3 mousePos, Vector2 playerPos);
     
 }
