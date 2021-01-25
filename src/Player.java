@@ -23,7 +23,7 @@ public class Player extends Entity {
     public static final float JUMP_SPEED = 10;
     public static final float MAX_VELOCITY = 5f;
     public static final long INVINCIBILITY = 666;
-    public static final long MINING_SPEED = 350;
+    public static final long MINING_SPEED = 300;
 
     public int collidingCount;
     public boolean canJump;
