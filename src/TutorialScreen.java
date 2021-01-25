@@ -13,24 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class PreferencesScreen extends ScreenAdapter {
+public class TutorialScreen extends ScreenAdapter {
 
     private Stage stage;
     private DuberCore dubercore;
-    private TextField usernameTextField;
-    private CheckBox debugCheckbox;
     private Skin skin;
-    private Skin skin2;
 
-    public PreferencesScreen(DuberCore dubercore) {
+    public TutorialScreen(DuberCore dubercore) {
 
         skin = new Skin(Gdx.files.internal("assets\\skin\\craftacular-ui.json"));
-        skin2 = new Skin(Gdx.files.internal("assets\\skin2\\uiskin.json"));
 
         this.dubercore = dubercore;
         this.stage = new Stage(new ScreenViewport());
-        debugCheckbox = new CheckBox(null , skin2);
-        debugCheckbox.setChecked(false);
     }
 
     @Override
@@ -43,16 +37,15 @@ public class PreferencesScreen extends ScreenAdapter {
         table.setDebug(false);
         stage.addActor(table);
 
-        TextButton backButton = new TextButton("Back", skin);
-        Label nameLabel = new Label("Display Name", skin);
-        Label debugModeLabel = new Label("Debug Mode", skin);
-        usernameTextField = new TextField(dubercore.playerName, skin);
+        String tutorial = "LMB to shoot/use grapple\n" +
+        "RMB to mine\n" +
+        "MWHEEL to switch equipment\n" +
+        "WASD to move\n";
 
-        table.add(nameLabel).fillY().uniformX();
-        table.add(usernameTextField);
-        table.row().pad(40, 0, 0, 0);
-        table.add(debugModeLabel).fillX().uniformX();
-        table.add(debugCheckbox);
+        Label tutorialLabel = new Label(tutorial, skin);
+        TextButton backButton = new TextButton("Back", skin);
+
+        table.add(tutorialLabel).fillY().uniformX();
         table.row().pad(40, 0, 0, 0);
         table.add(backButton).fillX().uniformX().colspan(2);
 
@@ -60,13 +53,6 @@ public class PreferencesScreen extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 dubercore.changeScreen(DuberCore.MENU);			
-            }
-        });
-
-        debugCheckbox.addListener(new ChangeListener() {
-            @Override
-            public void changed (ChangeEvent event, Actor actor) {
-                dubercore.setDebugMode(debugCheckbox.isChecked());
             }
         });
 
@@ -78,7 +64,6 @@ public class PreferencesScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
-        dubercore.playerName = usernameTextField.getText();
     }
 
 }

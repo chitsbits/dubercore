@@ -31,14 +31,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private Box2DDebugRenderer debugRenderer;
     private ShapeRenderer shapeRenderer;
 
-    private boolean useDebugCamera = false;
-
     private BitmapFont font;
     private SpriteBatch worldBatch;
     private SpriteBatch hudBatch;
 
-    public static Texture[] stoneTextures;
-    public static Texture textureAir;
     public static TextureAtlas textureAtlas;
 
     private int screenX;
@@ -65,12 +61,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
 
-        if(useDebugCamera) {
-            camera.setToOrtho(false, DuberCore.WORLD_WIDTH, DuberCore.WORLD_HEIGHT);
-        }
-        else {
-            camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
-        }
+        camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
 
         debugRenderer = new Box2DDebugRenderer();
         shapeRenderer = new ShapeRenderer();
@@ -100,7 +91,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
 
         // apply right impulse, but only if max velocity is not reached yet
-        if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0) {
+        if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0 && !player.isGrappling) {
             player.jump();
         }
 
@@ -108,9 +99,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         dubercore.doPhysicsStep(delta);
 
         // Focus camera on player
-        if(!useDebugCamera)
         camera.position.set(player.getPos().x, player.getPos().y, 0);
-
         // tell the camera to update its matrices.
         camera.update();
 
@@ -160,6 +149,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 float hpWidth = (enemy.getHp() / Enemy.MAX_HP) * 0.7f;
                 shapeRenderer.rect(enemyPos.x - 0.35f, enemyPos.y + 0.73f, hpWidth, 0.05f);
             }
+            else if (ent instanceof GrapplingHook){
+                Gdx.gl.glLineWidth(2);
+                shapeRenderer.set(ShapeType.Line);
+                shapeRenderer.setColor(Color.GRAY);
+                shapeRenderer.line(player.getPos(), ent.getPos());
+            }
         }
         shapeRenderer.end();
 
@@ -171,7 +166,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudBatch.end();
 
         // Render Box2D world
-        debugRenderer.render(dubercore.world, camera.combined);
+        if (dubercore.getDebugMode()){
+            debugRenderer.render(dubercore.world, camera.combined);
+        }
 
         //System.out.println(enemy.heuristic(enemy.body.getPosition(), player.getPos()));
         for (int e = 0; e < dubercore.entityList.size(); e++){
@@ -226,12 +223,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (player.hp <= 0){
             dubercore.changeScreen(DuberCore.GAME_OVER);
         }
-        
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
     }
 
     @Override
@@ -304,8 +295,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
             else if (player.activeItem == 2 && player.checkCooldown(player.lastGrappleUse, GrapplingHook.COOLDOWN)){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
-                //System.out.println("shot grapple");
                 player.shootGrapple(dubercore.world, mousePos);
+                dubercore.entityList.add(player.grapple);
                 return true; 
             }
         }

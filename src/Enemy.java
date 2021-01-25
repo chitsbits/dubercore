@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Enemy extends Entity {
 
-    public static final float MAX_VELOCITY = 5f;
+    public static final float MAX_VELOCITY = 2.5f;
     public static final float MAX_HP = 5f;
 
     private float hp;
@@ -12,12 +12,12 @@ public abstract class Enemy extends Entity {
     float height;
     float damage;
     String enemyState;
-    ArrayList<Terrain> path = new ArrayList<Terrain>();
+    ArrayList<Terrain> path;
 
     Enemy(float damage, float hp){
         this.damage = damage;
         this.hp = hp;
-
+        this.path = new ArrayList<Terrain>();
     }
 
     public abstract void move();
@@ -30,7 +30,6 @@ public abstract class Enemy extends Entity {
         double dx = enemyPos.x - playerPos.x;
         double dy = enemyPos.y - playerPos.y;
         return (float) Math.sqrt((dx*dx)+(dy*dy));
-        
     }
 
     public float getHp(){

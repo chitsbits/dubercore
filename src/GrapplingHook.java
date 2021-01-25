@@ -33,5 +33,9 @@ public class GrapplingHook extends Entity {
         Fixture grappleFixture = body.createFixture(grappleFixtureDef);
         grappleFixture.setUserData(this);
         entityShape.dispose();
+
+        this.sprite = GameScreen.textureAtlas.createSprite("grapple");
+        sprite.setSize(0.5f, 0.5f);
+        sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
     }
 }

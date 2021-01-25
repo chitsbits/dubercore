@@ -19,6 +19,7 @@ public class DuberCore extends Game {
    public static final int LEADERBOARD = 2;
    public static final int PREFERENCES = 3;
    public static final int GAME_OVER = 4;
+   public static final int TUTORIAL = 5;
 
    public static final float STEP_TIME = 1f / 60f;
    public static final int VELOCITY_ITERATIONS = 6;
@@ -49,11 +50,14 @@ public class DuberCore extends Game {
    public String playerName;
    public int score;
 
+   private boolean debugMode = false;
+
    private GameScreen gameScreen;
    private MenuScreen menuScreen;
    private LeaderboardScreen leaderboardScreen;
    private PreferencesScreen preferencesScreen;
    private GameOverScreen gameOverScreen;
+   private TutorialScreen tutorialScreen;
 
    @Override
    public void create() {
@@ -92,6 +96,12 @@ public class DuberCore extends Game {
                gameOverScreen = new GameOverScreen(this);
             }
             this.setScreen(gameOverScreen);
+            break;
+         case TUTORIAL : 
+            if (tutorialScreen == null){
+               tutorialScreen = new TutorialScreen(this);
+            }
+            this.setScreen(tutorialScreen);
       }
    }
 
@@ -163,7 +173,7 @@ public class DuberCore extends Game {
          x = (int) (Math.random() * (TileMap.MAP_COLS - 14) + 7);
          y = (int) (Math.random() * (TileMap.MAP_ROWS - 14) + 7);
 
-         // Test if the surround 3x3 tiles are air
+         // Test if the surround 6x6 tiles are air
          for (int a = -6; a < 6; a++) {
             for (int b = -6; b < 6; b++) {
                if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
@@ -215,5 +225,13 @@ public class DuberCore extends Game {
       GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
       enemyRotateQueue.add(enemy);
       entityList.add(enemy);
+   }
+
+   public boolean getDebugMode(){
+      return this.debugMode;
+   }
+
+   public void setDebugMode(boolean mode){
+      this.debugMode = mode;
    }
 }
