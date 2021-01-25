@@ -429,10 +429,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public boolean scrolled(float amountX, float amountY) {
 
         if (amountY > 0){
-            player.activeItem = (player.activeItem + 1) % 2;
+            player.activeItem = (player.activeItem + 1) % 3;
         }
         else if (amountY < 0){
-            player.activeItem = (player.activeItem - 1) % 2;
+            player.activeItem = (player.activeItem - 1) % 3;
         }
         if (player.activeItem < 0){
             player.activeItem += 2;
@@ -441,6 +441,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (player.isGrappling){
             player.retractGrapple();
             dubercore.entityDeletionQueue.add(player.grapple);
+        }
+        if (player.getWeapon(1).isFiring){
+            player.getWeapon(1).isFiring = false;
         }
         return true;
     }
