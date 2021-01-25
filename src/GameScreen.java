@@ -242,12 +242,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         for (int e = 0; e < dubercore.entityList.size(); e++){
             if (dubercore.entityList.get(e) instanceof Enemy){
                 Enemy enemy = ((Enemy) dubercore.entityList.get(e));
-
                 EnemyAiRayCastCallback callback = new EnemyAiRayCastCallback();
                 dubercore.world.rayCast(callback, enemy.body.getPosition(), player.getPos());
 
                 if (enemy.enemyState.equals("wander")){
-                    if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 15 && callback.los) {
+                    if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 15 && callback.los && DuberCore.checkCooldown(enemy.pursuitTimer, Enemy.ATTENTION_SPAN)) {
                         enemy.enemyState = "pursuit";
                         enemy.body.setLinearVelocity(0,0);
                     }
@@ -255,6 +254,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 }
                 else if (enemy.enemyState.equals("pursuit")) {
                     if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) > 15 && callback.los) {
+                        enemy.pursuitTimer = System.currentTimeMillis();
                         enemy.enemyState = "wander";
                         enemy.body.setLinearVelocity(0,0);
                     }
@@ -265,7 +265,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 }
             }
         }
-
+        //System.out.println(player.playerFixture.getUserData());
         //periodic spawning of enemies
         spawnClock += Gdx.graphics.getDeltaTime();
         

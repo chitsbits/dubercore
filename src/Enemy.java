@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class Enemy extends Entity {
 
     public static final float MAX_HP = 5f;
+    public static final long ATTENTION_SPAN = 2000;
 
     private float hp;
     float width;
@@ -12,6 +13,8 @@ public abstract class Enemy extends Entity {
     float damage;
     String enemyState;
     ArrayList<Terrain> path;
+
+    long pursuitTimer;
 
     Enemy(float damage, float hp){
         this.damage = damage;
@@ -38,6 +41,5 @@ public abstract class Enemy extends Entity {
     public void setHp(float hp){
         this.hp = hp;
     }
-    
     
 }

@@ -28,7 +28,7 @@ public class Player extends Entity {
     private Grenade grenade;
     private Weapon weapon;
     public int activeItem;
-    public float hp = 9000;
+    public float hp = 100;
 
     private Vector2 feetCenter;
     private Fixture playerFixture;
@@ -87,13 +87,13 @@ public class Player extends Entity {
         bodyFixtureDef = new FixtureDef();
         bodyFixtureDef.shape = entityShape;
         bodyFixtureDef.filter.categoryBits = DuberCore.PLAYER;
-        bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE;
+        bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE | DuberCore.SENSOR;
         bodyFixtureDef.friction = 1.0f;
         
         playerFixture = body.createFixture(bodyFixtureDef);
         body.setFixedRotation(true);
         playerFixture.setDensity(475);
-        playerFixture.setUserData("player");
+        playerFixture.setUserData(this);
 
         //adding a sprite to the box2d player object
         sprite = GameScreen.textureAtlas.createSprite("player");
