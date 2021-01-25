@@ -41,6 +41,7 @@ public class TutorialScreen extends ScreenAdapter {
         "RMB to mine\n" +
         "MWHEEL to switch equipment\n" +
         "G to throw grenade\n" +
+        "R to reload\n" +
         "WASD to move\n";
 
         Label tutorialLabel = new Label(tutorial, skin);

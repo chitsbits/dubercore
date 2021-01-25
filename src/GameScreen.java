@@ -136,7 +136,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             if (!player.weaponReady[w]){
                 if (DuberCore.checkCooldown(player.lastWeaponFire[w], player.getWeapon(w).fireRate)){
                     player.weaponReady[w] = true;
-                    if (player.getWeapon(w).magazineSize <= 0){
+                    if (player.getWeapon(w).ammo <= 0){
                        player.getWeapon(w).reload();
                     }
                 }
@@ -179,6 +179,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             Sprite sprite = ent.sprite;
             // Slight offset for player sprites
             if (ent instanceof Player){
+                Player tempPlayer = (Player) ent;
+                if (DuberCore.checkCooldown(tempPlayer.lastDamageTaken, Player.INVINCIBILITY)){
+                    sprite.setColor(Color.WHITE);
+                } else{
+                    sprite.setColor(Color.RED);
+                }
                 sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2 + 0.14f,
                                     ent.body.getPosition().y - sprite.getHeight() / 2);
             } else {
@@ -278,10 +284,17 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         hudShapeRenderer.set(ShapeType.Filled);
         hudShapeRenderer.setColor(Color.RED);
+
+        float pistolAmmoWidth = (1.0f * player.getWeapon(Player.PISTOL).ammo / Pistol.MAGAZINE_SIZE) * 46f;
+        float smgAmmoWidth = (1.0f * player.getWeapon(Player.SMG).ammo / SubmachineGun.MAGAZINE_SIZE) * 46f;
+        float shotgunAmmoWidth = (1.0f * player.getWeapon(Player.SHOTGUN).ammo / Shotgun.MAGAZINE_SIZE) * 46f;
+
+        hudShapeRenderer.rect(807, 22, pistolAmmoWidth, 6f);   
+        hudShapeRenderer.rect(907, 22, smgAmmoWidth, 6f);
+        hudShapeRenderer.rect(1007, 22, shotgunAmmoWidth, 6f);
+
         float hpWidth = (player.getHp() / Player.MAX_HP) * 196f;
         hudShapeRenderer.rect(52f, 32f, hpWidth, 16f);
-
-
 
         hudShapeRenderer.end();
 
@@ -390,7 +403,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 activeWeapon.fireRate = activeWeapon.reloadTime;
                 player.weaponReady[player.activeItem] = false;
                 player.lastWeaponFire[player.activeItem] = System.currentTimeMillis();
-                activeWeapon.magazineSize = 0;
+                activeWeapon.ammo = 0;
             }
 
         }

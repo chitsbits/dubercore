@@ -3,12 +3,14 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Shotgun extends Weapon {
 
+    public static final int MAGAZINE_SIZE = 4;
+
     Shotgun() {
         weaponType = "Shotgun";
-        damage = 3f;
+        damage = 1f;
         fireRate = 1200;
         isFiring = false;
-        magazineSize = 4;
+        ammo = 4;
         reloadTime = 3000;
 
         sprite = GameScreen.textureAtlas.createSprite("shotgun");
@@ -31,15 +33,15 @@ public class Shotgun extends Weapon {
             game.entityList.add(bullet);
             bullet.body.setLinearVelocity(bulletDirection);
         }
-        magazineSize -= 1;
-        if (magazineSize <= 0){
+        ammo -= 1;
+        if (ammo <= 0){
             fireRate = reloadTime;
         }
     }
 
     @Override
     public void reload() {
-        magazineSize = 4;
+        ammo = MAGAZINE_SIZE;
         fireRate = 1200;
     }
 }
