@@ -1,6 +1,9 @@
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -47,6 +50,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     Sprite grappleSprite;
     Sprite chevron;
 
+    //sfx
+    private Sound pistolSound;
+    private Sound shotgunSound;
+    private Sound smgSound;
+
     public GameScreen(DuberCore dubercore){
         this.dubercore = dubercore;
     }
@@ -68,6 +76,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         camera = new OrthographicCamera();
 
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
+
+        //sounds effects
+        pistolSound = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\pistol.wav"));
+        shotgunSound = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\shotgun.wav"));
+        smgSound = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\smg.wav"));
 
         debugRenderer = new Box2DDebugRenderer();
         cameraShapeRenderer = new ShapeRenderer();
@@ -348,6 +361,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.getWeapon(1).fire(dubercore, mousePos, player.getPos());
             player.weaponReady[1] = false;
             player.lastWeaponFire[1] = System.currentTimeMillis();
+            smgSound.play();
         }
         // death
         if (player.getHp() <= 0){
@@ -447,6 +461,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.getWeapon(Player.PISTOL).fire(dubercore, mousePos, player.getPos());
                 player.weaponReady[Player.PISTOL] = false;
                 player.lastWeaponFire[Player.PISTOL] = System.currentTimeMillis();
+                pistolSound.play();
                 return true;
             }
             else if (player.activeItem == Player.SMG && player.weaponReady[Player.SMG]){
@@ -458,6 +473,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.getWeapon(Player.SHOTGUN).fire(dubercore, mousePos, player.getPos());
                 player.weaponReady[Player.SHOTGUN] = false;
                 player.lastWeaponFire[Player.SHOTGUN] = System.currentTimeMillis();
+                shotgunSound.play();
                 return true;
             }
             else if (player.activeItem == Player.GRAPPLING_HOOK && player.grappleReady && !player.grappleFired){
