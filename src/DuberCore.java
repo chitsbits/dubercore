@@ -1,5 +1,7 @@
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Queue;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
@@ -44,9 +46,9 @@ public class DuberCore extends Game {
 
    public World world;
    public TileMap tileMap;
-   public ArrayList<Body> bodyDeletionList;
-   public ArrayList<Explosion> explosionBodyList;
-   public ArrayList<Enemy> enemyRotateList;
+   public Queue<Entity> entityDeletionQueue;
+   public Queue<Explosion> explosionQueue;
+   public Queue<Enemy> enemyRotateQueue;
    public ArrayList<Entity> entityList;
 
    public Player player;
@@ -96,9 +98,9 @@ public class DuberCore extends Game {
       // Initialize Box2d World
       Box2D.init();
       world = new World(new Vector2(0, -20), true);
-      bodyDeletionList = new ArrayList<Body>();
-      explosionBodyList = new ArrayList<Explosion>();
-      enemyRotateList = new ArrayList<Enemy>();
+      entityDeletionQueue = new ArrayDeque<Entity>();
+      explosionQueue = new ArrayDeque<Explosion>();
+      enemyRotateQueue = new ArrayDeque<Enemy>();
       entityList = new ArrayList<Entity>();
 
       MyContactListener contactListener = new MyContactListener(this);
@@ -117,26 +119,22 @@ public class DuberCore extends Game {
       while (accumulator >= STEP_TIME) {
          world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
-         if (!this.bodyDeletionList.isEmpty()) {
-            for (Body body : this.bodyDeletionList) {
-               body.setActive(false);
-               this.world.destroyBody(body);
-            }
-            this.bodyDeletionList.clear();
+         while (!this.entityDeletionQueue.isEmpty()){
+            Entity entity = this.entityDeletionQueue.poll();
+            entity.body.setActive(false);
+            this.world.destroyBody(entity.body);
+            entityList.remove(entity);
          }
-         if (!this.explosionBodyList.isEmpty()) {
-            for (Explosion explosion : this.explosionBodyList) {
-               explosion.explode();
-            }
-         }
-         explosionBodyList.clear();
 
-         if (!this.enemyRotateList.isEmpty()) {
-            for (Enemy enemy : this.enemyRotateList) {
-               enemy.randRotate();
-            }
+         while (!this.explosionQueue.isEmpty()){
+            Explosion explosion = this.explosionQueue.poll();
+            explosion.explode();
          }
-         enemyRotateList.clear();
+
+         while (!this.enemyRotateQueue.isEmpty()){
+            Enemy enemy = this.enemyRotateQueue.poll();
+            enemy.randRotate();
+         }
 
          accumulator -= STEP_TIME;
       }
@@ -194,7 +192,7 @@ public class DuberCore extends Game {
       } while (!validSpawn);
       enemyBodyDef.position.set(x / 2, y / 2);
       GruntEnemy enemy = new GruntEnemy(this.world, enemyBodyDef);
-      enemyRotateList.add(enemy);
+      enemyRotateQueue.add(enemy);
       entityList.add(enemy);
       
 
