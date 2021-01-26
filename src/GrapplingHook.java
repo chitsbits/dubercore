@@ -1,3 +1,10 @@
+/**
+ * [GrapplingHook.java]
+ * creates a grappling hook body in the game world
+ * @author Sunny Jiao
+ * @version 1.0 Build 1 January 25th 2021
+ */
+
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -7,10 +14,15 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class GrapplingHook extends Entity {
     
-    Player player;  // Reference to host player
+    public Player player;  // Reference to host player
 
     public static final long COOLDOWN = 1500;
 
+    /**
+     * Creates a grappling hook body in the game world
+     * @param world world for the hook to be made in
+     * @param player host player of the grappling hook
+     */
     public GrapplingHook(World world, Player player){
         this.player = player;
 

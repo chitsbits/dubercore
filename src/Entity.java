@@ -1,3 +1,10 @@
+/**
+ * [Entity.java]
+ * abstract class for entities in the game world
+ * @author Viraj Bane, Sunny Jiao
+ * @version Build 1 January 25th 2021
+ */
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;

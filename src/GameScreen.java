@@ -361,16 +361,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 EnemyAiRayCastCallback callback = new EnemyAiRayCastCallback();
                 dubercore.world.rayCast(callback, enemy.body.getPosition(), player.getPos());
 
-                if (enemy.enemyState.equals("wander")){
+                if (enemy.getEnemyState().equals("wander")){
                     if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) < 15 && callback.los && DuberCore.checkCooldown(enemy.pursuitTimer, Enemy.ATTENTION_SPAN)) {
-                        enemy.enemyState = "pursuit";
+                        enemy.setEnemyState("pursuit");;
                         enemy.body.setLinearVelocity(0,0);
                     }
                     enemy.move();
                 }
-                else if (enemy.enemyState.equals("pursuit")) {
+                else if (enemy.getEnemyState().equals("pursuit")) {
 
-                    if (DuberCore.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY) && enemy.isColliding) {
+                    if (DuberCore.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY) && enemy.getColliding()) {
                         DuberCore.PLAYER_HURT_SOUND.play(dubercore.getSFXVolume());
                         player.damage(enemy.damage);
                         player.lastDamageTaken = System.currentTimeMillis();
@@ -378,7 +378,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
                     if (enemy.heuristic(enemy.body.getPosition(), player.getPos()) > 15 && callback.los) {
                         enemy.pursuitTimer = System.currentTimeMillis();
-                        enemy.enemyState = "wander";
+                        enemy.setEnemyState("wander");;
                         enemy.body.setLinearVelocity(0,0);
                     }
                     else if (callback.fixtureType != null && callback.fixtureType.equals("player")) {

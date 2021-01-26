@@ -1,3 +1,9 @@
+/**
+ * [RangedEnemy.java]
+ * subclass for the enemy for creating ranged emeies in the game world, and for enemy ai methods
+ * @author Viraj Bane
+ * @version 1.0 Build 1 January 25th 2021
+ */
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,6 +20,11 @@ public class RangedEnemy extends Enemy {
     Vector2 playerPos;
     long lastAttack;
 
+    /**
+     * creates the ranged enemy body in the game world
+     * @param world world for body to be created in
+     * @param bodyDef dimensions and traits of enemy
+     */
     RangedEnemy(DuberCore game, BodyDef bodyDef) {
         super(4f, 6f);
         this.width = 0.5f;

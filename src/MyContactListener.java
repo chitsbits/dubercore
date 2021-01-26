@@ -1,4 +1,9 @@
-
+/**
+ * [MyContactListener.java]
+ * contact listner for body collisions in the game world
+ * @author Viraj Bane, Sunny Jiao
+ * @version 1.0 Build 1 January25th
+ */
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -19,14 +24,14 @@ public class MyContactListener implements ContactListener {
             
             Enemy enemy = (Enemy) contact.getFixtureB().getUserData();
             if (enemy.enemyState.equals("pursuit")){
-                enemy.isColliding = false; 
+                enemy.setColliding(false); 
             }
         }
         else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof Enemy) {
 
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("pursuit")){
-                enemy.isColliding = false;
+                enemy.setColliding(false);
             }
 
         }
@@ -46,14 +51,14 @@ public class MyContactListener implements ContactListener {
             
             Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
             if (enemy.enemyState.equals("pursuit")){
-                enemy.isColliding = true; 
+                enemy.setColliding(true); 
             }
         }
         else if (contact.getFixtureB().getUserData() instanceof Player && contact.getFixtureA().getUserData() instanceof Enemy) {
 
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             if (enemy.enemyState.equals("pursuit")){
-                enemy.isColliding = true;
+                enemy.setColliding(true);
             }
 
         }
