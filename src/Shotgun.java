@@ -1,3 +1,6 @@
+/**
+ * [Shotgun.java]
+ */
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -5,6 +8,9 @@ public class Shotgun extends Weapon {
 
     public static final int MAGAZINE_SIZE = 4;
 
+    /**
+     * Create a new shotgun object
+     */
     Shotgun() {
         weaponType = "Shotgun";
         damage = 1f;
@@ -19,6 +25,12 @@ public class Shotgun extends Weapon {
     }
 
     @Override
+    /**
+     * Fires the weapon
+     * @param game the weapon is fired in
+     * @param mousePos position of mouse
+     * @param playerPos position of player
+     */
     public void fire(DuberCore game, Vector3 mousePos, Vector2 playerPos) {
 
         for (int p = 0; p < 9; p++){
@@ -40,6 +52,9 @@ public class Shotgun extends Weapon {
     }
 
     @Override
+    /**
+     * reloads the weapon
+     */
     public void reload() {
         ammo = MAGAZINE_SIZE;
         fireRate = 1200;

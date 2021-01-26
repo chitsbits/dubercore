@@ -16,9 +16,9 @@ public class RangedEnemy extends Enemy {
 
     public static final long ATTACK_SPEED = 1000;
 
-    DuberCore game;
-    Vector2 playerPos;
-    long lastAttack;
+    private DuberCore game;
+    private Vector2 playerPos;
+    public long lastAttack;
 
     /**
      * creates the ranged enemy body in the game world
@@ -68,6 +68,10 @@ public class RangedEnemy extends Enemy {
     }
 
     @Override
+    /**
+     * moves the enemy entity in the game world based on the angle of the body
+     * has additional movement for respositioning if the player approches
+     */
     public void move() {
         float bodyAngle = this.body.getAngle();
         bodyAngle = (bodyAngle * MathUtils.radiansToDegrees + 270) % 360;
@@ -97,6 +101,9 @@ public class RangedEnemy extends Enemy {
     }
 
     @Override
+    /**
+     * randomly rotates the entity in the game world
+     */
     public void randRotate() {
         this.body.setLinearVelocity(0,0);
         float bodyAngle = this.body.getAngle();
@@ -110,6 +117,9 @@ public class RangedEnemy extends Enemy {
     }
 
     @Override
+    /**
+     * chases and faces player in the game world
+     */
     public void pursuit(Vector2 playerPos) {
         float angleToPlayer = (float) Math.atan2(playerPos.y - this.body.getPosition().y, playerPos.x - this.body.getPosition().x);
 
@@ -124,6 +134,9 @@ public class RangedEnemy extends Enemy {
 
     }
 
+    /**
+     * fires a projectile spit body in the direction of the player
+     */
     public void fire() {
         Vector2 spitDirection = new Vector2();
         spitDirection.x = playerPos.x - this.body.getPosition().x;

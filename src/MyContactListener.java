@@ -18,6 +18,9 @@ public class MyContactListener implements ContactListener {
     }
 
     @Override
+    /**
+     * Called when two fixtures cease to touch.
+     */
     public void endContact(Contact contact) {
 
         if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof Enemy) {
@@ -45,6 +48,9 @@ public class MyContactListener implements ContactListener {
     }
     
     @Override
+    /**
+     * Called when two fixtures begin to touch.
+     */
     public void beginContact(Contact contact) {
 
         if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof Enemy) {
@@ -254,7 +260,13 @@ public class MyContactListener implements ContactListener {
     }
 
     @Override
+    /**
+     * ??? official libgdx documentation has no info on this method
+     */
     public void postSolve(Contact arg0, ContactImpulse arg1) {}
     @Override
+    /**
+     * ??? official libgdx documentation has no info on this method
+     */
     public void preSolve(Contact arg0, Manifold arg1) {}
 }
