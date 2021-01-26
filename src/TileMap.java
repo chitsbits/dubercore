@@ -34,9 +34,6 @@ public class TileMap {
         generateNewMap(world);
     }
 
-    /**
-     * TODO: use float values from noise.eval to generate minerals
-     */
     public void generateNewMap(World world) {
         OpenSimplexNoise worldGenNoise = new OpenSimplexNoise((long)(Math.random() * Long.MAX_VALUE));
 
@@ -140,7 +137,6 @@ public class TileMap {
         for(int i = 0; i < MAP_COLS; i++){
             xoffset += increment;
             float yoffset = 0f;
-
             for(int j = 0; j < MAP_ROWS; j++){
                 yoffset += increment;
                 float zoffset = 0f;
@@ -191,7 +187,7 @@ public class TileMap {
 
     private int getTileMarchCase(int bottomLeft, int bottomRight, int topRight, int topLeft) {
         return topLeft * 8 + topRight * 4 + bottomRight * 2 + bottomLeft;
-     }
+    }
 
     private Body makeEdgeShape(Vector2 v1, Vector2 v2) {
 
