@@ -435,6 +435,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // death
         if (player.getHp() <= 0){
             dubercore.changeScreen(DuberCore.GAME_OVER);
+            DuberCore.PLAYER_KILLED_SOUND.play();
+            DuberCore.BACKGROUND_MUSIC.stop();
         }
     }
 
@@ -513,6 +515,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Quit game
         else if (keycode == Input.Keys.ESCAPE){
             dubercore.changeScreen(DuberCore.GAME_OVER);
+            DuberCore.BACKGROUND_MUSIC.stop();
         }
         return false;
     }
