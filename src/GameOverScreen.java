@@ -1,3 +1,11 @@
+
+/**
+ * [GameOverScreen.java]
+ * Screen that displays upon death/exit
+ * @author Sunny Jiao
+ * @version 1.0
+ */
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,11 +31,18 @@ public class GameOverScreen extends ScreenAdapter {
     private Label gameOverLabel;
     private Label scoreLabel;
 
+    /**
+     * Creates the screen
+     * @param dubercore Reference to game
+     */
     public GameOverScreen(DuberCore dubercore) {
         this.dubercore = dubercore;
         this.stage = new Stage(new ScreenViewport());
     }
 
+    /**
+     * Called when this screen becomes the current screen for a Game.
+     */
     @Override
     public void show(){
 
@@ -75,6 +90,10 @@ public class GameOverScreen extends ScreenAdapter {
         });
     }
 
+    /**
+     * Called when the screen should render itself.
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {      
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);

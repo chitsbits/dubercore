@@ -1,3 +1,11 @@
+
+/**
+ * [TileMap.java]
+ * Class representing the procedurally generated game map
+ * @author Sunny Jiao
+ * @version 1.0
+ */
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,26 +23,29 @@ public class TileMap {
     public static final int MAP_COLS = 480;
     public static final int MAP_ROWS = 270;
 
-    // The ratio between the map dimensions and the world dimensions.
-    // Each tile on the TileMap is 0.5m wtih a total of 480 columns spanning
-    // 240 metres, while the game world is 240 metres long.
-    // while the game world is 240 met
-    public static final float MAP_WORLD_RATIO = 2f;
-
     private float increment = 0.07f;
     private float zIncrement = 0.2f;
 
-    public World world; // Reference to Box2D world
+    private World world; // Reference to Box2D world
 
-    public int[][] cornerArr;
-    public Terrain[][] terrainArr;
+    private int[][] cornerArr;
+    private Terrain[][] terrainArr;
 
+    /**
+     * Create and generate the tilemap
+     * @param world Box2D world
+     */
     public TileMap(World world){
         this.world = world;
         generateNewMap(world);
     }
 
+    /**
+     * Generates a new tilemap
+     * @param world Box2D world
+     */
     public void generateNewMap(World world) {
+
         OpenSimplexNoise worldGenNoise = new OpenSimplexNoise((long)(Math.random() * Long.MAX_VALUE));
 
         terrainArr = new Terrain[MAP_COLS][MAP_ROWS];
@@ -185,10 +196,24 @@ public class TileMap {
         }
     }
 
+    /**
+     * Gives the marching squares tile case
+     * @param bottomLeft Bottom left corner value
+     * @param bottomRight Bottom right corner value
+     * @param topRight Top right corner value
+     * @param topLeft Top left corner value
+     * @return Integer case from 0 - 15
+     */
     private int getTileMarchCase(int bottomLeft, int bottomRight, int topRight, int topLeft) {
         return topLeft * 8 + topRight * 4 + bottomRight * 2 + bottomLeft;
     }
 
+    /**
+     * Creates an edgebody
+     * @param v1 Point 1
+     * @param v2 Point 2
+     * @return The created body
+     */
     private Body makeEdgeShape(Vector2 v1, Vector2 v2) {
 
         EdgeShape edgeShape = new EdgeShape();
@@ -213,7 +238,8 @@ public class TileMap {
      }
 
     /**
-     * @param tileMapBreakPoint vector with tilemap coords
+     * Breaks a tile and rerenders the surrounding tiles
+     * @param tileMapBreakPoint Vector point with tilemap coords
      */
     public void clearTile(Vector2 tileMapBreakPoint, DuberCore game){
         int x = (int)(tileMapBreakPoint.x);
@@ -423,5 +449,13 @@ public class TileMap {
                 }
             }
         }
+    }
+
+    /**
+     * Get the terrain 2D array
+     * @return 2D terrain array
+     */
+    public Terrain[][] getTerrainArr(){
+        return terrainArr;
     }
 }

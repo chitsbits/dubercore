@@ -1,9 +1,9 @@
 /**
  * [Projectile.java]
  * abstract class for projectile entities in the game world
- * 
+ * @author Viraj Bane
+ * @version 1.0
  */
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class Projectile extends Entity {

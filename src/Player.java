@@ -1,3 +1,12 @@
+
+/**
+ * [Plyaer.java]
+ * Represents the game's player
+ * @author Sunny Jiao
+ * @author Viraj Bane
+ * @version 1.0
+ */
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -39,7 +48,7 @@ public class Player extends Character {
     private Vector2 feetCenter;
     private Fixture playerFixture;
     private FixtureDef bodyFixtureDef;
-    private boolean faceDirection;      // True for right, false for left
+    private boolean faceDirection;
 
     public long lastGrenadeUse;
     public long lastGrappleUse;
@@ -54,6 +63,11 @@ public class Player extends Character {
 
     public GrapplingHook grapple;
     
+    /**
+     * Creates a player
+     * @param world Box2D world
+     * @param bodyDef Box2D body definition
+     */
     public Player(World world, BodyDef bodyDef){
         super(MAX_HP);
         collidingCount = 0;
@@ -141,6 +155,11 @@ public class Player extends Character {
         feetShape.dispose();
     }
 
+    /**
+     * Shoots a grappling hook
+     * @param world Box2D world
+     * @param mousePos Mouse coordinates
+     */
     public void shootGrapple(World world, Vector3 mousePos) {
 
         grapple = new GrapplingHook(world, this);
@@ -152,6 +171,9 @@ public class Player extends Character {
         grapple.body.setLinearVelocity(grappleDirection);
     }
 
+    /**
+     * Retracts the player's grapple
+     */
     public void retractGrapple() {
         lastGrappleUse = System.currentTimeMillis();
         canMove = true;
@@ -160,6 +182,9 @@ public class Player extends Character {
         grappleFired = false;
     }
 
+    /**
+     * Makes the player move towards the grapple
+     */
     public void followGrapple(){
         grappleDirection = new Vector2();
         grappleDirection.x = grapple.getPos().x - getPos().x;
@@ -170,6 +195,11 @@ public class Player extends Character {
         canMove = false;
     }
 
+    /**
+     * Throws a grenade
+     * @param game reference to game
+     * @param mousePos mouse coordinates
+     */
     public void throwGrenade(DuberCore game, Vector3 mousePos){
 
         grenade = new Grenade(game.world, getPos());
@@ -183,24 +213,42 @@ public class Player extends Character {
         game.entityList.add(grenade);
     }
 
+    /**
+     * Applies force to the left
+     */
     public void moveLeft() {
         body.applyLinearImpulse(-0.50f, 0, getPos().x, getPos().y, true);
         faceDirection = false;
     }
 
+    /**
+     * Applies force to the right
+     */
     public void moveRight() {
         body.applyLinearImpulse(0.50f, 0, getPos().x, getPos().y, true);
         faceDirection = true;
     }
 
+    /**
+     * Applies upwards velocity
+     */
     public void jump() {
         body.setLinearVelocity(getVel().x, 10);
     }
 
+    /**
+     * Returns the player's weapon
+     * @param weaponIndex index of the player's weapon inventory
+     * @return the weapon
+     */
     public Weapon getWeapon(int weaponIndex){
         return weaponArray[weaponIndex];
     }
 
+    /**
+     * Returns the face direction of the player
+     * @return true if right, false if left
+     */
     public boolean getFaceDirection(){
         return faceDirection;
     }

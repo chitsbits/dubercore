@@ -1,3 +1,11 @@
+
+/**
+ * [LeaderboardScreen.java]
+ * Screen panel for the leaderboard
+ * @author Sunny Jiao
+ * @version 1.0
+ */
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,11 +30,18 @@ public class LeaderboardScreen extends ScreenAdapter {
     private DuberCore dubercore;
     private Label leaderboardLabel;
 
+    /**
+     * Creates the screen
+     * @param dubercore reference to game
+     */
     public LeaderboardScreen(DuberCore dubercore) {
         this.dubercore = dubercore;
         this.stage = new Stage(new ScreenViewport());
     }
 
+    /**
+     * Called when this screen becomes the current screen for a Game.
+     */
     @Override
     public void show(){
 
@@ -52,6 +67,10 @@ public class LeaderboardScreen extends ScreenAdapter {
         });
     }
 
+    /**
+     * Called when the screen should render itself.
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
@@ -60,6 +79,11 @@ public class LeaderboardScreen extends ScreenAdapter {
         stage.draw();
     }
 
+    /**
+     * Attepts to connect to localhost on port 5000, access the leaderboard,
+     * and return a string representation of the top 10 scores
+     * @return the top 10 scores
+     */
     public String getLeaderboard(){
 
         System.out.println("Fetching leaderboard...");
@@ -72,7 +96,7 @@ public class LeaderboardScreen extends ScreenAdapter {
         }
         catch (IOException e) {
             System.out.println("Error connecting to server.");
-            closeSocket(sock);
+            LeaderboardServer.closeSocket(sock);
             return "Failed to connect to server.";
         }
 
@@ -83,7 +107,7 @@ public class LeaderboardScreen extends ScreenAdapter {
         } catch (IOException e) {
             System.out.println("Error opening streams");
             e.printStackTrace();
-            closeSocket(sock);
+            LeaderboardServer.closeSocket(sock);
             return "Failed to connect to server.";
         }
 
@@ -95,7 +119,7 @@ public class LeaderboardScreen extends ScreenAdapter {
         } catch (IOException e) {
             System.out.println("Error writing object.");
             e.printStackTrace();
-            closeSocket(sock);
+            LeaderboardServer.closeSocket(sock);
             return "Failed to connect to server.";
         }
 
@@ -109,22 +133,10 @@ public class LeaderboardScreen extends ScreenAdapter {
         } catch (ClassNotFoundException | IOException e) {
             System.out.println("Erroring reading packet.");
             e.printStackTrace();
-            closeSocket(sock);
+            LeaderboardServer.closeSocket(sock);
             return "Invalid data.";
         }
-        closeSocket(sock);
+        LeaderboardServer.closeSocket(sock);
         return boardText;
     }
-
-    private void closeSocket(Socket sock){
-         try{
-            sock.close();
-            System.out.println("Socket sucessfully closed.");
-        }
-        catch (IOException e1){
-            System.out.println("Error closing socket");
-            e1.printStackTrace();               
-        }
-    }
-
 }

@@ -1,5 +1,7 @@
 /**
  * [Shotgun.java]
+ * @author Viraj Bane
+ * @version 1.0
  */
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;

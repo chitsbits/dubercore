@@ -1,3 +1,11 @@
+
+/**
+ * [Terrain.java]
+ * Abstract terrain class
+ * @author Sunny Jiao
+ * @version 1.0
+ */
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -11,6 +19,12 @@ public abstract class Terrain {
     int marchingSquaresCase;
     int numEdges;
 
+    /**
+     * Initializes tilecase and coordinates
+     * @param tileCase marching squares case
+     * @param x worldX coordinates
+     * @param y worldY coordinates
+     */
     public Terrain(int tileCase, float x, float y){
         this.marchingSquaresCase = tileCase;
         this.worldX = x;
@@ -25,5 +39,5 @@ public abstract class Terrain {
         else {
             numEdges = 0;
         }
-    }  
+    }
 }

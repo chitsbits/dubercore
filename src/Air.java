@@ -1,3 +1,8 @@
+
+/**
+ * [Air.java]
+ * Represents an empty Air tile
+ */
 public class Air extends Terrain {
 
     public Air(int tileCase, float x, float y){

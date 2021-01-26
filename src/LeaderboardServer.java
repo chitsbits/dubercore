@@ -1,3 +1,11 @@
+
+/**
+ * [LeaderboardServer.java]
+ * Server that hosts a SQLite database of the leaderboards
+ * @author Sunny Jiao
+ * @version 1.0
+ */
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,6 +24,9 @@ public class LeaderboardServer implements Runnable {
     ServerSocket serverSock;
     boolean running;
 
+    /**
+     * Starts the server on port 5000
+     */
     @Override
     public void run() {
         running = true;
@@ -44,6 +55,11 @@ public class LeaderboardServer implements Runnable {
         }
     }
 
+    /**
+     * Runnable that handles an individual client socket after it has connected
+     * @author Sunny Jiao
+     * @version 1.0
+     */
     class ClientHandler implements Runnable {
 
         ObjectInputStream inputStream;
@@ -54,6 +70,9 @@ public class LeaderboardServer implements Runnable {
             this.client = sock;
         }
 
+        /**
+         * Open network streams and begin communication protocol
+         */
         @Override
         public void run() {
 
@@ -91,6 +110,9 @@ public class LeaderboardServer implements Runnable {
         }
     }
 
+    /**
+     * Creates a SQL database in the working folder
+     */
     public static void createDatabase() {
         Connection connection;
         Statement statement;
@@ -113,6 +135,11 @@ public class LeaderboardServer implements Runnable {
         System.out.println("Database created successfully");
     }
 
+    /**
+     * Adds a leaderboard record to the database
+     * @param name Name of the player
+     * @param score Score of the player
+     */
     public static void addRecord(String name, int score) {
 
         Connection connection;
@@ -137,6 +164,10 @@ public class LeaderboardServer implements Runnable {
 
     }
 
+    /**
+     * Sorts and parses the top 10 scores from the database
+     * @return String representation of the top 10 scores
+     */
     public static String fetchTopLeaderboard() {
         Connection connection;
         Statement statement;
@@ -166,6 +197,25 @@ public class LeaderboardServer implements Runnable {
         return returnString;
     }
 
+    /**
+     * Closes a socket
+     * @param sock socket to close
+     */
+    public static void closeSocket(Socket sock){
+        try{
+           sock.close();
+           System.out.println("Socket sucessfully closed.");
+       }
+       catch (IOException e1){
+           System.out.println("Error closing socket");
+           e1.printStackTrace();               
+       }
+    }
+
+   /**
+     * Starts the server
+     * @param args Command line arguments
+     */
     public static void main(String[] args) {
 
         //createDatabase();
@@ -183,16 +233,4 @@ public class LeaderboardServer implements Runnable {
         }
         input.close();
     }
-
-    public static void closeSocket(Socket sock){
-        try{
-           sock.close();
-           System.out.println("Socket sucessfully closed.");
-       }
-       catch (IOException e1){
-           System.out.println("Error closing socket");
-           e1.printStackTrace();               
-       }
-   }
-
 }

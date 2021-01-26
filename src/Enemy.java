@@ -4,7 +4,6 @@
  * @author Viraj Bane
  * @version 2.0 Build 2 January 25th 2021
  */
-import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
 

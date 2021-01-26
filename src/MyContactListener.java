@@ -17,10 +17,10 @@ public class MyContactListener implements ContactListener {
         this.game = game;
     }
 
-    @Override
     /**
      * Called when two fixtures cease to touch.
      */
+    @Override
     public void endContact(Contact contact) {
 
         if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof Enemy) {
@@ -47,10 +47,10 @@ public class MyContactListener implements ContactListener {
         }     
     }
     
-    @Override
     /**
      * Called when two fixtures begin to touch.
      */
+    @Override
     public void beginContact(Contact contact) {
 
         if (contact.getFixtureA().getUserData() instanceof Player && contact.getFixtureB().getUserData() instanceof Enemy) {

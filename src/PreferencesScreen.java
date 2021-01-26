@@ -1,3 +1,11 @@
+
+/**
+ * [PreferencesScreen.java]
+ * Screen with preferences options
+ * @author Sunny Jiao
+ * @version 1.0
+ */
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,6 +30,10 @@ public class PreferencesScreen extends ScreenAdapter {
     private Skin skin;
     private Skin skin2;
 
+    /**
+     * Creates the screen
+     * @param dubercore Refernce to game
+     */
     public PreferencesScreen(DuberCore dubercore) {
 
         skin = new Skin(Gdx.files.internal("assets\\skin\\craftacular-ui.json"));
@@ -33,6 +45,9 @@ public class PreferencesScreen extends ScreenAdapter {
         debugCheckbox.setChecked(false);
     }
 
+    /**
+     * Called when this screen becomes the current screen for a Game.
+     */
     @Override
     public void show(){
         
@@ -96,6 +111,10 @@ public class PreferencesScreen extends ScreenAdapter {
 
     }
 
+    /**
+     * Called when the screen should render itself.
+     * @param delta The time in seconds since the last render
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);

@@ -1,7 +1,8 @@
 /**
  * [Entity.java]
  * abstract class for entities in the game world
- * @author Viraj Bane, Sunny Jiao
+ * @author Viraj Bane
+ * @author Sunny Jiao
  * @version Build 1 January 25th 2021
  */
 
@@ -18,10 +19,18 @@ public abstract class Entity {
     BodyDef bodyDef;
     Sprite sprite;
 
+    /**
+     * Gets the entity's position
+     * @return entity's position
+     */
     public Vector2 getPos() {
         return body.getPosition();
     }
 
+    /**
+     * Gets the entity's velocity
+     * @return entity's velocity
+     */
     public Vector2 getVel() {
         return body.getLinearVelocity();
     }

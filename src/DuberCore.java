@@ -1,4 +1,11 @@
 
+/**
+ * [DuberCore.java]
+ * Main game class that contains game logic
+ * @author Sunny Jiao
+ * @author Viraj Bane
+ * @version 1.0
+ */
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Queue;
@@ -12,9 +19,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 
-/**
- * Holds all game logic
- */
 public class DuberCore extends Game {
 
    public static final int START = 0;
@@ -237,7 +241,7 @@ public class DuberCore extends Game {
          // Test if the surround 6x6 tiles are air
          for (int a = -6; a < 6; a++) {
             for (int b = -6; b < 6; b++) {
-               if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
+               if (!(tileMap.getTerrainArr()[x + a][y + b] instanceof Air)) {
                   validSpawn = false;
                   break;
                }
@@ -272,7 +276,7 @@ public class DuberCore extends Game {
          else {
             for (int a = -3; a < 3; a++) {
                for (int b = -3; b < 3; b++) {
-                  if (!(tileMap.terrainArr[x + a][y + b] instanceof Air)) {
+                  if (!(tileMap.getTerrainArr()[x + a][y + b] instanceof Air)) {
                      validSpawn = false;
                      break;
                   }

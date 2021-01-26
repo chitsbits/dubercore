@@ -1,3 +1,12 @@
+
+/**
+ * [GameScreen.java]
+ * Main screen that displays the game. Contains the render loop.
+ * @author Sunny Jiao
+ * @author Viraj Bane
+ * @version 1.0
+ */
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
@@ -52,6 +61,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.dubercore = dubercore;
     }
 
+    /**
+     * Called when this screen becomes the current screen for a Game.
+     */
     @Override
     public void show() {
         
@@ -95,6 +107,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         chevron.setSize(20, 15);
     }
 
+    /**
+     * Called when the screen should render itself.
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
 
@@ -170,7 +186,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         worldBatch.setProjectionMatrix(camera.combined);
 
         // Draw map sprites
-        Terrain[][] terrainArr = dubercore.tileMap.terrainArr;
+        Terrain[][] terrainArr = dubercore.tileMap.getTerrainArr();
 
         // Set bounds of the map to render
         int iStart = (int)(Math.max(0f, (camera.position.x - camera.viewportWidth / 2f) * 2));
@@ -355,6 +371,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         // ~~~~~~~~~~~~~~~~~ END DRAWING ~~~~~~~~~~~~~~~~~
 
+        // Enemy pathfinding
         for (int e = 0; e < dubercore.entityList.size(); e++){
             if (dubercore.entityList.get(e) instanceof Enemy){
                 Enemy enemy = ((Enemy) dubercore.entityList.get(e));
@@ -395,11 +412,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             dubercore.spawnEnemy();
             spawnClock = 0;
         }
-        //followin grapple
+        // Following grapple
         if (player.isGrappling){
             player.followGrapple();
         }
-        //automining
+        // Automining
         if (player.mineReady && player.isMining){
             Vector3 mouseWorldPos = camera.unproject(new Vector3(this.screenX, this.screenY, 0));  // Maps the mouse from camera pos to world pos
             Vector2 pickaxeDirection = new Vector2(mouseWorldPos.x - player.getPos().x, mouseWorldPos.y - player.getPos().y).clamp(2, 2);
@@ -439,6 +456,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
     }
 
+    /**
+     * Called when this screen should release all resources.
+     */
     @Override
     public void dispose(){
         dubercore.world.dispose();
@@ -448,6 +468,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         debugRenderer.dispose();
     }
     
+    /**
+     * Called when a key was pressed
+     * @param keycode one of the constants in Input.Keys
+     */
     @Override
     public boolean keyDown(int keycode) {
         // Grenade
@@ -519,6 +543,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         return false;
     }
 
+    /**
+     * Called when the screen was touched or a mouse button was pressed. The button parameter will be Input.Buttons.LEFT on iOS.
+     * @param screenX The x coordinate, origin is in the upper left corner
+     * @param screenY The y coordinate, origin is in the upper left corner
+     * @param pointer the pointer for the event.
+     * @param button the button
+     */
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Pickaxe
@@ -560,6 +591,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         return false;
     }
 
+    /**
+     * Called when a finger was lifted or a mouse button was released. The button parameter will be Input.Buttons.LEFT on iOS.
+     * @param screenX The x coordinate, origin is in the upper left corner
+     * @param screenY The y coordinate, origin is in the upper left corner
+     * @param pointer the pointer for the event.
+     * @param button the button
+     */
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
@@ -581,6 +619,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         return false;
     }
 
+    /**
+     * Called when the mouse wheel was scrolled. Will not be called on iOS.
+     * @param amountX the horizontal scroll amount, negative or positive depending on the direction the wheel was scrolled.
+     * @param amountY the vertical scroll amount, negative or positive depending on the direction the wheel was scrolled.
+     */
     @Override
     public boolean scrolled(float amountX, float amountY) {
 
@@ -605,6 +648,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         return true;
     }
 
+    /**
+     * Called when a finger or the mouse was dragged.
+     * @param screenX The x coordinate, origin is in the upper left corner
+     * @param screenY The y coordinate, origin is in the upper left corner
+     * @param pointer the pointer for the event.
+     */
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
@@ -613,6 +662,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         return false;
     }
 
+    /**
+     * Called when the mouse was moved without any buttons being pressed. Will not be called on iOS.
+     * @param screenX The x coordinate, origin is in the upper left corner
+     * @param screenY The y coordinate, origin is in the upper left corner
+     */
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
 
@@ -622,11 +676,19 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         return false;
     }
 
+    /**
+     * Called when a key was released
+     * @param keycode one of the constants in Input.Keys
+     */
     @Override
     public boolean keyUp(int keycode) {
         return false;
     }
 
+    /**
+     * Called when a key was typed
+     * @param character the character
+     */
     @Override
     public boolean keyTyped(char character) {
         return false;

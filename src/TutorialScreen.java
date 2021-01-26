@@ -1,3 +1,11 @@
+
+/**
+ * [TutorialScreen.java]
+ * Screen with a controls guide
+ * @author Sunny Jiao
+ * @version 1.0
+ */
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,6 +24,10 @@ public class TutorialScreen extends ScreenAdapter {
     private DuberCore dubercore;
     private Skin skin;
 
+    /**
+     * Creates the screen
+     * @param dubercore Reference to game
+     */
     public TutorialScreen(DuberCore dubercore) {
 
         skin = new Skin(Gdx.files.internal("assets\\skin\\craftacular-ui.json"));
@@ -24,6 +36,9 @@ public class TutorialScreen extends ScreenAdapter {
         this.stage = new Stage(new ScreenViewport());
     }
 
+    /**
+     * Called when this screen becomes the current screen for a Game.
+     */
     @Override
     public void show(){
         
@@ -57,6 +72,10 @@ public class TutorialScreen extends ScreenAdapter {
 
     }
 
+    /**
+     * Called when the screen should render itself.
+     * @param delta The time in seconds from the last render
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);

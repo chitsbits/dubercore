@@ -14,9 +14,8 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class GrapplingHook extends Entity {
     
-    public Player player;  // Reference to host player
-
     public static final long COOLDOWN = 1500;
+    public Player player;  // Reference to host player   
 
     /**
      * Creates a grappling hook body in the game world
