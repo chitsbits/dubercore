@@ -49,6 +49,11 @@ public class DuberCore extends Game {
    public static Sound EXPLOSION_SOUND;
    public static Sound HURT_SOUND;
    public static Sound ENEMY_SHOOT_SOUND;
+   public static Sound RUN_SOUND;
+   public static Sound JUMP_SOUND;
+   public static Sound MINING_SOUND_1;
+   public static Sound MINING_SOUND_2;
+   public static Sound MINING_SOUND_3;
 
    private float accumulator = 0;
 
@@ -86,6 +91,11 @@ public class DuberCore extends Game {
       EXPLOSION_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\explosion.wav"));
       HURT_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\hurt.wav"));
       ENEMY_SHOOT_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\enemyShoot.wav"));
+      RUN_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\run.wav"));
+      JUMP_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\jump.wav"));
+      MINING_SOUND_1 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink1.wav"));
+      MINING_SOUND_2 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink2.wav"));
+      MINING_SOUND_3 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink3.wav"));
    }
 
    public void changeScreen(int screen) {
