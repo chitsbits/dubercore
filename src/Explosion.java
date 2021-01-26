@@ -1,3 +1,10 @@
+/**
+ * [Explosion.Java]
+ * entity extending entity for blast zones of grenades
+ * @author Viraj Bane
+ * @version 1.0 Build 1 January 25th
+ */
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -8,16 +15,24 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Explosion extends Entity {
 
-    World world;
-    Vector2 position;
-    float damage;
+    private World world;
+    private Vector2 position;
+    private float damage;
 
+    /**
+     * constructs an explosion object
+     * @param world world to create the explosion in
+     * @param position position for the explosion to start at
+     */
     Explosion(World world, Vector2 position){
         this.world = world;
         this.damage = 10f;
         this.position = position;
     }
 
+    /**
+     * creates an explosion body in the game world
+     */
     public void explode(){
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
@@ -44,6 +59,10 @@ public class Explosion extends Entity {
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
     }
 
+    /**
+     * retuns damage that the explosion would deal
+     * @return damage dealt to all enemies in blast radius
+     */
     public float getDamage(){
         return damage;
     }

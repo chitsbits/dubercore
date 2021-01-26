@@ -1,3 +1,9 @@
+/**
+ * [MeleeEnemy.java]
+ * subclass of enemy for creating melee enemies in the game world, and for enemy ai methods
+ * @author Viraj Bane
+ * @version 2.0 Build 2 January 25th 2021
+ */
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -11,6 +17,11 @@ public class MeleeEnemy extends Enemy {
 
     public static final float MAX_HP = 6f;
 
+    /**
+     * creates the melee enemy body in the game world
+     * @param world world for body to be created in
+     * @param bodyDef dimensions and traits of enemy
+     */
     MeleeEnemy(World world, BodyDef bodyDef) {
         super(MAX_HP, 10f);
         this.width = 0.5f;
@@ -52,6 +63,9 @@ public class MeleeEnemy extends Enemy {
     }
 
     @Override
+    /**
+     * moves the enemy entity in the game world based on the angle of the body
+     */
     public void move() {
         float bodyAngle = this.body.getAngle();
         bodyAngle = (bodyAngle * MathUtils.radiansToDegrees + 270) % 360;
@@ -65,6 +79,9 @@ public class MeleeEnemy extends Enemy {
     }
 
     @Override
+    /**
+     * randomly rotates the entity in the game world
+     */
     public void randRotate() {
         this.body.setLinearVelocity(0,0);
         float bodyAngle = this.body.getAngle();
@@ -77,6 +94,9 @@ public class MeleeEnemy extends Enemy {
     }
 
     @Override
+    /**
+     * chases and faces player in the game world
+     */
     public void pursuit(Vector2 playerPos) {
         float angleToPlayer = (float) Math.atan2(playerPos.y - this.body.getPosition().y, playerPos.x - this.body.getPosition().x);
 

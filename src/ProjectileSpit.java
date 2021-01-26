@@ -1,3 +1,7 @@
+/**
+ * [ProjectileSpit.java]
+ * subclass of projectile for specifically ranged enemies
+ */
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -8,9 +12,15 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class ProjectileSpit extends Projectile{
 
+    /**
+     * Creates a projectile spit body in the game world
+     * @param world world for the spit to be made in
+     * @param damage amount of damage the spit deals if comes into contact with a player
+     * @param pos positon for spit to be initially spawned at
+     */
     ProjectileSpit(World world, float damage, Vector2 pos){
         this.world = world;
-        this.setDamage(damage);
+        this.damage = damage;
 
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;

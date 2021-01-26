@@ -1,3 +1,10 @@
+/**
+ * [Bullet.Java]
+ * subclass of projectile for creating bullet object bodies in the game world
+ * @author Viraj Bane
+ * @version 1.0 Build 1 January 25th 2021
+ */
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -8,9 +15,15 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Bullet extends Projectile {
 
+    /**
+     * Creates a bullet body in the game world
+     * @param world world for the bullet to be made in
+     * @param damage amount of damage the bullet deals if it comes into contact with an enemy
+     * @param pos position for the bullet to be initially spawned at
+     */
     Bullet(World world, float damage, Vector2 pos){
         this.world = world;
-        this.setDamage(damage);
+        this.damage = damage;
 
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
