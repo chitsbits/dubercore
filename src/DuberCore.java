@@ -45,6 +45,7 @@ public class DuberCore extends Game {
    public static Sound PISTOL_SOUND;
    public static Sound SHOTGUN_SOUND;
    public static Sound SMG_SOUND;
+   public static Sound RELOAD_SOUND;
    public static Sound THROW_ITEM_SOUND;
    public static Sound EXPLOSION_SOUND;
    public static Sound PLAYER_HURT_SOUND;
@@ -56,6 +57,8 @@ public class DuberCore extends Game {
    public static Sound MINING_SOUND_1;
    public static Sound MINING_SOUND_2;
    public static Sound MINING_SOUND_3;
+
+   private float sfxVolume = 0.5f;
 
    private float accumulator = 0;
 
@@ -89,6 +92,7 @@ public class DuberCore extends Game {
       PISTOL_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\pistol.wav"));
       SHOTGUN_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\shotgun.wav"));
       SMG_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\smg.wav"));
+      RELOAD_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\reload.wav"));
       THROW_ITEM_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\throw.wav"));
       EXPLOSION_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\explosion.wav"));
       PLAYER_HURT_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\playerHurt.wav"));
@@ -100,6 +104,11 @@ public class DuberCore extends Game {
       MINING_SOUND_1 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink1.wav"));
       MINING_SOUND_2 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink2.wav"));
       MINING_SOUND_3 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink3.wav"));
+
+      BACKGROUND_MUSIC.setVolume(0.2f);
+      DuberCore.BACKGROUND_MUSIC.play();
+      DuberCore.BACKGROUND_MUSIC.setLooping(true);
+      setSFXVolume(0.5f);
    }
 
    public void changeScreen(int screen) {
@@ -142,6 +151,18 @@ public class DuberCore extends Game {
       }
    }
 
+   public void setMusicVolume(float volume){
+      BACKGROUND_MUSIC.setVolume(volume);
+   }
+
+   public void setSFXVolume(float volume){
+      this.sfxVolume = volume;
+   }
+
+   public float getSFXVolume(){
+      return sfxVolume;
+   }
+
    public void initialize() {
 
       // Initialize Box2d World
@@ -178,7 +199,7 @@ public class DuberCore extends Game {
          while (!this.explosionQueue.isEmpty()){
             Explosion explosion = this.explosionQueue.poll();
             explosion.explode();
-            EXPLOSION_SOUND.play();
+            EXPLOSION_SOUND.play(sfxVolume);
          }
 
          while (!this.enemyRotateQueue.isEmpty()){

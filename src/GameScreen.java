@@ -4,8 +4,10 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -73,6 +75,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudShapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
 
+        Pixmap pixmap = new Pixmap(Gdx.files.internal("assets\\crosshair.png"));
+        int xHotspot = pixmap.getWidth() / 2;
+        int yHotspot = pixmap.getHeight() / 2;
+        Cursor cursor = Gdx.graphics.newCursor(pixmap, xHotspot, yHotspot);
+        Gdx.graphics.setCursor(cursor);
+        pixmap.dispose();
+
         // UI Sprite definitions
         grenadeSprite = textureAtlas.createSprite("grenade");
         grenadeSprite.setSize(36f, 40);
@@ -84,9 +93,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         chevron = textureAtlas.createSprite("chevron");
         chevron.setSize(20, 15);
-
-        DuberCore.BACKGROUND_MUSIC.play();
-        DuberCore.BACKGROUND_MUSIC.setLooping(true);
     }
 
     @Override
@@ -99,7 +105,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // apply left impulse, but only if max velocity is not reached yet
         if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {
             if(!player.canJump && DuberCore.checkCooldown(lastRunNoise, 250)){
-                DuberCore.RUN_SOUND.play();
+                DuberCore.RUN_SOUND.play(dubercore.getSFXVolume());
                 lastRunNoise = System.currentTimeMillis();
             }			
             player.moveLeft();
@@ -108,7 +114,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // apply right impulse, but only if max velocity is not reached yet
         if (Gdx.input.isKeyPressed(Keys.D) && player.getVel().x < Player.MAX_VELOCITY && player.canMove) {
             if(!player.canJump && DuberCore.checkCooldown(lastRunNoise, 250)){
-                DuberCore.RUN_SOUND.play();
+                DuberCore.RUN_SOUND.play(dubercore.getSFXVolume());
                 lastRunNoise = System.currentTimeMillis();
             }	
             player.moveRight();
@@ -116,7 +122,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         // apply right impulse, but only if max velocity is not reached yet
         if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0 && !player.isGrappling) {
-            DuberCore.JUMP_SOUND.play();
+            DuberCore.JUMP_SOUND.play(dubercore.getSFXVolume());
             player.jump();
         }
 
@@ -365,7 +371,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 else if (enemy.enemyState.equals("pursuit")) {
 
                     if (DuberCore.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY) && enemy.isColliding) {
-                        DuberCore.PLAYER_HURT_SOUND.play();
+                        DuberCore.PLAYER_HURT_SOUND.play(dubercore.getSFXVolume());
                         player.damage(enemy.damage);
                         player.lastDamageTaken = System.currentTimeMillis();
                     }  
@@ -406,13 +412,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.mineReady = false;
                 int miningSound = (int) ((Math.random() * (3 - 1)) + 1);
                 if (miningSound == 1){
-                    DuberCore.MINING_SOUND_1.play();
+                    DuberCore.MINING_SOUND_1.play(dubercore.getSFXVolume());
                 }
                 else if (miningSound == 2){
-                    DuberCore.MINING_SOUND_2.play();
+                    DuberCore.MINING_SOUND_2.play(dubercore.getSFXVolume());
                 }
                 else if (miningSound == 3){
-                    DuberCore.MINING_SOUND_3.play();
+                    DuberCore.MINING_SOUND_3.play(dubercore.getSFXVolume());
                 }
             }
             player.lastTerrainMined = System.currentTimeMillis();
@@ -424,7 +430,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.getWeapon(1).fire(dubercore, mousePos, player.getPos());
             player.weaponReady[1] = false;
             player.lastWeaponFire[1] = System.currentTimeMillis();
-            DuberCore.SMG_SOUND.play();
+            DuberCore.SMG_SOUND.play(dubercore.getSFXVolume());
         }
         // death
         if (player.getHp() <= 0){
@@ -449,16 +455,17 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.throwGrenade(dubercore, mousePos);
             player.grenadeReady = false;
             player.lastGrenadeUse = System.currentTimeMillis();
-            DuberCore.THROW_ITEM_SOUND.play();
+            DuberCore.THROW_ITEM_SOUND.play(dubercore.getSFXVolume());
             return true;
         }
         else if (keycode == Input.Keys.R) {
-            if (player.activeItem <=2){
+            if (player.activeItem <= 2){
                 Weapon activeWeapon = player.getWeapon(player.activeItem);
                 activeWeapon.fireRate = activeWeapon.reloadTime;
                 player.weaponReady[player.activeItem] = false;
                 player.lastWeaponFire[player.activeItem] = System.currentTimeMillis();
                 activeWeapon.ammo = 0;
+                DuberCore.RELOAD_SOUND.play(dubercore.getSFXVolume());
             }
 
         }
@@ -525,7 +532,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.getWeapon(Player.PISTOL).fire(dubercore, mousePos, player.getPos());
                 player.weaponReady[Player.PISTOL] = false;
                 player.lastWeaponFire[Player.PISTOL] = System.currentTimeMillis();
-                DuberCore.PISTOL_SOUND.play();
+                DuberCore.PISTOL_SOUND.play(dubercore.getSFXVolume());
                 return true;
             }
             else if (player.activeItem == Player.SMG && player.weaponReady[Player.SMG]){
@@ -537,14 +544,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 player.getWeapon(Player.SHOTGUN).fire(dubercore, mousePos, player.getPos());
                 player.weaponReady[Player.SHOTGUN] = false;
                 player.lastWeaponFire[Player.SHOTGUN] = System.currentTimeMillis();
-                DuberCore.SHOTGUN_SOUND.play();
+                DuberCore.SHOTGUN_SOUND.play(dubercore.getSFXVolume());
                 return true;
             }
             else if (player.activeItem == Player.GRAPPLING_HOOK && player.grappleReady && !player.grappleFired){
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(dubercore.world, mousePos);
                 dubercore.entityList.add(player.grapple);
-                DuberCore.THROW_ITEM_SOUND.play();
+                DuberCore.THROW_ITEM_SOUND.play(dubercore.getSFXVolume());
                 return true; 
             }
         }

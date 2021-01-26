@@ -2,10 +2,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -45,6 +48,10 @@ public class PreferencesScreen extends ScreenAdapter {
         TextButton backButton = new TextButton("Back", skin);
         Label nameLabel = new Label("Display Name", skin);
         Label debugModeLabel = new Label("Debug Mode", skin);
+        Label musicVolLabel = new Label("Music Volume", skin);
+        Slider musicVolSlider = new Slider(0f, 0.5f, 0.01f, false, skin);
+        Label sfxVolLabel = new Label("SFX Volume", skin);
+        Slider sfxVolSlider = new Slider(0f, 0.5f, 0.01f, false, skin);
         usernameTextField = new TextField(dubercore.playerName, skin);
 
         table.add(nameLabel).fillY().uniformX();
@@ -52,6 +59,12 @@ public class PreferencesScreen extends ScreenAdapter {
         table.row().pad(40, 0, 0, 0);
         table.add(debugModeLabel).fillX().uniformX();
         table.add(debugCheckbox);
+        table.row().pad(40, 0, 0, 0);
+        table.add(musicVolLabel).fillX().uniformX();
+        table.add(musicVolSlider);
+        table.row().pad(40, 0, 0, 0);
+        table.add(sfxVolLabel).fillX().uniformX();
+        table.add(sfxVolSlider);
         table.row().pad(40, 0, 0, 0);
         table.add(backButton).fillX().uniformX().colspan(2);
 
@@ -66,6 +79,20 @@ public class PreferencesScreen extends ScreenAdapter {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 dubercore.setDebugMode(debugCheckbox.isChecked());
+            }
+        });
+
+        musicVolSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                dubercore.setMusicVolume(musicVolSlider.getValue());
+            }
+        });
+
+        sfxVolSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                dubercore.setSFXVolume(sfxVolSlider.getValue());
             }
         });
 
