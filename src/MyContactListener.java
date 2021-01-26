@@ -182,7 +182,6 @@ public class MyContactListener implements ContactListener {
         //Explosions
         else if (contact.getFixtureA().getUserData() instanceof Explosion){
             Explosion explosion = (Explosion)(contact.getFixtureA().getUserData());
-
             if (!game.entityDeletionQueue.contains(explosion)){
                 game.entityDeletionQueue.add(explosion);
             }
