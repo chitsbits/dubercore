@@ -63,7 +63,7 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(spit);
             }
             if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
-                DuberCore.HURT_SOUND.play();
+                DuberCore.PLAYER_HURT_SOUND.play();
                 game.player.damage(spit.getDamage());
                 game.player.lastDamageTaken = System.currentTimeMillis();
             }
@@ -74,7 +74,7 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(spit);
             }
             if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
-                DuberCore.HURT_SOUND.play();
+                DuberCore.PLAYER_HURT_SOUND.play();
                 game.player.damage(spit.getDamage());
                 game.player.lastDamageTaken = System.currentTimeMillis();
             }
@@ -106,8 +106,10 @@ public class MyContactListener implements ContactListener {
             }
             Enemy enemy = (Enemy)(contact.getFixtureB().getUserData());
             enemy.damage(bullet.getDamage());
+            DuberCore.ENEMY_HURT_SOUND.play();
 
             if (enemy.getHp() <= 0){
+                DuberCore.ENEMY_KILLED_SOUND.play();
                 if (!game.entityDeletionQueue.contains(enemy)){
                     game.entityDeletionQueue.add(enemy);
                     game.score += 10;
@@ -121,8 +123,10 @@ public class MyContactListener implements ContactListener {
             }
             Enemy enemy = (Enemy)(contact.getFixtureA().getUserData());
             enemy.damage(bullet.getDamage());
+            DuberCore.ENEMY_HURT_SOUND.play();
 
             if (enemy.getHp() <= 0){
+                DuberCore.ENEMY_KILLED_SOUND.play();
                 if (!game.entityDeletionQueue.contains(enemy)){
                     game.entityDeletionQueue.add(enemy);
                     game.score += 10;

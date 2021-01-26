@@ -1,15 +1,11 @@
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,7 +14,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 public class GameScreen extends ScreenAdapter implements InputProcessor {
@@ -370,7 +365,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 else if (enemy.enemyState.equals("pursuit")) {
 
                     if (DuberCore.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY) && enemy.isColliding) {
-                        DuberCore.HURT_SOUND.play();
+                        DuberCore.PLAYER_HURT_SOUND.play();
                         player.damage(enemy.damage);
                         player.lastDamageTaken = System.currentTimeMillis();
                     }  

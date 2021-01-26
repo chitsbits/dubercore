@@ -47,8 +47,10 @@ public class DuberCore extends Game {
    public static Sound SMG_SOUND;
    public static Sound THROW_ITEM_SOUND;
    public static Sound EXPLOSION_SOUND;
-   public static Sound HURT_SOUND;
+   public static Sound PLAYER_HURT_SOUND;
    public static Sound ENEMY_SHOOT_SOUND;
+   public static Sound ENEMY_HURT_SOUND;
+   public static Sound ENEMY_KILLED_SOUND;
    public static Sound RUN_SOUND;
    public static Sound JUMP_SOUND;
    public static Sound MINING_SOUND_1;
@@ -89,7 +91,9 @@ public class DuberCore extends Game {
       SMG_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\smg.wav"));
       THROW_ITEM_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\throw.wav"));
       EXPLOSION_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\explosion.wav"));
-      HURT_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\hurt.wav"));
+      PLAYER_HURT_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\playerHurt.wav"));
+      ENEMY_HURT_SOUND  = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\enemyHurt.wav"));
+      ENEMY_KILLED_SOUND  = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\enemyKilled.wav"));
       ENEMY_SHOOT_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\enemyShoot.wav"));
       RUN_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\run.wav"));
       JUMP_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\jump.wav"));
