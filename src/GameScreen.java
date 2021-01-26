@@ -394,7 +394,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             player.throwGrenade(dubercore, mousePos);
             player.grenadeReady = false;
             player.lastGrenadeUse = System.currentTimeMillis();
-            DuberCore.THROW_GRENADE_SOUND.play();
+            DuberCore.THROW_ITEM_SOUND.play();
             return true;
         }
         else if (keycode == Input.Keys.R) {
@@ -489,6 +489,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));  // Maps the mouse from camera pos to world pos
                 player.shootGrapple(dubercore.world, mousePos);
                 dubercore.entityList.add(player.grapple);
+                DuberCore.THROW_ITEM_SOUND.play();
                 return true; 
             }
         }

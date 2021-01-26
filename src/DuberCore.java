@@ -43,7 +43,7 @@ public class DuberCore extends Game {
    public static Sound PISTOL_SOUND;
    public static Sound SHOTGUN_SOUND;
    public static Sound SMG_SOUND;
-   public static Sound THROW_GRENADE_SOUND;
+   public static Sound THROW_ITEM_SOUND;
    public static Sound EXPLOSION_SOUND;
 
    private float accumulator = 0;
@@ -77,7 +77,7 @@ public class DuberCore extends Game {
       PISTOL_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\pistol.wav"));
       SHOTGUN_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\shotgun.wav"));
       SMG_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\smg.wav"));
-      THROW_GRENADE_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\throwGrenade.wav"));
+      THROW_ITEM_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\throw.wav"));
       EXPLOSION_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\explosion.wav"));
 
    }
