@@ -315,9 +315,8 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">meleespriteplaceholder.png</key>
-            <key type="filename">playerspriteplaceholder.png</key>
-            <key type="filename">rangedspriteplaceholder.png</key>
+            <key type="filename">meleeenemy.png</key>
+            <key type="filename">rangedenemy.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -326,9 +325,9 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>20,38,40,75</rect>
+                <rect>11,9,21,17</rect>
                 <key>scale9Paddings</key>
-                <rect>20,38,40,75</rect>
+                <rect>11,9,21,17</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -362,6 +361,36 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">shotgun.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,3,31,7</rect>
+                <key>scale9Paddings</key>
+                <rect>16,3,31,7</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">smg.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>9,4,18,8</rect>
+                <key>scale9Paddings</key>
+                <rect>9,4,18,8</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
         </map>
         <key>fileList</key>
         <array>
@@ -379,7 +408,6 @@
             <filename>gold7.png</filename>
             <filename>gold8.png</filename>
             <filename>gold9.png</filename>
-            <filename>playerspriteplaceholder.png</filename>
             <filename>stone1.png</filename>
             <filename>stone10.png</filename>
             <filename>stone11.png</filename>
@@ -402,8 +430,6 @@
             <filename>grappleicon.png</filename>
             <filename>pistol.png</filename>
             <filename>player.png</filename>
-            <filename>rangedspriteplaceholder.png</filename>
-            <filename>meleespriteplaceholder.png</filename>
             <filename>chevron.png</filename>
             <filename>projectilespit.png</filename>
             <filename>crystal1.png</filename>
@@ -420,6 +446,10 @@
             <filename>crystal8.png</filename>
             <filename>crystal9.png</filename>
             <filename>crosshair.png</filename>
+            <filename>shotgun.png</filename>
+            <filename>smg.png</filename>
+            <filename>meleeenemy.png</filename>
+            <filename>rangedenemy.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
