@@ -40,7 +40,6 @@ public class Player extends Character {
     private Fixture playerFixture;
     private FixtureDef bodyFixtureDef;
     private boolean faceDirection;      // True for right, false for left
-    private boolean spriteFlipped;
 
     public long lastGrenadeUse;
     public long lastGrappleUse;
@@ -65,7 +64,6 @@ public class Player extends Character {
         isMining  = false;
         activeItem = 0;
         faceDirection = true;
-        spriteFlipped = false;
 
         grappleReady = true;
         grenadeReady = true;
