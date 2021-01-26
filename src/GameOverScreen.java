@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -87,25 +88,27 @@ public class GameOverScreen extends ScreenAdapter {
      */
     public boolean updateLeaderboard(){
 
-        System.out.println("Fetching leaderboard...");
+        System.out.println("Connecting to leaderboard...");
         Socket sock = new Socket();
         ObjectOutputStream outputStream = null;
+        ObjectInputStream inputStream = null;
         try {
             sock.connect(new InetSocketAddress("127.0.0.1", 5000), 5000);
         }
         catch (IOException e) {
             System.out.println("Error connecting to server.");
-            closeSocket(sock);
+            LeaderboardServer.closeSocket(sock);
             return false;
         }
 
         // Open streams
         try {
+            inputStream = new ObjectInputStream(sock.getInputStream());
             outputStream = new ObjectOutputStream(sock.getOutputStream());
         } catch (IOException e) {
             System.out.println("Error opening streams");
             e.printStackTrace();
-            closeSocket(sock);
+            LeaderboardServer.closeSocket(sock);
             return false;
         }
 
@@ -116,25 +119,14 @@ public class GameOverScreen extends ScreenAdapter {
         try {
             outputStream.writeObject(packet);
             outputStream.flush();
-            closeSocket(sock);
+            System.out.println("Score written");
         } catch (IOException e) {
             System.out.println("Error writing score.");
             e.printStackTrace();
-            closeSocket(sock);
+        } finally {
+            LeaderboardServer.closeSocket(sock);
         }
-        System.out.println("Score written");
         return true;
-    }
-
-    private void closeSocket(Socket sock){
-         try{
-            sock.close();
-            System.out.println("Socket sucessfully closed.");
-        }
-        catch (IOException e1){
-            System.out.println("Error closing socket");
-            e1.printStackTrace();               
-        }
     }
 
 }

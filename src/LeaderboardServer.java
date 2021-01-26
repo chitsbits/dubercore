@@ -27,6 +27,7 @@ public class LeaderboardServer implements Runnable {
                 try {
                     System.out.println("Waiting for client connection...");
                     clientSock = serverSock.accept();                  // Blocks for 5 seconds
+                    System.out.println("Client handler started");
                     new Thread(new ClientHandler(clientSock)).start(); // Hand over the client to a handler thread
                 }
                 catch (SocketTimeoutException e1){
@@ -38,13 +39,7 @@ public class LeaderboardServer implements Runnable {
         catch (IOException e) {
             System.out.println("Error accepting client");
             e.printStackTrace();
-            try {
-                clientSock.close();
-            }
-            catch (IOException e1) {
-                System.out.println("Error closing socket.");
-                e1.printStackTrace();
-            }
+            LeaderboardServer.closeSocket(clientSock);
             System.exit(-1);
         }
     }
@@ -69,16 +64,19 @@ public class LeaderboardServer implements Runnable {
             } catch (IOException e) {
                 System.out.println("Error opening streams.");
                 e.printStackTrace();
+                closeSocket(client);
+                return;
             }
-
             // Recieve packet
             try {
                 Object packet = inputStream.readObject();
+                // Get leaderboard request
                 if (packet instanceof GetLeaderboard){
                     System.out.println("Get packet recieved");
                     outputStream.writeObject(LeaderboardServer.fetchTopLeaderboard());
                     outputStream.flush();
                 }
+                // Write to leaderboard request
                 else if (packet instanceof WriteLeaderboard){
                     System.out.println("Write packet recieved");
                     WriteLeaderboard record = (WriteLeaderboard) packet;
@@ -86,15 +84,10 @@ public class LeaderboardServer implements Runnable {
                 }
             } catch (ClassNotFoundException | IOException e) {
                 e.printStackTrace();
+            } finally {
+                closeSocket(client);
             }
-
-            // Close socket (and its streams)
-            try {
-                client.close();
-            } catch (IOException e) {
-                System.out.println("Error closing sockets");
-                e.printStackTrace();
-            }
+            System.out.println("Client disconnected.");
         }
     }
 
@@ -189,9 +182,17 @@ public class LeaderboardServer implements Runnable {
             }
         }
         input.close();
-    
-        // fetchTopLeaderboard();
-
     }
+
+    public static void closeSocket(Socket sock){
+        try{
+           sock.close();
+           System.out.println("Socket sucessfully closed.");
+       }
+       catch (IOException e1){
+           System.out.println("Error closing socket");
+           e1.printStackTrace();               
+       }
+   }
 
 }

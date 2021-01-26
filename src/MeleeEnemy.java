@@ -14,8 +14,8 @@ public class MeleeEnemy extends Enemy {
 
     MeleeEnemy(World world, BodyDef bodyDef) {
         super(MAX_HP, 10f);
-        this.width = 0.4f;
-        this.height =  0.7f;
+        this.width = 0.5f;
+        this.height =  0.5f;
         this.enemyState = "wander";
 
         this.bodyDef = bodyDef;
@@ -33,7 +33,7 @@ public class MeleeEnemy extends Enemy {
         bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE | DuberCore.ENEMY | DuberCore.PLAYER ;
         bodyFixtureDef.friction = 1.0f;
         
-        sprite = GameScreen.textureAtlas.createSprite("meleespriteplaceholder");
+        sprite = GameScreen.textureAtlas.createSprite("meleeenemy");
         sprite.setSize(this.width*2, this.height*2);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 

@@ -19,8 +19,8 @@ public class RangedEnemy extends Enemy {
 
     RangedEnemy(DuberCore game, BodyDef bodyDef) {
         super(4f, 6f);
-        this.width = 0.4f;
-        this.height = 0.7f;
+        this.width = 0.5f;
+        this.height = 0.5f;
         this.enemyState = "wander";
         this.game = game;
         this.playerPos = new Vector2(0,0);
@@ -40,7 +40,7 @@ public class RangedEnemy extends Enemy {
         bodyFixtureDef.filter.maskBits = DuberCore.TERRAIN | DuberCore.PROJECTILE | DuberCore.ENEMY | DuberCore.PLAYER ;
         bodyFixtureDef.friction = 1.0f;
 
-        sprite = GameScreen.textureAtlas.createSprite("rangedspriteplaceholder");
+        sprite = GameScreen.textureAtlas.createSprite("rangedenemy");
         sprite.setSize(this.width*2, this.height*2);
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
