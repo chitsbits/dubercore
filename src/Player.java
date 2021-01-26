@@ -23,7 +23,6 @@ public class Player extends Character {
     public static final int SMG = 1;
     public static final int SHOTGUN = 2;
     public static final int GRAPPLING_HOOK = 3;
-    
 
     public int collidingCount;
     public boolean canJump;
@@ -40,6 +39,8 @@ public class Player extends Character {
     private Vector2 feetCenter;
     private Fixture playerFixture;
     private FixtureDef bodyFixtureDef;
+    private boolean faceDirection;      // True for right, false for left
+    private boolean spriteFlipped;
 
     public long lastGrenadeUse;
     public long lastGrappleUse;
@@ -63,6 +64,8 @@ public class Player extends Character {
         grappleFired = false;
         isMining  = false;
         activeItem = 0;
+        faceDirection = true;
+        spriteFlipped = false;
 
         grappleReady = true;
         grenadeReady = true;
@@ -114,7 +117,7 @@ public class Player extends Character {
         //adding a sprite to the box2d player object
         sprite = GameScreen.textureAtlas.createSprite("player");
         sprite.setSize(PLAYER_WIDTH*2 + 0.7f, PLAYER_HEIGHT*2);
-        sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+        sprite.setOrigin(sprite.getWidth()/2 - 0.14f, sprite.getHeight()/2);
 
         body.setUserData(this);
 
@@ -184,10 +187,12 @@ public class Player extends Character {
 
     public void moveLeft() {
         body.applyLinearImpulse(-0.50f, 0, getPos().x, getPos().y, true);
+        faceDirection = false;
     }
 
     public void moveRight() {
         body.applyLinearImpulse(0.50f, 0, getPos().x, getPos().y, true);
+        faceDirection = true;
     }
 
     public void jump() {
@@ -196,5 +201,9 @@ public class Player extends Character {
 
     public Weapon getWeapon(int weaponIndex){
         return weaponArray[weaponIndex];
+    }
+
+    public boolean getFaceDirection(){
+        return faceDirection;
     }
 }

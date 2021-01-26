@@ -187,21 +187,36 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Draw entities
         for(Entity ent : dubercore.entityList){
             Sprite sprite = ent.sprite;
+            
             // Slight offset for player sprites
             if (ent instanceof Player){
                 Player tempPlayer = (Player) ent;
                 if (DuberCore.checkCooldown(tempPlayer.lastDamageTaken, Player.INVINCIBILITY)){
                     sprite.setColor(Color.WHITE);
-                } else{
+                }
+                else {
                     sprite.setColor(Color.RED);
                 }
                 sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2 + 0.14f,
-                                    ent.body.getPosition().y - sprite.getHeight() / 2);
-            } else {
+                ent.body.getPosition().y - sprite.getHeight() / 2);
+                
+                // Flip player sprite
+                if (player.getFaceDirection()) {
+                    sprite.draw(worldBatch);
+                }
+                else {
+                    Sprite flipped = new Sprite(ent.sprite);
+                    flipped.flip(true, false);
+                    flipped.setPosition(sprite.getX() - 0.14f, sprite.getY());
+                    flipped.draw(worldBatch);
+                }
+            }
+            // All other entities
+            else {
                 sprite.setPosition(ent.body.getPosition().x - sprite.getWidth() / 2,
                                     ent.body.getPosition().y - sprite.getHeight() / 2);
+                sprite.draw(worldBatch);
             }
-            sprite.draw(worldBatch);
         }
         worldBatch.end();
 
@@ -238,16 +253,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         switch (player.activeItem){
             case 0 :
-                chevron.setPosition(820, 120);
+                chevron.setPosition(820, 100);
                 break;
             case 1 :
-                chevron.setPosition(920, 120);
+                chevron.setPosition(920, 100);
                 break;
             case 2 :
-                chevron.setPosition(1020, 120);
+                chevron.setPosition(1020, 100);
                 break;
             case 3 :
-                chevron.setPosition(1120, 120);
+                chevron.setPosition(1120, 100);
         }
         chevron.draw(hudBatch);
 
@@ -284,6 +299,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudShapeRenderer.setAutoShapeType(true);
         hudShapeRenderer.begin();
         Gdx.gl.glLineWidth(1);
+
+        // Bar outlines
         hudShapeRenderer.set(ShapeType.Line);
         hudShapeRenderer.setColor(Color.WHITE);
         hudShapeRenderer.rect(50, 30, 200f, 20f);   // Player health
@@ -293,17 +310,36 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hudShapeRenderer.rect(1005, 20, 50f, 10f);
 
         hudShapeRenderer.set(ShapeType.Filled);
-        hudShapeRenderer.setColor(Color.RED);
-
+        // Pistol bar
+        hudShapeRenderer.setColor(Color.GREEN);
         float pistolAmmoWidth = (1.0f * player.getWeapon(Player.PISTOL).ammo / Pistol.MAGAZINE_SIZE) * 46f;
+        if (pistolAmmoWidth <= 23){
+            hudShapeRenderer.setColor(Color.RED);
+        }
+        hudShapeRenderer.rect(807, 22, pistolAmmoWidth, 6f);
+
+        // SMG bar
+        hudShapeRenderer.setColor(Color.GREEN);
         float smgAmmoWidth = (1.0f * player.getWeapon(Player.SMG).ammo / SubmachineGun.MAGAZINE_SIZE) * 46f;
-        float shotgunAmmoWidth = (1.0f * player.getWeapon(Player.SHOTGUN).ammo / Shotgun.MAGAZINE_SIZE) * 46f;
-
-        hudShapeRenderer.rect(807, 22, pistolAmmoWidth, 6f);   
+        if (smgAmmoWidth <= 23){
+            hudShapeRenderer.setColor(Color.RED);
+        }
         hudShapeRenderer.rect(907, 22, smgAmmoWidth, 6f);
-        hudShapeRenderer.rect(1007, 22, shotgunAmmoWidth, 6f);
 
+        // Shotgun bar
+        hudShapeRenderer.setColor(Color.GREEN);
+        float shotgunAmmoWidth = (1.0f * player.getWeapon(Player.SHOTGUN).ammo / Shotgun.MAGAZINE_SIZE) * 46f;
+        if (shotgunAmmoWidth <= 23){
+            hudShapeRenderer.setColor(Color.RED);
+        }
+        hudShapeRenderer.rect(1007, 22, shotgunAmmoWidth, 6f);               
+
+        // Player health bar
+        hudShapeRenderer.setColor(Color.GREEN);
         float hpWidth = (player.getHp() / Player.MAX_HP) * 196f;
+        if (hpWidth <= 98){
+            hudShapeRenderer.setColor(Color.RED);
+        }
         hudShapeRenderer.rect(52f, 32f, hpWidth, 16f);
 
         hudShapeRenderer.end();
