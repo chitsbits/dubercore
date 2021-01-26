@@ -63,6 +63,7 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(spit);
             }
             if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
+                DuberCore.HURT_SOUND.play();
                 game.player.damage(spit.getDamage());
                 game.player.lastDamageTaken = System.currentTimeMillis();
             }
@@ -73,6 +74,7 @@ public class MyContactListener implements ContactListener {
                 game.entityDeletionQueue.add(spit);
             }
             if (DuberCore.checkCooldown(game.player.lastDamageTaken, Player.INVINCIBILITY)){
+                DuberCore.HURT_SOUND.play();
                 game.player.damage(spit.getDamage());
                 game.player.lastDamageTaken = System.currentTimeMillis();
             }

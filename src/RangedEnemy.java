@@ -124,6 +124,7 @@ public class RangedEnemy extends Enemy {
         ProjectileSpit projectileSpit =  new ProjectileSpit(game.world, damage, this.body.getPosition());
         game.entityList.add(projectileSpit);
         projectileSpit.body.setLinearVelocity(spitDirection.x/3, spitDirection.y/3);
+        DuberCore.ENEMY_SHOOT_SOUND.play();
     }
     
 }

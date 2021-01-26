@@ -88,6 +88,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         chevron = textureAtlas.createSprite("chevron");
         chevron.setSize(20, 15);
+
+        DuberCore.BACKGROUND_MUSIC.play();
+        DuberCore.BACKGROUND_MUSIC.setLooping(true);
     }
 
     @Override
@@ -357,6 +360,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 else if (enemy.enemyState.equals("pursuit")) {
 
                     if (DuberCore.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY) && enemy.isColliding) {
+                        DuberCore.HURT_SOUND.play();
                         player.damage(enemy.damage);
                         player.lastDamageTaken = System.currentTimeMillis();
                     }  
