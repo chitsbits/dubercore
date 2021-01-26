@@ -5,6 +5,7 @@ import java.util.Queue;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -40,11 +41,21 @@ public class DuberCore extends Game {
    public static final short SENSOR = 0x0080;
 
    //sfx
+   public static Music BACKGROUND_MUSIC;
    public static Sound PISTOL_SOUND;
    public static Sound SHOTGUN_SOUND;
    public static Sound SMG_SOUND;
    public static Sound THROW_ITEM_SOUND;
    public static Sound EXPLOSION_SOUND;
+   public static Sound PLAYER_HURT_SOUND;
+   public static Sound ENEMY_SHOOT_SOUND;
+   public static Sound ENEMY_HURT_SOUND;
+   public static Sound ENEMY_KILLED_SOUND;
+   public static Sound RUN_SOUND;
+   public static Sound JUMP_SOUND;
+   public static Sound MINING_SOUND_1;
+   public static Sound MINING_SOUND_2;
+   public static Sound MINING_SOUND_3;
 
    private float accumulator = 0;
 
@@ -74,12 +85,21 @@ public class DuberCore extends Game {
       this.playerName = "Player";
 
       //sfx
+      BACKGROUND_MUSIC = Gdx.audio.newMusic(Gdx.files.internal("assets\\sfx\\background.wav"));
       PISTOL_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\pistol.wav"));
       SHOTGUN_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\shotgun.wav"));
       SMG_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\smg.wav"));
       THROW_ITEM_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\throw.wav"));
       EXPLOSION_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\explosion.wav"));
-
+      PLAYER_HURT_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\playerHurt.wav"));
+      ENEMY_HURT_SOUND  = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\enemyHurt.wav"));
+      ENEMY_KILLED_SOUND  = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\enemyKilled.wav"));
+      ENEMY_SHOOT_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\enemyShoot.wav"));
+      RUN_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\run.wav"));
+      JUMP_SOUND = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\jump.wav"));
+      MINING_SOUND_1 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink1.wav"));
+      MINING_SOUND_2 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink2.wav"));
+      MINING_SOUND_3 = Gdx.audio.newSound(Gdx.files.internal("assets\\sfx\\tink3.wav"));
    }
 
    public void changeScreen(int screen) {

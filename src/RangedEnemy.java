@@ -1,13 +1,10 @@
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class RangedEnemy extends Enemy {
 
@@ -124,6 +121,7 @@ public class RangedEnemy extends Enemy {
         ProjectileSpit projectileSpit =  new ProjectileSpit(game.world, damage, this.body.getPosition());
         game.entityList.add(projectileSpit);
         projectileSpit.body.setLinearVelocity(spitDirection.x/3, spitDirection.y/3);
+        DuberCore.ENEMY_SHOOT_SOUND.play();
     }
     
 }

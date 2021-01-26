@@ -1,15 +1,11 @@
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,7 +14,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 public class GameScreen extends ScreenAdapter implements InputProcessor {
@@ -44,6 +39,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private int screenX;
     private int screenY;
     private float spawnClock;
+    private long lastRunNoise;
 
     // Hud elements
     Sprite grenadeSprite;
@@ -88,6 +84,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         chevron = textureAtlas.createSprite("chevron");
         chevron.setSize(20, 15);
+
+        DuberCore.BACKGROUND_MUSIC.play();
+        DuberCore.BACKGROUND_MUSIC.setLooping(true);
     }
 
     @Override
@@ -98,17 +97,26 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         
         // Player input
         // apply left impulse, but only if max velocity is not reached yet
-        if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {			
+        if (Gdx.input.isKeyPressed(Keys.A) && player.getVel().x > -Player.MAX_VELOCITY && player.canMove) {
+            if(!player.canJump && DuberCore.checkCooldown(lastRunNoise, 250)){
+                DuberCore.RUN_SOUND.play();
+                lastRunNoise = System.currentTimeMillis();
+            }			
             player.moveLeft();
         }
 
         // apply right impulse, but only if max velocity is not reached yet
         if (Gdx.input.isKeyPressed(Keys.D) && player.getVel().x < Player.MAX_VELOCITY && player.canMove) {
+            if(!player.canJump && DuberCore.checkCooldown(lastRunNoise, 250)){
+                DuberCore.RUN_SOUND.play();
+                lastRunNoise = System.currentTimeMillis();
+            }	
             player.moveRight();
         }
 
         // apply right impulse, but only if max velocity is not reached yet
         if (Gdx.input.isKeyJustPressed(Keys.W) && player.collidingCount > 0 && !player.isGrappling) {
+            DuberCore.JUMP_SOUND.play();
             player.jump();
         }
 
@@ -357,6 +365,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 else if (enemy.enemyState.equals("pursuit")) {
 
                     if (DuberCore.checkCooldown(player.lastDamageTaken, Player.INVINCIBILITY) && enemy.isColliding) {
+                        DuberCore.PLAYER_HURT_SOUND.play();
                         player.damage(enemy.damage);
                         player.lastDamageTaken = System.currentTimeMillis();
                     }  
@@ -395,6 +404,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             if (callback.collisionPoint != null) {
                 dubercore.destroyTerrain(callback.collisionPoint);
                 player.mineReady = false;
+                int miningSound = (int) ((Math.random() * (3 - 1)) + 1);
+                if (miningSound == 1){
+                    DuberCore.MINING_SOUND_1.play();
+                }
+                else if (miningSound == 2){
+                    DuberCore.MINING_SOUND_2.play();
+                }
+                else if (miningSound == 3){
+                    DuberCore.MINING_SOUND_3.play();
+                }
             }
             player.lastTerrainMined = System.currentTimeMillis();
 

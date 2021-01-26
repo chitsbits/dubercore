@@ -1,8 +1,6 @@
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-
 public class SubmachineGun extends Weapon {
 
     public static final int MAGAZINE_SIZE = 25;
