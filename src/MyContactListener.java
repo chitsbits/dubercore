@@ -2,7 +2,7 @@
  * [MyContactListener.java]
  * contact listner for body collisions in the game world
  * @author Viraj Bane, Sunny Jiao
- * @version 1.0 Build 1 January25th
+ * @version 1.0 Build 1 January 25th
  */
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -13,6 +13,9 @@ public class MyContactListener implements ContactListener {
 
     private DuberCore game;  // reference to game
 
+    /**
+     * creates a new contact callback method inside the game
+     */
     public MyContactListener(DuberCore game){
         this.game = game;
     }
